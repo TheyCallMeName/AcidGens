@@ -1,0 +1,32 @@
+on join:
+    teleport player to {warps::spawn}
+    if player has not played before:
+        set join message to "&e&lAcid&b&lGens &f%player% &7Welcome to &3&lAcid&b&lGens &6&lNEW &7[(&e##%amount of offline players%&7)]"
+    else:
+        if {tokens::%player%} is not set:
+            set {tokens::%player%} to 0
+        if {level::%player%} is not set:
+            set {level::%player%} to 1
+        if {prestige::%player%} is not set:
+            set {prestige::%player%} to 0
+
+command start:
+	trigger:
+		make player execute "p auto"
+		wait 3 seconds
+		send "&ePurchase generators at /shop"
+
+
+on first join:
+	set {tokens::%player%} to 0
+	set {level::%player%} to 1
+	wait 1 second
+	teleport player to {warps::spawn}
+	equip player with leather helmet and leather chestplate and leather leggings and leather boots
+	give player 1 diamond sword and diamond pickaxe and diamond axe and diamond shovel
+	give player 5 of hay bale named "<##89CFF0>Wheat Generator"
+	execute console command "/lp user %player% permission unset essentials.fly"
+	execute console command "/lp user %player% permission unset plots.plot.2"
+	execute console command "/lp user %player% permission unset rename"
+	broadcast "&e&lAcid&b&lGens &f%player% &7Welcome to &3&lAcid&b&lGens &6&lNEW &7[(&e##%amount of offline players%&7)]"
+

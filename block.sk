@@ -1,0 +1,33 @@
+On command "/p merge all" or "/p m all" or "/plot merge all" or "/plotsquared m all" or "/2 m all":
+  cancel event
+
+On command "/plot merge all":
+  cancel event
+
+On command "/plot merge *":
+  cancel event
+
+On command "/p merge *":
+  cancel event
+
+On command "/p m all":
+  cancel event
+
+
+	
+
+On command "/plot m all":
+  cancel event
+
+On command "/p m a":
+  cancel event
+
+On command "/p m *":
+  cancel event
+
+On command "/p merge auto":
+  cancel event
+
+
+on craft of wheat:
+	cancel event

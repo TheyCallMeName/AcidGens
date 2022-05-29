@@ -1,0 +1,449 @@
+
+
+options:
+
+    # MESSAGES CONFIGURATION
+    message_prefix: &3&lAcid&b&lGens &8¬&7
+    message_borders: &8&m                                                &r
+
+    # COLORS CONFIGURATION
+    color_first: &7
+    color_second: &6
+    color_third: &b
+    color_fourth: &8
+    color_error: &c
+
+    # ERRORS CONFIIGURATION
+    # Use <arg> for the permission, correct usage, or incorrect type. <type> for the "error_not_correct_type"
+    error_no_permission: &c&l(!) &cI can't let you do that!%nl%&c&l(!) &cMissing Permission: &d<arg>
+    error_not_player: &c&l(!) &cOnly players can execute this command!
+    error_wrong_usage: &c&l(!) &cIncorrect Usage!%nl%&c&l(!)&cCorrect Usage: &d<arg>
+    error_not_correct_type: &c&l(!) &d<arg> &cisn't the required type! &8(&d<type>&8)
+
+    # ALERTS CONFIGURATION
+    # Use <script> for the skript file, And <reload_time> for the reloaded time.
+    alerts_reload_enabled: true
+    alerts_reload_message: &r%nl%&c&l(!) &d<script>.sk &7reloaded in &d<reload_time>!%nl%&r
+    alerts_reloading_enabled: true
+    alerts_reloading_message: &r%nl%&c&l(!) &d<script>.sk &7is being reloaded! This may cause lag.%nl%&r
+
+    # GUI ITEMS CONFIGURATION
+    # Here you can set the items used in GUIs.
+    filler: gray stained glass pane named ""
+
+    # LAG PROTECTION CONFIGURATION
+    # These options are for the "algorithm" that should hopefully reduce lag caused by this Skript.
+    low_lag_protection: 0.1 + ((20 - tps from the last minute) / 4) * 2 # These are used for code that generally isn't intensive, So you can leave it at pretty low numbers.
+    medium_lag_protection: 1.5 + ((20 - tps from the last minute) / 2) * 2 # These are used for code that are kind of intensive, Like hologram reloading, Loops, And what not.
+    high_lag_protection: 6 + (20 - tps from the last minute) * 2 # These are used for code that are what I think, really intensive, Like setting a lot of blocks, Or just in simple codes, YANDEREDEV CODE TYPE SHIT
+# ------------[ CONFIGURATION ]------------ #
+
+
+
+# --------------[ FUNCTIONS ]-------------- #
+
+function createTeam(plr: player, name: text):
+    set {_uuid} to uuid of {_plr}
+    if {_name} = {teams::name::*}:
+        send "{@message_prefix} {@color_error}Your team name already exists" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+        stop
+    if {_name} contains "nigga", "nigger", "n1gg3r", "nigr", "fagg0t", "tranny", "retard", "r3tard", "r3t4rd", "porn", "sex", "cum", "onlyfans", "of", "f4gg0t", "faggot", "fag", "%%" or "&" or "!" or "@" or "##" or "$" or "^" or "*" or "(" or ")" or "[" or "]" or ":" or "|" or "\" or "{" or "}" or "<" or ">" or "," or "." or "?" or "/" or ":" or ";" or "'" or """" or "`" or "~" or "_" or "-" or "=" or "+":
+        send "{@message_prefix} {@color_error}Your team name contains illegal characters/words" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+        stop
+    if length of {_name} < 3:
+        send "{@message_prefix} {@color_error}Your team name must be longer than 3 characters" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+        stop    
+    if length of {_name} > 10:
+        send "{@message_prefix} {@color_error}Your team name must be shorter than 10 characters" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+        stop
+    send "{@message_prefix} {@color_first}You created the team called {@color_second}%{_name}%{@color_first}!" to {_plr}
+    play sound "ENTITY.PLAYER.LEVELUP" to {_plr}
+    set {teams::%{_uuid}%} to {_name}
+    add {_name} to {teams::name::*}
+    add {_uuid} to {teams::players::%{_name}%::*}
+    set {teams::owner::%{_name}%} to {_uuid}
+    set {teams::players_limit::%{_name}%} to 4
+    set {teams::total_balance::%{_name}%} to 0
+    set {teams::total_levels::%{_name}%} to 0
+    set {teams::total_crystals::%{_name}%} to 0
+
+function disbandTeam(plr: player):
+    set {_uuid} to uuid of {_plr}
+    if {teams::%{_uuid}%} is set:
+        set {_name} to {teams::%{_uuid}%}
+        if {teams::owner::%{_name}%} = {_uuid}:
+            set {_disband} to difference between now and {teams::disband::%{_uuid}%}
+            if {_disband} is less than 5 seconds:
+                play sound "ENTITY.VILLAGER.YES" to {_plr}
+                remove {_name} from {teams::name::*}
+                clear {teams::owner::%{_name}%}
+                loop {teams::players::%{_name}%::*}:
+                    set {_team_uuid} to uuid of loop-value
+                    send "{@message_prefix} {@color_error}Your team has been disbanded!" to loop-value
+                    clear {teams::%{_team_uuid}%}
+                    clear {teams::chat::%{_team_uuid}%}
+                    remove {_team_uuid} from {teams::players::%{_name}%::*}
+                clear {teams::players::%{_name}%::*}
+                clear {teams::owner::%{_name}%}
+                clear {teams::players_limit::%{_name}%}
+                clear {teams::total_balance::%{_name}%}
+                clear {teams::total_levels::%{_name}%}
+                clear {teams::total_crystals::%{_name}%}
+                clear {teams::%{_uuid}%}
+            else:
+                send "{@message_prefix} {@color_first}Repeat this command if you want to disband your team." to {_plr}
+                set {teams::disband::%{_uuid}%} to now
+                play sound "ENTITY.VILLAGER.NO" to {_plr}
+        else:
+            send "{@message_prefix} {@color_error}You're not the owner of this team!" to {_plr}
+            play sound "ENTITY.VILLAGER.NO" to {_plr}
+    else:
+        send "{@message_prefix} {@color_error}You're not in a team yet! Create one with /team create" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+
+function leaveTeam(plr: player):
+    set {_uuid} to uuid of {_plr}
+    if {teams::%{_uuid}%} is set:
+        set {_name} to {teams::%{_uuid}%}
+        if {teams::owner::%{_name}%} = {_uuid}:
+            send "{@message_prefix} {@color_error}You're the owner of this team! If you want to leave, you must disband this team first!" to {_plr}
+            play sound "ENTITY.VILLAGER.NO" to {_plr}
+        else:
+            send "{@message_prefix} {@color_first}You have left the team!" to {_plr}
+            play sound "ENTITY.VILLAGER.YES" to {_plr}
+            remove {_uuid} from {teams::players::%{_name}%::*}
+            clear {teams::%{_uuid}%}
+            loop {teams::players::%{_name}%::*}:
+                send "{@message_prefix} {@color_error}%{_plr}% {@color_error}left the team." to loop-value
+    else:
+        send "{@message_prefix} {@color_error}You're not in a team yet! Create one with /team create" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+
+function inviteTeam(plr: player, invite: player):
+    set {_uuid} to uuid of {_plr}
+    set {_invite_uuid} to uuid of {_invite}
+    if {teams::%{_uuid}%} is set:
+        set {_name} to {teams::%{_uuid}%}
+        if {teams::owner::%{_name}%} = {_uuid}:
+            if {_invite} = {_plr}:
+                send "{@message_prefix} {@color_error}You cannot invite yourself!" to {_plr}
+                play sound "ENTITY.VILLAGER.NO" to {_plr}
+            else:
+                if {_invite} is online:
+                    if {teams::%{_invite_uuid}%} is set:
+                        send "{@message_prefix} {@color_error}This player is already in another team!" to {_plr}
+                        play sound "ENTITY.VILLAGER.NO" to {_plr}
+                    else if {teams::invites::%{_invite_uuid}%::*} contains {teams::%{_uuid}%}:
+                        send "{@message_prefix} {@color_error}You have already sent an invite to this player!" to {_plr}
+                        play sound "ENTITY.VILLAGER.NO" to {_plr}
+                    else:
+                        send "{@message_prefix} {@color_first}You have invited {@color_second}%{_invite}% {@color_first}to your team!" to {_plr}
+                        send "{@message_prefix} {@color_first}You have been invited by {@color_second}%{_name}%{@color_first}!" to {_invite}
+                        add {teams::%{_uuid}%} to {teams::invites::%{_invite_uuid}%::*}
+                        play sound "ENTITY.VILLAGER.YES" to {_plr}
+                        play sound "ENTITY.VILLAGER.TRADE" to {_invite}
+                else:
+                    send "{@message_prefix} {@color_error}The player you want to invite must be online!" to {_plr}
+                    play sound "ENTITY.VILLAGER.NO" to {_plr}
+        else:
+            send "{@message_prefix} {@color_error}You're not the owner of this team!" to {_plr}
+            play sound "ENTITY.VILLAGER.NO" to {_plr}
+    else:
+        send "{@message_prefix} {@color_error}You're not in a team yet! Create one with /team create" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+
+function joinTeam(plr: player, name: text):
+    set {_uuid} to uuid of {_plr}
+    if {teams::%{_uuid}%} is set:
+        send "{@message_prefix} {@color_error}You're already in a team! You can leave your current team using /team leave" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+    else:
+        if size of {teams::invites::%{_uuid}%::*} > 0:
+            if {teams::invites::%{_uuid}%::*} contains {_name}:
+                set {_members} to size of {teams::players::%{_name}%::*}
+                if {_members} < {teams::players_limit::%{_name}%}:
+                    set {teams::%{_uuid}%} to {_name}
+                    send "{@message_prefix} {@color_first}You succesfully joined {@color_second}%{_name}%{@color_first}!" to {_plr}
+                    add {_uuid} to {teams::players::%{teams::%{_uuid}%}%::*}
+                    loop {teams::players::%{_name}%::*}:
+                        send "{@message_prefix} {@color_second}%{_plr}%{@color_first} joined your team!" to loop-value
+                    clear {teams::invites::%{_uuid}%::*}
+                else:
+                    send "{@message_prefix} {@color_error}This team is already full! (%size of {teams::players::%{_name}%::*}%{@color_first}/%{teams::players_limit::%{_name}%}%{@color_first})" to {_plr}
+                    play sound "ENTITY.VILLAGER.NO" to {_plr}  
+            else:
+                send "{@message_prefix} {@color_error}You have not been invited by that team yet!" to {_plr}
+                play sound "ENTITY.VILLAGER.NO" to {_plr}   
+        else:
+            send "{@message_prefix} {@color_error}You have no pending invites!" to {_plr}
+            play sound "ENTITY.VILLAGER.NO" to {_plr}   
+
+function kickTeam(plr: player, kick: player):
+    set {_uuid} to uuid of {_plr}
+    set {_kick_uuid} to uuid of {_kick}
+    if {teams::%{_uuid}%} is set:
+        set {_name} to {teams::%{_uuid}%}
+        if {teams::owner::%{_name}%} = {_uuid}:
+            if {_kick} = {_plr}:
+                send "{@message_prefix} {@color_error}You cannot kick yourself!" to {_plr}
+                play sound "ENTITY.VILLAGER.NO" to {_plr}
+            else:
+                if {teams::players::%{_name}%::*} contains {_name}:
+                    send "{@message_prefix} {@color_first}You have kicked {@color_second}%{_kick}% {@color_first}out of your team!" to {_plr}
+                    send "{@message_prefix} {@color_first}You have been kicked out from {@color_second}%{_kick}%{@color_first}!" to {_kick}
+                    remove {_kick_uuid} from {teams::players::%{_name}%::*}
+                    clear {teams::%{_kick_uuid}%}
+                    loop {teams::players::%{_name}%::*}:
+                        send "{@message_prefix} {@color_second}%{_kick}%{@color_first} has been kicked out from your team!" to loop-value
+                    play sound "ENTITY.VILLAGER.YES" to {_plr}
+                else:
+                    send "{@message_prefix} {@color_error}This player is not in your team!" to {_plr}
+                    play sound "ENTITY.VILLAGER.NO" to {_plr}
+        else:
+            send "{@message_prefix} {@color_error}You're not the owner of this team!" to {_plr}
+            play sound "ENTITY.VILLAGER.NO" to {_plr}
+    else:
+        send "{@message_prefix} {@color_error}You're not in a team yet! Create one with /team create" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+
+function updateTeam(plr: player):
+    set {_uuid} to uuid of {_plr}
+    if {teams::%{_uuid}%} is set:
+        set {_team} to {teams::%{_uuid}%}
+        set {teams::total_balance::%{_team}%} to 0
+        set {teams::total_levels::%{_team}%} to 0
+        set {teams::total_crystals::%{_team}%} to 0
+        loop {teams::players::%{_team}%::*}:
+            set {_loop_uuid} to loop-value
+            add {prestige::%{_plr}%} to {teams::total_levels::%{_team}%}
+            add Money_Get(loop-value parsed as an offline player) to {teams::total_balance::%{_team}%}
+            add Crystals_Get(loop-value parsed as an offline player) to {teams::total_crystals::%{_team}%}
+        send "{@message_prefix} {@color_first}Succesfully updated the team information! Check out /team info" to {_plr}
+    else:
+        send "{@message_prefix} {@color_error}You're not in a team yet! Create one with /team create" to {_plr}
+        play sound "ENTITY.VILLAGER.NO" to {_plr}
+
+function UpgradeTeam(plr: player, name: text):
+    create a gui with virtual chest inventory with 3 rows named "{@color_third}&lTeam Upgrades":
+        loop 27 times:
+            make next gui slot with {@filler}
+        make gui slot 10 with ender eye named "{@color_third}&lMEMBERS LIMIT UPGRADE" with lore " ", "{@color_first}Upgrades your team members limit by 1", "{@color_first}Cost: {@color_second}$%{teams::upgrades::members_limit::%{teams::players_limit::%{_name}%}%}%" and " ":
+            if {teams::players_limit::%{_name}%} >= 4:
+                send "{@message_prefix} {@color_error}You have already maxed out this upgrade."
+                play sound "ENTITY.VILLAGER.NO" to {_plr}
+                close {_plr}'s inventory
+            else:
+                set {_limit} to {teams::players_limit::%{_name}%}
+                if {_plr}'s balance >= {teams::upgrades::members_limit::%{_limit}%}:
+                    Money_Remove({_plr}, {teams::upgrades::members_limit::%{_limit}%})
+                    add 1 to {teams::players_limit::%{_name}%}
+                    send "{@message_prefix} {@color_first}You have upgraded your team members limit!"
+                    play sound "ENTITY.VILLAGER.YES" to {_plr}
+                    close {_plr}'s inventory
+                else:
+                    send "{@message_prefix} {@color_error}You don't have enough for this upgrade!"
+        make gui slot 11 with barrier named "{@color_error}&lMORE SOON" with lore " ", "{@color_first}Suggest any team upgrades in /discord :D" and " "
+        make gui slot 12 with barrier named "{@color_error}&lMORE SOON" with lore " ", "{@color_first}Suggest any team upgrades in /discord :D" and " "
+        make gui slot 13 with barrier named "{@color_error}&lMORE SOON" with lore " ", "{@color_first}Suggest any team upgrades in /discord :D" and " "
+        make gui slot 14 with barrier named "{@color_error}&lMORE SOON" with lore " ", "{@color_first}Suggest any team upgrades in /discord :D" and " "
+        make gui slot 16 with paper named "{@color_third}&lUPGRADE INFO" with lore " ", "{@color_first}Purchase team upgrades that can be", "{@color_first}profitable or helpful for your team!" and ""
+    open last gui to {_plr}
+
+function updateLeaderboards():
+    delete {team_leaderboards::*}
+    loop all indices of {teams::players::*}:
+        set {team_leaderboards::balance::%loop-value%} to {teams::total_balance::%loop-value%}
+        set {team_leaderboards::levels::%loop-value%} to {teams::total_levels::%loop-value%}
+        set {team_leaderboards::crystals::%loop-value%} to {teams::total_crystals::%loop-value%}
+
+function reloadStats():
+    loop all players:
+        updateTeam(loop-player)
+# --------------[ FUNCTIONS ]-------------- #
+
+
+
+# ---------------[ EVENTS ]--------------- #
+
+
+on tab complete of "/team" or "/teams":
+    set tab completions for position 1 to "create", "disband", "leave", "invite", "join", "kick", "chat", "who", "info", "upgrade" and "update"
+    if tab arg-1 = "invite", "kick" or "who":
+        set tab completions for position 2 to all players
+    if tab arg-1 = "join" or "info":
+        set tab completions for position 2 to {teams::name::*}
+
+on disconnect:
+    clear {teams::chat::%uuid of player%}
+
+on chat:
+    if {teams::chat::%uuid of player%} is set:
+        cancel event
+        set {_team} to {teams::%uuid of player%}
+        loop {teams::players::%{_team}%::*}:
+            set {_plr} to loop-value parsed as an player
+            send "&6[Team Chat] &a%player%: &a%message%" to {_plr}
+        send "%player% » %message%" to channel with id "914528641457733632" with "AcidGens"
+
+every 60 minutes:
+    reloadStats()
+    wait 1 second
+    updateLeaderboards()
+# ---------------[ EVENTS ]--------------- #
+
+
+
+# ---------------[ COMMANDS ]--------------- #
+
+command /team [<text>] [<text>]:
+    aliases: /teams
+    trigger:
+        if arg-1 is "create":
+            if {teams::%uuid of player%} is set:
+                send "{@message_prefix} {@color_error}You're already in a team! You can leave your current team using /team leave"
+                play sound "ENTITY.VILLAGER.NO" to player
+            else:
+                if arg-2 is set:
+                    createTeam(player, arg-2)
+                else:
+                    send "{@message_prefix} {@color_error}You must enter a name before creating your team!"
+                    play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "disband":
+            disbandTeam(player)
+        else if arg-1 is "leave":
+            leaveTeam(player)
+        else if arg-1 is "invite":
+            if arg-2 doesn't match "\w+":
+                send "{@message_prefix} {@color_error}Illegal characters"
+                play sound "ENTITY.VILLAGER.NO" to player
+                stop
+            if arg-2 is set:
+                set {_invite} to arg-2 parsed as player
+                inviteTeam(player, {_invite})
+            else:
+                send "{@message_prefix} {@color_error}You must enter a name you want to invite to your team!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "join":
+            if arg-2 is set:
+                joinTeam(player, arg-2)
+            else:
+                send "{@message_prefix} {@color_error}You must enter a team name you want to join!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "kick":
+            if arg-2 doesn't match "\w+":
+                send "{@message_prefix} {@color_error}Illegal characters"
+                play sound "ENTITY.VILLAGER.NO" to player
+                stop
+            if arg-2 is set:
+                set {_kick} to arg-2 parsed as offline player
+                kickTeam(player, {_kick})
+            else:
+                send "{@message_prefix} {@color_error}You must enter a name you want to kick from your team!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "chat":
+            if {teams::%uuid of player%} is set:
+                if {teams::chat::%uuid of player%} is not set:
+                    send "{@message_prefix} {@color_first}Team Chat enabled!"
+                    set {teams::chat::%uuid of player%} to "true"
+                    play "ENTITY_VILLAGER_TRADE" to player
+                else:
+                    send "{@message_prefix} {@color_first}Team Chat disabled!"
+                    clear {teams::chat::%uuid of player%}
+                    play "ENTITY_VILLAGER_TRADE" to player
+            else:
+                send "{@message_prefix} {@color_error}You are not in a team!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "who":
+            if arg-2 doesn't match "\w+":
+                send "{@message_prefix} {@color_error}Illegal characters"
+                play sound "ENTITY.VILLAGER.NO" to player
+                stop
+            if arg-2 is set:
+                set {_uuid} to uuid of arg-2 parsed as offlineplayer
+                if {teams::%{_uuid}%} is set:
+                    set {_team} to {teams::%{_uuid}%} 
+                    send " "
+                    send "{@color_third}&lTEAM INFO - &r{@color_third}%{_team}%"
+                    send " "
+                    send "{@color_third} ¬ {@color_first}Team owner: {@color_second}%{teams::owner::%{_team}%} parsed as offlineplayer%"
+                    loop {teams::players::%{_team}%::*}:
+                        add loop-value parsed as offlineplayer to {_members::*}
+                    send "{@color_third} ¬ {@color_first}Team members: {@color_second}%{_members::*}%"
+                    send "{@color_third} ¬ {@color_first}Team total pretiges: {@color_second}%{teams::total_levels::%{_team}%}%"
+                    send "{@color_third} ¬ {@color_first}Team total balance: {@color_second}$%format({teams::total_balance::%{_team}%})%"
+                    send "{@color_third} ¬ {@color_first}Team total tokens: {@color_second}%format({teams::total_crystals::%{_team}%})%"
+                    send " "
+                else:
+                    send "{@message_prefix} {@color_error}This player is not in a team yet."
+                    play sound "ENTITY.VILLAGER.NO" to player
+            else:
+                send "{@message_prefix} {@color_error}You must enter a name you want to view!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "info":
+            set {_team} to {teams::%uuid of player%} if arg-2 is not set
+            set {_team} to arg-2 if arg-2 is set
+            send " " to player
+            send "{@color_third}&lTEAM INFO - &r{@color_third}%{_team}%" to player
+            send " " to player
+            send "{@color_third} ¬ {@color_first}Team owner: {@color_second}%{teams::owner::%{_team}%} parsed as offlineplayer%" to player
+            loop {teams::players::%{_team}%::*}: 
+                add loop-value parsed as offlineplayer to {_members::*}
+            send "{@color_third} ¬ {@color_first}Team members: {@color_second}%{_members::*}%" to player
+            send "{@color_third} ¬ {@color_first}Team total prestiges: {@color_second}%{teams::total_levels::%{_team}%}%" to player
+            send "{@color_third} ¬ {@color_first}Team total balance: {@color_second}$%format({teams::total_balance::%{_team}%})%" to player
+            send "{@color_third} ¬ {@color_first}Team total tokens: {@color_second}%format({teams::total_crystals::%{_team}%})%" to player
+            send " "
+        else if arg-1 is "update":
+            if {teams::%uuid of player%} is set:
+                set {_cooldown} to difference between now and {teams::cooldown::%{_uuid}%}
+                if {_cooldown} is less than 60 seconds:
+                    send "{@message_prefix} {@color_error}You have to wait %difference between {_cooldown} and 60 seconds%{@color_error} before you can update your team information again."
+                    play sound "ENTITY.VILLAGER.NO" to player
+                    stop
+                else:
+                    set {teams::cooldown::%{_uuid}%} to now
+                    updateTeam(player)
+            else:
+                send "{@message_prefix} {@color_error}You are not in a team!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else if arg-1 is "upgrade":
+            if {teams::%uuid of player%} is set:
+                set {_name} to {teams::%uuid of player%}
+                UpgradeTeam(player, {_name})
+            else:
+                send "{@message_prefix} {@color_error}You are not in a team!"
+                play sound "ENTITY.VILLAGER.NO" to player
+        else:
+            send " "
+            send "{@message_prefix} {@color_first}Commands list"
+            send " "
+            send "{@color_third} ¬ {@color_first}/team create <name>: {@color_second}Create a team."
+            send "{@color_third} ¬ {@color_first}/team leave: {@color_second}Leave your current team."
+            send "{@color_third} ¬ {@color_first}/team chat: {@color_second}Toggle team chat on/off"
+            send "{@color_third} ¬ {@color_first}/team info <team name>: {@color_second}Shows team information"
+            send "{@color_third} ¬ {@color_first}/team update: {@color_second}Calculates the total amount of prestiges, money and tokens for the leaderboard."
+            send " "
+            send "&c&lTEAM OWNER COMMANDS:"
+            send "{@color_third} ¬ {@color_first}/team upgrade: {@color_second}Upgrade your team perks."
+            send "{@color_third} ¬ {@color_first}/team disband: {@color_second}Accept a team invite."
+            send "{@color_third} ¬ {@color_first}/team kick <player>: {@color_second}Accept a team invite."
+            send "{@color_third} ¬ {@color_first}/team invite <player>: {@color_second}Invite a player to your team."
+            send "{@color_third} ¬ {@color_first}/team disband"
+
+
+function Money_Remove(plr: offline player, take_bal: number):
+    {_take_bal} > 0
+    set {_uuid} to uuid of {_plr}
+    remove {_take_bal} from {_plr}'s balance
+
+function Money_Get(plr: offline player) :: number:
+    set {_uuid} to uuid of {_plr}
+    return {_plr}'s balance ? 0
+
+function Crystals_Get(plr: offline player) :: number:
+    set {_uuid} to uuid of {_plr}
+    return {tokens::%{_plr}%} ? 0

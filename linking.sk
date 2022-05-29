@@ -1,0 +1,57 @@
+command link:
+	cooldown: 1 minute
+	cooldown message: &eYou can execute this command every 1 minute
+	trigger:
+		set {_code} to a random integer between 11111 and 99999
+		set {code::%{_code}%} to player
+		send ""
+		send "&6Your linking code is &6&l&n%{_code}%&r&7. &6Run the command &6&l&n!link %{_code}%&r&6 on our discord to link your account. This code will be deleted in 1 minute."
+		send ""
+		if player has permission "president":
+			set {discordrank::%player%} to 901356783736590338
+		else if player has permission "acid+":
+			set {discordrank::%player%} to 868537911455383573
+		else if player has permission "acid":
+			set {discordrank::%player%} to 877925042346942545
+		else if player has permission "venom":
+			set {discordrank::%player%} to 876482925707804673
+		else if player has permission "deadly":
+			set {discordrank::%player%} to 876482700096176169
+		else if player has permission "Toxic":
+			set {discordrank::%player%} to 866975247160311808
+		wait 1 minute
+		delete {code::%{_code}%}
+
+		
+discord command link [<text>]:
+	prefixes: !
+	trigger:
+		if arg-1 is not set:
+			reply with "Syntax: !link (code)"
+			stop
+		if {code::%arg-1%} is not set:
+			reply with "Invalid code"
+			stop
+		if {discord::%discord id of event-member%::username} is set:
+			reply with "You have already linked your account!"
+			set the discord nickname of event-member to "| %{code::%arg-1%}% |" with event-bot
+			add role with id "%{discordrank::%{code::%arg-1%}%}%" to roles of event-user in event-guild
+			set {link::%{code::%arg-1%}%} to true
+			stop
+		set {discord::%discord id of event-member%::username} to {code::%arg-1%}
+		reply with "You have linked with the Minecraft account **%{code::%arg-1%}%**. You have been rewarded in game"
+		set the discord nickname of event-member to "| %{code::%arg-1%}% |" with event-bot
+		execute console command "givekey %{code::%arg-1%}% special 1"
+		execute console command "addgens %{code::%arg-1%}% 5"
+		add 1 to {code::%arg-1%}'s max health
+		add role with id "%{discordrank::%{code::%arg-1%}%}%" to roles of event-user in event-guild
+		set {link::%{code::%arg-1%}%} to true
+		send "" to {code::%arg-1%}
+		send "&aYour account has been rewarded!" to {code::%arg-1%}
+		send "" to {code::%arg-1%}
+		broadcast "&9&lDISCORD &8&l» &e&n%{code::%arg-1%}%&r&e Has linked his discord account! &7(/link)"
+		broadcast "&9&lDISCORD &8&l» &e+5 Genslots"
+		broadcast "&9&lDISCORD &8&l» &e+1 Special Key"
+		broadcast "&9&lDISCORD &8&l» &e+1 Heart"
+		delete {code::%arg-1%}
+		

@@ -1,0 +1,254 @@
+command kick <player>:
+	permission: helper
+	trigger:
+		kick arg-1
+
+on command:
+	if player has permission "*":
+		stop
+	else:
+		if command contains ":":
+			cancel event
+			send "&eYou can't use this command!"
+
+command givepick <player>:
+	permission: op
+	trigger:
+		give arg-1 netherite pickaxe of efficiency 6 named "&e&lGod Pickaxe"
+
+
+command keyall <text>:
+	permission: op
+	trigger:
+		if arg-1 is "common":
+			loop all players:
+				give 1 tripwire hook named "&7Common Key" with lore "&7Use at /crates" to loop-player
+				send "&6&lKEYALL &8&l» &a&lYou have received 1 Common Key!" to loop-player
+				play sound "ENTITY_PICKUP" to loop-player
+		if arg-1 is "unique":
+			loop all players:
+				give 1 tripwire hook named "&aUnique Key" with lore "&7Use at /crates" to loop-player
+				send "&6&lKEYALL &8&l» &a&lYou have received 1 Unique Key!" to loop-player
+				play sound "ENTITY_PICKUP" to loop-player
+		if arg-1 is "epic":
+			loop all players:
+				give 1 tripwire hook named "&5Epic Key" with lore "&7Use at /crates" to loop-player
+				send "&6&lKEYALL &8&l» &a&lYou have received 1 Epic Key!" to loop-player
+				play sound "ENTITY_PICKUP" to loop-player
+		if arg-1 is "legendary":
+			loop all players:
+				give 1 tripwire hook named "&6Legendary Key" with lore "&7Use at /crates" to loop-player
+				send "&6&lKEYALL &8&l» &a&lYou have received 1 Legendary Key!" to loop-player
+				play sound "ENTITY_PICKUP" to loop-player
+		if arg-1 is "Special":
+			loop all players:
+				give 1 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" to loop-player
+				send "&6&lKEYALL &8&l» &a&lYou have received 1 Special Key!" to loop-player
+				play sound "ENTITY_PICKUP" to loop-player
+
+
+command /playtime [<player>]:
+    trigger:
+        if arg-1 is set:
+            set {_playtime} to arg-1's time played
+            send "&e%arg 1% &eplayed %{_playtime}% &eon AcidGens!"
+        else:
+            set {_playtime} to player's time played
+            send "&eYou've played %{_playtime}% &eon AcidGens!"
+			
+on craft of respawn anchor:
+	cancel event
+	
+on craft of item frame:
+	cancel event
+	
+on death:
+	wait 5 tick
+	teleport player to {warps::spawn}
+		
+command /stream [<text>]:
+    cooldown: 5 minutes
+    trigger:
+        if player has permission "stream.sk":
+            if arg-1 is set:
+                stream(player, arg-1)
+            else:
+                send "&cPlease provide your link to your stream."
+        else:
+            send "&cYou are not a streamer or if you believe this is an error contact ""WizAcid"" !" to player
+
+function stream(p: player, t: text):
+    broadcast "&5&lStreamers &8| &5%{_p}% &7is streaming, join at %{_t}% &7!"
+	
+
+on fish:
+	if player is not in world "mine":
+		send "&eYou can only fish at /fishing"
+		cancel event
+		
+on fish:
+	if name of player's tool is "&7&lSTARTER ROD":
+		disenchant player's tool
+
+on right click:
+	if player's tool is chest:
+		if name of player's tool is "&6&lRANDOM &eLootbox":
+			cancel event
+			remove 1 of player's tool from player
+			play sound "entity.experience_orb.pickup"
+			set {loot} to random integer between 1 and 100
+			if {loot} is between 1 and 40:
+				execute console command "givelootbox %player% small"
+				send title "&a&l+1 Small Lootbox" to player
+			if {loot} is between 41 and 70:
+				execute console command "givelootbox %player% medium"
+				send title "&a&l+1 Medium Lootbox" to player
+			if {loot} is between 71 and 95:
+				execute console command "givelootbox %player% large"
+				send title "&a&l+1 Large Lootbox" to player
+			if {loot} is between 96 and 100:
+				execute console command "givelootbox %player% Mega"
+				send title "&a&l+1 Mega Lootbox" to player
+on place:
+	if player's tool is chest:
+		if name of player's tool is "&6&lRANDOM &eLootbox":
+			cancel event
+
+command lootboxall:
+	trigger:
+		if player has permission "president":
+			set {_waited} to difference between {president.%player%.lastused} and now
+			if {_waited} is less than 12 hours:
+				send "&c&lPRESIDENT COOLDOWN! &7(%difference between 12 hours and {_waited}%&7)" to player
+			else:
+				broadcast ""
+				broadcast "&4&l✦ &c&lPresident &4&l✦ &c&n%player%&r&c Has used his Lootbox All"
+				broadcast ""
+				loop all players:
+					give loop-player 1 chest named "&6&lRANDOM &eLootbox" with lore "&7This crate is from" and "&4&l✦ &c&lPresidental Perk &4&l✦"
+					set {president.%player%.lastused} to now
+					play sound "entity.experience_orb.pickup" to loop-player
+		else:
+			send "&aYou need &4&l✦ &c&lPresident &4&l✦ &aRank to use this &7(/buy)"
+
+command boss:
+	trigger:
+		if player has permission "president":
+			set {_waited} to difference between {president1.%player%.lastused} and now
+			if {_waited} is less than 3 hours:
+				send "&c&lPRESIDENT COOLDOWN! &7(%difference between 3 hours and {_waited}%&7)" to player
+			else:
+				Bosses_SpawnBosses()
+				broadcast ""
+				broadcast "&4&l✦ &c&lPresident &4&l✦ &c&n%player%&r&c Has spawned a boss"
+				broadcast ""
+				set {president1.%player%.lastused} to now
+		else:
+			send "&aYou need &4&l✦ &c&lPresident &4&l✦ &aRank to use this &7(/buy)"
+
+			
+command fixlag:
+	permission: helper
+	trigger:
+		execute console command "/minecraft:kill @e[type=minecraft:armor_stand]"
+		execute console command "lagg clear"
+		
+
+
+
+on load:
+	broadcast "1"
+	wait 24 hours
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 5 minutes"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 1 minute
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 4 minutes"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 1 minute
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 3 minutes"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 1 minute
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 2 minutes"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 1 minute
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 1 minute"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 30 seconds
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 30 seconds"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 25 seconds
+	broadcast "&d&lDAILY RESTART &8&l| &eDaily restart will happen in 5 seconds"
+	broadcast "&d&lDAILY RESTART &8&l| &eAll progress will be fully saved"
+	play sound "block.beacon.activate" to all players
+	wait 5 seconds
+	broadcast "&d&lDAILY RESTART &8&l| &eServer will be back in 5 minutes!"
+	wait 1 tick
+	broadcast "&d&lDAILY RESTART &8&l| &eServer will be back in 5 minutes!"
+	wait 1 tick
+	broadcast "&d&lDAILY RESTART &8&l| &eServer will be back in 5 minutes!"
+	play sound "block.beacon.activate" to all players
+	execute console command "save-all"
+	kick all players
+	wait 3 seconds
+	restart server
+
+on death:
+	if victim is a player:
+		if attacker is a zombie:
+			broadcast "&9&lDEATH &8» &e&n%victim%&r &eWas killed by &e&nGoblin Treasure"
+			broadcast "&7(%location of attacker%)"
+		if attacker is a player:
+			broadcast "&9&lDEATH &8» &e&n%victim%&r &eWas killed by &e&n%attacker%"
+			broadcast "&7(%location of attacker%)"
+		
+		
+command /trash:
+	trigger:
+		open (chest inventory with 4 rows named "&6&l&nTrash Can") to player
+
+every 31 minutes:
+	execute console command "keyall special"
+
+every 10 seconds:
+	console command "perks"
+	
+command shout <text>:
+	cooldown: 5 minutes
+	trigger:
+		if player has permission "president":
+			broadcast ""
+			broadcast "&4&l✦ &c&lPresident &4&l✦ &c&n%player%&r &8&l» &a%arg-1%"
+			broadcast ""
+		else:
+			send "&aYou need &4&l✦ &c&lPresident &4&l✦ &aRank to use this &7(/buy)"
+	
+on redstone:
+    cancel event
+    set block at event-block to air
+    "%event-block%" contains "observer" or "torch" or "repeater"
+    if {anti_lag::redstone_locations::*} does not contain location of event-block:
+        add location of event-block to {anti_lag::redstone_locations::*}
+    add 1 to {anti_lag::redstone_fired::%location of event-block%}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		

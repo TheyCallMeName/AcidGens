@@ -1,0 +1,41 @@
+on join:
+    while player is online:
+        {stopboss::%player's uuid%} is not set
+        create bossbar titled "&7Ranks, Lootboxes and more at &a/buy!" and id "sale.%player's uuid%" for player with progress 100 with colors green
+        wait 5 ticks
+        loop 100 times:
+            set {_Value} to value of bossbar "sale.%player's uuid%"
+            remove 1 from {_Value}
+            set bossbar "sale.%player's uuid%" value to {_Value}
+            wait 3 ticks
+        remove bossbar "sale.%player's uuid%"
+        {stopboss::%player's uuid%} is not set
+        create bossbar titled "&7Trouble starting? Do &e/start &7and &e/discord" and id "help.%player's uuid%" for player with progress 100 with colors yellow
+        wait 5 ticks
+        loop 100 times:
+            set {_Value} to value of bossbar "help.%player's uuid%"
+            remove 1 from {_Value}
+            set bossbar "help.%player's uuid%" value to {_Value}
+            wait 3 ticks
+        remove bossbar "help.%player's uuid%"
+        {stopboss::%player's uuid%} is not set
+        create bossbar titled "&6&l25%% SALE on our STORE!" and id "crystal.%player's uuid%" for player with progress 100 with colors pink
+        wait 5 ticks
+        loop 100 times:
+            set {_Value} to value of bossbar "crystal.%player's uuid%"
+            remove 1 from {_Value}
+            set bossbar "crystal.%player's uuid%" value to {_Value}
+            wait 3 ticks
+        remove bossbar "crystal.%player's uuid%"
+        wait 1 tick
+
+
+command stopbossbar [<text>]:
+  trigger:
+    if {stopboss::%Player's uuid%} is not set:
+      set {stopboss::%player's uuid%} to true
+      send "&aSuccessfully turned bossbars &cOFF" to player
+    if {stopboss::%Player's uuid%} is set:
+      delete {stopboss::%player's uuid%}
+      send "&aSuccessfully turned bossbars &cOFF" to player
+      send "&aSuccessfully turned bossbars &aON" to player

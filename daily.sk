@@ -1,0 +1,58 @@
+options:
+
+    # MESSAGES CONFIGURATION
+    message_prefix: &3&lAcid&b&lGens &8¬&7
+    message_borders: &8&m                                                &r
+
+    # COLORS CONFIGURATION
+    color_first: &7
+    color_second: &d
+    color_third: &5
+    color_fourth: &8
+    color_error: &c
+
+
+
+
+command /daily:
+    trigger:
+        if difference between {core::player_daily::%uuid of player%} and now >= 24 hours:
+            delete {core::player_daily::%uuid of player%}
+        if {core::player_daily::%uuid of player%} is not set:
+            set {core::player_daily::%uuid of player%} to now
+            set {daily.%player%.lastused} to now
+            broadcast "%nl%{@message_prefix} {@color_second}&n%player%&r {@color_first}reclaimed their daily perks! {@color_second}/buy"
+            if player has permission "president":
+                console command "/givekey %player% booster 2"
+                console command "/givekey %player% special 3"
+                console command "/givekey %player% legendary 5"
+                stop
+            else if player has permission "acid+":
+                console command "/givekey %player% booster 1"
+                console command "/givekey %player% special 3"
+                console command "/givekey %player% legendary 3"
+                stop
+            else if player has permission "acid":
+                console command "/givekey %player% special 2"
+                console command "/givekey %player% legendary 5"
+                stop
+            else if player has permission "venom":
+                console command "/givekey %player% special 2"
+                console command "/givekey %player% legendary 3"
+                stop
+            else if player has permission "deadly":
+                console command "/givekey %player% special 1"
+                console command "/givekey %player% legendary 3"
+                stop
+            else if player has permission "toxic":
+                console command "/givekey %player% legendary 3"
+                stop
+            else:
+                console command "/givekey %player% epic 3"
+                stop
+        else if {core::player_daily::%uuid of player%} is set:
+            play sound "ENTITY_VILLAGER_NO" to player
+            set {_waited} to difference between {daily.%player%.lastused} and now
+            send "{@message_prefix} {@color_error}You already claimed your daily today!" to player
+            send "&c&lDAILY COOLDOWN! &7(%difference between 24 hours and {_waited}%&7)" to player
+            stop

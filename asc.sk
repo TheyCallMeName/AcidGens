@@ -1,0 +1,279 @@
+# Autosell Chests
+# Version 1.0.5 [Bug Fixing]
+# 
+# Written by Madelyn#0001
+
+# Skript Configuration
+options:
+
+    # The prefix of this Skript uses in messages.
+    prefix: &6&lAutosell Chests &8»&7
+
+    # The message border this Skript uses, Make it "none" if you don't want it.
+    borders: &8&m                                                &r
+
+    # The colors this Skript uses in message.
+    color_main: &7
+    color_second: &e
+    color_third: &6
+    color_separator: &8
+    color_error: &c
+
+    # The items this Skript uses in GUIs.
+    border_main: black stained glass pane named ""
+    border_second: black stained glass pane named ""
+    pagination_empty: red stained glass pane named ""
+    air: air
+
+    # The error messages this Skript uses.
+    no_permission: &c&l[!] &cYou need &7<permission> &cto do this command!
+    not_player: &c&l[!] &cOnly players can do this command!
+    wrong_usage: &c&l[!] &cCorrect usage: &7<usage>
+
+    # The sounds this Skript uses.
+    sound_error: BLOCK_NOTE_BLOCK_BASS
+    sound_success: BLOCK_NOTE_BLOCK_PLING
+    sound_prompt: BLOCK_NOTE_BLOCK_BELL
+    sound_click: UI_BUTTON_CLICK
+    sound_pickup_chest: ENTITY_TURTLE_EGG_BREAK
+
+    # Baseline Upgrade Cost.
+    upgrade_cost: 5000
+
+    # How much to multply the cost per upgrade.
+    upgrade_interval: 2
+
+    # Max upgrades you can do.
+    max_upgrades: 20
+
+    # How much multi is given every level
+    upgrade_reward: 0.20
+
+# Register the sell prices.
+on load:
+    delete {asc_sellprices::*}
+    wait 1 tick
+    ASC_RegisterItem(wheat, 15)
+    ASC_RegisterItem(melon slice, 30)
+    ASC_RegisterItem(pumpkin pie, 60)
+    ASC_RegisterItem(coal, 105)
+    ASC_RegisterItem(iron ingot, 150)
+    ASC_RegisterItem(gold ingot, 225)
+    ASC_RegisterItem(redstone, 300)
+    ASC_RegisterItem(lapis, 450)
+    ASC_RegisterItem(diamond, 600)
+    ASC_RegisterItem(emerald, 750)
+    ASC_RegisterItem(magma cream, 900)
+    ASC_RegisterItem(flint, 1200)
+    ASC_RegisterItem(netherite ingot, 1500)
+    ASC_RegisterItem(nether star, 2250)
+    ASC_RegisterItem(dried kelp, 3000)
+    ASC_RegisterItem(brown mushroom, 3750)
+    ASC_RegisterItem(red mushroom, 4500)
+    ASC_RegisterItem(crying obsidian, 5250)
+    ASC_RegisterItem(crimson fungus, 6000)
+    ASC_RegisterItem(warped fungus, 6750)
+    ASC_RegisterItem(wither rose, 7500)
+    ASC_RegisterItem(bone, 8500)
+    ASC_RegisterItem(gunpowder, 10000)
+    ASC_RegisterItem(honeycomb, 12500)
+
+# How often Autosell happens
+every 20 seconds:
+    ASChests_RunAutosell()
+    loop indices of {aschests::*}:
+        set {_world_data::*} to loop-value split at ":"
+        set {_loc_data::*} to {_world_data::2} split at ","
+        set {_loc} to location(({_loc_data::1} parsed as an number), ({_loc_data::2} parsed as an number), ({_loc_data::3} parsed as an number), world("%{_world_data::1}%"))
+        if {aschests::%{_loc}%::hologram_enabled} = false:
+        if {aschests::%{_loc}%::hologram_enabled} = true:
+            set {_owner} to {aschests::%loop-value%::owner} parsed as an offline player
+            set {_unclaimed_money} to ASC_NumberPrettify(round({aschests::%{_loc}%::unclaimed_money}))
+            set {_total_money} to ASC_NumberPrettify(round({aschests::%{_loc}%::total_money}))
+        wait 5 tick
+
+#             WARNING!
+# Everything after this is hard code.
+# Editing the code may cause problems.
+
+
+
+# My API
+function ASC_NoPermission(sender: player, permission: string):
+    set {_message} to "{@no_permission}"
+    replace "<permission>" in {_message} with {_permission}
+    ASC_PlaySound({_plr}, "{@sound_error}")
+    send {_message} to {_sender}
+
+function ASC_NotPlayer(sender: player):
+    set {_message} to "{@not_player}"
+    send {_message} to {_sender}
+
+function ASC_IncorrectUsage(sender: player, usage: string):
+    set {_message} to "{@wrong_usage}"
+    replace "<usage>" in {_message} with {_usage}
+    ASC_PlaySound({_plr}, "{@sound_error}")
+    send {_message} to {_sender}
+
+function ASC_PlaySound(plr: player, sound: string, pitch: number = 1):
+    play sound {_sound} at pitch {_pitch} to {_plr}
+
+function ASC_NumberPrettify(a: object) :: text:
+    set {_b::*} to {_a} split at "."
+    set {_a} to {_b::1} ? "%{_a}%"
+    set {_a} to "%{_a}%"
+    if length of {_a} > 3:
+        return "%ASC_NumberPrettify(first length of {_a} - 3 characters of {_a})%,%last 3 characters of {_a}%"
+    return {_a}
+
+
+
+function ASC_RegisterItem(item: item, price: number):
+    add {_item} to {asc_sellprices::item_list::*}
+    add {_price} to {asc_sellprices::price_list::*}
+
+function ASChests_OpenChestGUI(plr: player, loc: location):
+    set {_uuid} to uuid of {_plr}
+    set {_owner} to {aschests::%{_loc}%::owner} parsed as an offline player
+    set {_owner_uuid} to uuid of {_owner}
+    if {_uuid} != {_owner_uuid}:
+        ASC_PlaySound({_plr}, "{@sound_error}")
+        send "{@prefix} {@color_error}This isn't your autosell chest!" to {_plr}
+        stop
+    create a new gui with virtual chest inventory with 5 rows named "<##D70040>&lAutosell Chest GUI":
+        make gui slot (integers between 0 and 45) with {@border_main}
+        make gui slot 10 with redstone block named "<##ff3333>&lPickup" with lore "", "{@color_main}Right click on this block to", "{@color_main}pickup the <##00ff00>autosell chest&r{@color_main}.":
+            close inventory of {_plr}
+            {aschests::%{_loc}%::*} is set
+            delete {aschests::%{_loc}%::*}
+            set block at {_loc} to air
+            send "{@prefix} {@color_main}You broke an autosell chest!" to {_plr}
+            give ASChests_GetChestItem() to {_plr}
+        make gui slot 13 with emerald named "<##00ff00>&lCollect Earnings" with lore "", "{@color_main}You may collect <##D70040>$%format({aschests::%{_loc}%::unclaimed_money})% {@color_main}from", "{@color_main}this chest, Right click on this block.":
+            close inventory of {_plr}
+            add {aschests::%{_loc}%::unclaimed_money} to balance of {_plr}
+            ASC_PlaySound({_plr}, "{@sound_success}")
+            send "{@prefix} {@color_main}You claimed &a$%format({aschests::%{_loc}%::unclaimed_money})% {@color_main}from this autosell chest!"
+            set {aschests::%{_loc}%::unclaimed_money} to 0
+        make gui slot 16 with chest named "<##ffff33>&lChest Inventory" with lore "", "{@color_main}Click here to open the", "{@color_main}chest's original inventory.":
+            open inventory of block at {_loc} to {_plr}
+        make gui slot 28 with diamond named "<##00ff00>&lAutosell Statistics" with lore "", "<##D70040>▪ {@color_main}Owner: <##D70040>%{_owner}%", "<##D70040>▪ {@color_main}Earnings: <##D70040>$%format({aschests::%{_loc}%::unclaimed_money})%", "<##D70040>▪ {@color_main}Total Profit: <##D70040>$%format({aschests::%{_loc}%::total_money})%", "<##b3ffb3>▪ {@color_main}Sell Multiplier: <##b3ffb3>%getMulti({_plr}) + {aschests_upgrades::%{_uuid}%::multi} ? 0% {@color_separator}(%getMulti({_plr}) ? 1%+%{aschests_upgrades::%{_uuid}%::multi} ? 0%)"
+        set {_upgrade_cost} to {@upgrade_cost} * (({aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0 * {@upgrade_interval}) + 1)
+        set {_formatted} to format({_upgrade_cost})
+        make gui slot 31 with enchanted book named "<##ffff33>&lUpgrade Sell Multiplier" with lore "", "{@color_main}Click here to upgrade your", "{@color_second}sell chest's {@color_main}sell multi!", " ", "{@color_main}Upgrade Cost: {@color_second}%{_formatted}% {@color_second}Tokens!", "{@color_main}Current Multi: {@color_second}%{aschests_upgrades::%{_uuid}%::multi} ? 0% {@color_separator}[0.25x/lvl]", "{@color_main}Current Level: {@color_second}%{aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0%/{@max_upgrades}":
+            close inventory of {_plr}
+            if {aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0 >= {@max_upgrades}:
+                ASC_PlaySound({_plr}, "{@sound_error}")
+                send "{@prefix} {@color_error}You already maxed this upgrade!" to {_plr}
+                stop
+            if {tokens::%{_plr}%} < {_upgrade_cost}:
+                ASC_PlaySound({_plr}, "{@sound_error}")
+                send "{@prefix} {@color_error}You don't have enough tokens for this upgrade!" to {_plr}
+                stop
+            remove {_upgrade_cost} from {tokens::%{_plr}%}
+            add 0.25 to {aschests_upgrades::%{_uuid}%::multi}
+            add 1 to {aschests_upgrades::%{_uuid}%::multi_upgraded}
+            ASC_PlaySound({_plr}, "{@sound_success}")
+            send "{@prefix} {@color_main}You upgraded your sell multiplier by {@color_second}+0.25{@color_main}!" to {_plr}
+        if {aschests::%{_loc}%::hologram_enabled} = true:
+            make gui slot 34 with name tag named "<##FF3333>&lDisable Autosell" with lore "", "{@color_main}Disable the autosell hologram.":
+                set {aschests::%{_loc}%::hologram_enabled} to false
+        else if {aschests::%{_loc}%::hologram_enabled} = false:
+            make gui slot 34 with name tag named "<##D70040>&lEnable Hologram" with lore "", "{@color_main}Enable the autosell hologram.":
+                set {aschests::%{_loc}%::hologram_enabled} to true
+    open last gui to {_plr}
+    while name of {_plr}'s inventory = "<##D70040>&lAutosell Chest GUI":
+        edit last gui:
+            make gui slot 10 with redstone block named "<##ff3333>&lPickup" with lore "", "{@color_main}Right click on this block to", "{@color_main}pickup the <##00ff00>autosell chest&r{@color_main}.":
+                close inventory of {_plr}
+                {aschests::%{_loc}%::*} is set
+                delete {aschests::%{_loc}%::*} and {player_has_asc::%{_uuid}%}
+                set block at {_loc} to air
+                send "{@prefix} {@color_main}You broke an autosell chest!" to {_plr}
+                give ASChests_GetChestItem() to {_plr}
+            make gui slot 13 with emerald named "<##00ff00>&lCollect Earnings" with lore "", "{@color_main}You may collect <##D70040>$%format({aschests::%{_loc}%::unclaimed_money})% {@color_main}from", "{@color_main}this chest, Right click on this block.":
+                close inventory of {_plr}
+                add {aschests::%{_loc}%::unclaimed_money} to balance of {_plr}
+                ASC_PlaySound({_plr}, "{@sound_success}")
+                send "{@prefix} {@color_main}You claimed &a$%format({aschests::%{_loc}%::unclaimed_money})% {@color_main}from this autosell chest!"
+                set {aschests::%{_loc}%::unclaimed_money} to 0
+            make gui slot 16 with chest named "<##ffff33>&lChest Inventory" with lore "", "{@color_main}Click here to open the", "{@color_main}chest's original inventory.":
+                open inventory of block at {_loc} to {_plr}
+            make gui slot 28 with diamond named "<##00ff00>&lAutosell Statistics" with lore "", "<##D70040>▪ {@color_main}Owner: <##D70040>%{_owner}%", "<##D70040>▪ {@color_main}Earnings: <##D70040>$%format({aschests::%{_loc}%::unclaimed_money})%", "<##D70040>▪ {@color_main}Total Profit: <##D70040>$%format({aschests::%{_loc}%::total_money})%", "<##b3ffb3>▪ {@color_main}Sell Multiplier: <##b3ffb3>%getMulti({_plr}) + {aschests_upgrades::%{_uuid}%::multi} ? 0% {@color_separator}(%getMulti({_plr}) ? 1%+%{aschests_upgrades::%{_uuid}%::multi} ? 0%)"
+            set {_upgrade_cost} to {@upgrade_cost} * (({aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0 * {@upgrade_interval}) + 1)
+            set {_formatted} to ASC_NumberPrettify({_upgrade_cost})
+            make gui slot 31 with enchanted book named "<##ffff33>&lUpgrade Sell Multiplier" with lore "", "{@color_main}Click here to upgrade your", "{@color_second}sell chest's {@color_main}sell multi!", " ", "{@color_main}Upgrade Cost: {@color_second}%{_formatted}% {@color_second}Tokens!", "{@color_main}Current Multi: {@color_second}%{aschests_upgrades::%{_uuid}%::multi} ? 0% {@color_separator}[0.25x/lvl]", "{@color_main}Current Level: {@color_second}%{aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0%/{@max_upgrades}":
+                close inventory of {_plr}
+                if {aschests_upgrades::%{_uuid}%::multi_upgraded} ? 0 >= {@max_upgrades}:
+                    ASC_PlaySound({_plr}, "{@sound_error}")
+                    send "{@prefix} {@color_error}You already maxed this upgrade!" to {_plr}
+                    stop
+                if {tokens::%{_plr}%} < {_upgrade_cost}:
+                    ASC_PlaySound({_plr}, "{@sound_error}")
+                    send "{@prefix} {@color_error}You don't have enough tokens for this upgrade!" to {_plr}
+                    stop
+                remove {_upgrade_cost} from {tokens::%{_plr}%}
+                add 0.25 to {aschests_upgrades::%{_uuid}%::multi}
+                add 1 to {aschests_upgrades::%{_uuid}%::multi_upgraded}
+                ASC_PlaySound({_plr}, "{@sound_success}")
+                send "{@prefix} {@color_main}You upgraded your sell multiplier by {@color_second}+0.25{@color_main}!" to {_plr}
+            if {aschests::%{_loc}%::hologram_enabled} = true:
+                make gui slot 34 with name tag named "<##FF3333>&lDisable Autosell" with lore "", "{@color_main}Disable the autosell hologram.":
+                    set {aschests::%{_loc}%::hologram_enabled} to false
+            else if {aschests::%{_loc}%::hologram_enabled} = false:
+                make gui slot 34 with name tag named "<##D70040>&lEnable Hologram" with lore "", "{@color_main}Enable the autosell hologram.":
+                    set {aschests::%{_loc}%::hologram_enabled} to true
+        wait 1 tick
+
+function ASChests_RunAutosell():
+    loop indices of {aschests::*}:
+        set {_owner} to {aschests::%loop-value%::owner}
+        set {_world_data::*} to loop-value split at ":"
+        set {_loc_data::*} to {_world_data::2} split at ","
+        set {_loc} to location(({_loc_data::1} parsed as an number), ({_loc_data::2} parsed as an number), ({_loc_data::3} parsed as an number), world("%{_world_data::1}%"))
+        set {_total} to 0
+        loop {asc_sellprices::item_list::*}:
+            set {_amount} to amount of loop-value-2 in block at {_loc}'s inventory
+            remove all loop-value-2 from block at {_loc}'s inventory
+            set {_money} to ({_amount} * {asc_sellprices::price_list::%loop-index%}) * getMulti({_owner} parsed as an offline player)
+            add ({_money} * {aschests_upgrades::%{_owner}%::multi}) to {aschests::%{_loc}%::unclaimed_money}, {aschests::%{_loc}%::total_money}
+            delete {_amount}, {_money}
+
+function ASChests_GetChestItem() :: itemtype:
+    return 1 of chest named "<##D70040>&lAutosell Chest" with lore "&8Place down to use.", " ", "{@color_main}This is a chest that will sell", "{@color_main}every item in it every <##D70040>20 seconds&r{@color_main}."
+
+on right click on chest:
+    {aschests::%location of event-block%::*} is set
+    tool of player is air
+    cancel event
+    ASC_PlaySound(player, "{@sound_click}")
+    ASChests_OpenChestGUI(player, location of event-block)
+
+on break of chest:
+    {aschests::%location of event-block%::*} is set
+    cancel event
+    ASC_PlaySound(player, "{@sound_error}")
+    send "{@prefix} {@color_error}You may not break a autosell chest! Pick it up by right clicking on the chest." to player
+
+on place of chest:
+    tool of player = ASChests_GetChestItem()
+    wait 1 tick
+    event is not cancelled
+    set {_loc} to location of event-block
+    if {player_has_asc::%uuid of player%} is set:
+        ASC_PlaySound(player, "{@sound_error}")
+        send "{@prefix} {@color_error}You already have a autosell chest placed!" to player
+        set block at {_loc} to air
+        give ASChests_GetChestItem() to player
+        stop
+    set {aschests::%location of event-block%::owner} to uuid of player
+    set {aschests::%location of event-block%::unclaimed_money} to 0
+    set {aschests::%location of event-block%::total_money} to 0
+    set {aschests::%location of event-block%::hologram_enabled} to true
+    add 1 to y-pos of {_loc}
+
+command /giveasc [<player>] [<integer>]:
+    permission: *
+    trigger:
+        loop arg-2 times:
+            give ASChests_GetChestItem() to arg-1

@@ -1,0 +1,37 @@
+on craft of redstone:
+	cancel the event
+
+on craft of redstone torch:
+	cancel the event
+
+on craft of boat:
+	cancel the event
+
+on craft of campfire:
+	cancel event
+
+on place of redstone:
+	cancel event
+
+on place of redstone repeater:
+	cancel event
+
+on craft of armor stand:
+	cancel event
+
+on craft of pumpkin seed:
+	cancel event
+
+on item damage:
+    cancel event
+
+on craft of minecart:
+	cancel event
+	send "&eThis item will cause lag!"
+
+on place of minecart:
+	cancel event
+	send "&eThis item is now allowed!"
+
+on first join:
+    make player execute command "/spawn"

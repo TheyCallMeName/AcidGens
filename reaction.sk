@@ -1,0 +1,90 @@
+options:
+    prefix: &3&lAcid&b&lGens &8¬&7
+    messageborders: &8&m                                                  &r
+
+command /reaction [<string>] [<string>]:
+    permission: op
+    trigger:
+        if arg-1 = "start":
+            if {reaction::isgoing} is not set:
+                set {reaction::isgoing} to false
+                stop
+            if {reaction::isgoing} = false:
+                set {reaction::isgoing} to true
+                set {reaction::money} to a random integer between 1000 and 3000
+                set {reaction::word} to a random element of {reaction::words::*}
+                set {reaction::timer} to 60
+                broadcast ""
+                broadcast "&b&lREACTION &8&l» &7First to type &a&n%{reaction::word}%&r &7Gets &a&l&n%format({reaction::money})%&r &7Tokens"
+                broadcast ""
+                stop
+            if {reaction::isgoing} = true:
+                send "{@prefix} There is already a reaction ongoing" to player
+                stop
+        if arg-1 = "list":
+            send "{@prefix} &3Words List: &b%{reaction::words::*}%" to player
+        if arg-1 = "add":
+            if arg-2 is set:
+                if {reaction::words::*} contains arg-2:
+                    send "{@prefix} The word is already in the words database" to player
+                    stop
+                else:
+                    add arg-2 to {reaction::words::*}
+                    send "{@prefix} You added &3%arg-2% &bto the words database" to player
+                    stop
+            else:
+                send "{@prefix} not enough args retard" to player
+                stop
+        if arg-1 = "remove":
+            if arg-2 is set:
+                if {reaction::words::*} contains arg-2:
+                    remove arg-2 from {reaction::words::*}
+                    send "{@prefix} You removed &3%arg-2% &bfrom the words database" to player
+                    stop
+                else:
+                    add arg-2 to {reaction::words::*}
+                    send "{@prefix} The word is not in the words database" to player
+                    stop
+            else:
+                send "{@prefix} not enough args retard" to player
+                stop
+        if arg-1 = "stop":
+            if {reaction::isgoing} is not set:
+                stop
+            if {reaction::isgoing} = false:
+                stop
+            if {reaction::isgoing} = true:
+                set {reaction::isgoing} to false
+                delete {reaction::timer}
+                send "{@prefix} Stopped the reaction" to player
+                broadcast "&3%player% &bstopped the reaction event"
+                stop
+        if arg-1 = "help":
+            send "&r" to player
+            send "{@messageborders}" to player
+            send "&3&lREACTION HELP" to player
+            send "&r" to player
+            send "&3/reaction start &7- &bstarts a reaction" to player
+            send "&3/reaction stop &7- &bstops a reaction" to player
+            send "&3/reaction add word &7- &badds a word" to player
+            send "&3/reaction remove word &7- &bremoves a word" to player
+            send "&3/reaction list &7- &bsends the database" to player
+            send "{@messageborders}" to player
+
+on chat:
+    if {reaction::isgoing} is true:
+        if message = {reaction::word}:
+            set {reaction::isgoing} to false
+            delete {reaction::timer}
+            add {reaction::money} to {tokens::%event-player%}
+            broadcast "&b&lREACTION &8&l» &7&n%event-player%&r &7got the word &a&n%{reaction::word}%&r &7and recieved &a&n%format({reaction::money})%&r &7Tokens"
+
+every 180 seconds:
+    execute console command "reaction start"
+
+every 1 second:
+    if {reaction::timer} is set:
+        remove 1 from {reaction::timer}
+        if {reaction::timer} < 0:
+            set {reaction::isgoing} to false
+            delete {reaction::timer}

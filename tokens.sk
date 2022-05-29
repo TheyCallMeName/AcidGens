@@ -1,0 +1,209 @@
+options:
+    prefix: &3&lAcid&b&lGens
+    CommonKey: tripwire hook named "&7Common Key" with lore "&7Use at /crates"
+    UniqueKey: tripwire hook named "&aUnique Key" with lore "&7Use at /crates"
+    EpicKey: tripwire hook named "&5Epic Key" with lore "&7Use at /crates"
+    LegendaryKey: tripwire hook named "&6Legendary Key" with lore "&7Use at /crates"
+    SpecialKey: tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+    rankKey: tripwire hook named "&cRank Key" with lore "&7Use at /crates"
+
+command /tokenpay [<player>] [<integer>]:
+	trigger:
+		if {prestige::%player%} is higher or equal to 1:
+			if {prestige::%arg-1%} is higher or equal to 1:
+				if arg-2 is greater than 0:
+					if {tokens::%player%} is greater than or equal to arg-2:
+						remove arg-2 from {tokens::%player%}
+						add arg-2 to {tokens::%arg-1%}
+						send "&aYou sent &f%format(arg-2)% token(s)&a to %arg-1%" to player
+						send "&aYou received &f%format(arg-2)% token(s)&a from &f%player%" to arg-1
+					else:
+						send "&cYou do no have enough tokens to send %arg-2%" to player
+				else:
+					send "&cYou must enter a value greater than 0" to player
+			else:
+				send "&c%arg-1% Must be prestige 1+ to receive tokens"
+		else:
+			send "&cYou must be prestige &n1&c or higher to execute this command"
+
+
+command /tokens [<text>] [<player>] [<integer>]:
+	permission: torn.admin
+	trigger:
+		if arg-1 is set:
+			if arg-2 is set:
+				if arg-3 is set:
+					if arg-1 is "add":
+						if arg-3 is greater than 0:
+							add arg-3 to {tokens::%arg-2%}
+							send "&aYou added %arg-3%&a token(s) to %arg-2%&a's balance." to player
+							send "&a%arg-3%&a token(s) have been added to your balance." to arg-2
+						else:
+							send "&cYou must add more than 0 to the players balance." to player
+					else if arg-1 is "remove":
+						set {_current} to {tokens::%uuid of arg-2%}
+						set {_new} to {_current} - arg-3
+						if {_new} is less than 1:
+							set {tokens::%uuid of arg-2%} to 0
+							send "&aYou removed %arg-3%&a token(s) from %arg-2%&a's balance." to player
+							send "&aThey now have %{tokens::%uuid of arg-2%}%&a token(s)." to player
+							send "&c%arg-3%&c token(s) have been taken from your balance." to arg-2
+							send "&cYou now have %{tokens::%uuid of arg-2%}%&c token(s)." to arg-2
+						else:
+							remove arg-3 from {tokens::%arg-2%}
+							send "&aYou removed %arg-3%&a token(s) from %arg-2%&a's balance." to player
+							send "&aThey now have %{tokens::%arg-2%}%&a token(s)." to player
+							send "&c%arg-3%&c token(s) have been taken from your balance." to arg-2
+							send "&cYou now have %{tokens::%arg-2%}%&c token(s)." to arg-2
+					if arg-1 is "set":
+						if arg-3 is greater than -1:
+							set {tokens::%arg-2%} to arg-3
+							send "&aYou set %arg-2%&a's balance to %arg-3%&a tokens(s)" to player
+							send "&aYou're token balance ahs been set to %arg-3%&a" to arg-2
+						else:
+							send "&cYou must set the player's balance to more than 0" to player
+					else:
+						send "&cUnknown action <add/remove/set>" to player
+				else:
+					send "&cMissing arguments &f/tokens <add/remove/set> <player> <integer>" to player
+			else:
+				send "&cMissing arguments &f/tokens <add/remove/set> <player> <integer>" to player
+		else:
+			send "&cMissing arguments &f/tokens <add/remove/set> <player> <integer>" to player
+
+command /tokenshop:
+    aliases: /et, /te
+    trigger:
+        create a gui with virtual chest inventory with 5 rows named "Token Shop":
+            make gui slot 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 37 and 38 and 39 and 40 and 41 and 42 and 43 and 44 and 45 with 1 of black stained glass pane named "&0"
+            make gui slot 10 with 1 of blaze rod named "&eSell Wand (x1)" with lore "&7Cost: &e10.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 10000:
+                    send "{@prefix} You have purchased a &dSell Wand (x1)&7!"
+                    give player 1 of blaze rod named "&6&lSell Wand &7&o(x1)" with lore "&eMultiplier: &71x" and "" and "&7Right-Click a chest to" and "&7sell of all it's contents!"
+                    remove 10000 from {tokens::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%10000-{tokens::%player%}% &7more!"
+            make gui slot 11 with 1 of blaze rod named "&eSell Wand (x1.5)" with lore "&7Cost: &e20.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 20000:
+                    send "{@prefix} You have purchased a &dSell Wand (x1.5)&7!"
+                    give player 1 of blaze rod named "&6&lSell Wand &7&o(x1.5)" with lore "&eMultiplier: &71.5x" and "" and "&7Right-Click a chest to" and "&7sell of all it's contents!"
+                    remove 20000 from {tokens::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%20000-{tokens::%player%}% &7more!"
+            make gui slot 12 with 1 of blaze rod named "&eSell Wand (x2)" with lore "&7Cost: &e40.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 40000:
+                    send "{@prefix} You have purchased a &dSell Wand (x2)&7!"
+                    give player 1 of blaze rod named "&6&lSell Wand &7&o(x2)" with lore "&eMultiplier: &72x" and "" and "&7Right-Click a chest to" and "&7sell of all it's contents!"
+                    remove 40000 from {tokens::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%40000-{tokens::%player%}% &7more!"
+            make gui slot 13 with 1 of blaze rod named "&eSell Wand (x2.5)" with lore "&7Cost: &e80.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 80000:
+                    send "{@prefix} You have purchased a &dSell Wand (x2.5)&7!"
+                    give player 1 of blaze rod named "&6&lSell Wand &7&o(x2.5)" with lore "&eMultiplier: &72.5x" and "" and "&7Right-Click a chest to" and "&7sell of all it's contents!"
+                    remove 80000 from {tokens::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%80000-{tokens::%player%}% &7more!"
+            make gui slot 14 with 1 of blaze rod named "&eSell Wand (x3)" with lore "&7Cost: &e160.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 160000:
+                    send "{@prefix} You have purchased a &dSell Wand (x3)&7!"
+                    give player 1 of blaze rod named "&6&lSell Wand &7&o(x3)" with lore "&eMultiplier: &73x" and "" and "&7Right-Click a chest to" and "&7sell of all it's contents!"
+                    remove 160000 from {tokens::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%160000-{tokens::%player%}% &7more!"
+            make gui slot 20 with 1 of tripwire hook named "&e+1 Special Key" with lore "&7Cost: &e8.0K Tokens":
+                if {tokens::%player%} is greater than or equal to 8000:
+                    remove 8000 from {tokens::%player%}
+                    send "{@prefix} You have purchased a &eSpecial Key&7!"
+                    give player 1 of {@SpecialKey}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%8000-{tokens::%player%}% &7more!"
+            make gui slot 31 with 1 of diamond pickaxe named "&eAcid Pickaxe" with lore "&7Cost: &e500.0 Tokens":
+                if {tokens::%player%} is greater than or equal to 500:
+                    send "{@prefix} You have purchased a &eAcid Pickaxe&7!"
+                    remove 500 from {tokens::%player%}
+                    give player 1 diamond pickaxe of efficiency 2
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%500-{tokens::%player%}% &7more!"
+            make gui slot 31 with 1 of enchanting table named "&eEnchant Table" with lore "&7Cost: &e3,500 Tokens":
+                if {tokens::%player%} is greater than or equal to 3500:
+                    send "{@prefix} You have purchased a &eEnchant table&7!"
+                    remove 3500 from {tokens::%player%}
+                    give player 1 enchanting table
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%3500-{tokens::%player%}% &7more!"
+            make gui slot 32 with 1 of name tag named "&e/rename (Perk)" with lore "&7Cost: &e10.0K Tokens" and "&7Works on armor and tools!":
+                if {tokens::%player%} is greater than or equal to 10000:
+                    send "{@prefix} You have purchased a &eRename Perk&7!"
+                    remove 10000 from {tokens::%player%}
+                    console command "lp user %player% permission set rename"
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%10000-{tokens::%player%}% &7more!"
+            make gui slot 33 with 1 of slime block named "&eXP Generator" with lore "&7Cost: &e25.0K Tokens" and "&7Output: &e1 XP Bottle" and "&7Tier:&e 1" and "&7%{maxxpgen::%player%}% &8&l/ &73":
+                if {tokens::%player%} is greater than or equal to 25000:
+                    if {maxxpgen::%player%} is higher or equal to 3:
+                        send "&6You have reached your maxmimum amount of purchases"
+                        stop
+                    send "{@prefix} You have purchased a &eXP Generator&7!"
+                    remove 25000 from {tokens::%player%}
+                    give player 1 slime block named "<##89CFF0>XP Generator"
+                    add 1 to {maxxpgen::%player%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%25000-{tokens::%player%}% &7more!"
+            make gui slot 28 with 1 of magenta glazed terracotta named "&e+1 Genslot" with lore "&7Cost: &e5.0K Tokens" and "&7%{genmax::%player's uuid%}% &8&l/ &7200":
+                if {tokens::%player%} is greater than or equal to 5000:
+                    if {genmax::%player's uuid%} is higher or equal to 200:
+                        cancel event
+                        send "&6You have reached your maxmimum amount of purchases"
+                    else:
+                        send "{@prefix} You have purchased a &eGen slot&7!"
+                        remove 5000 from {tokens::%player%}
+                        execute console command "addgens %player% 1"
+                        add 1 to {genmax::%player's uuid%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%5000-{tokens::%player%}% &7more!"
+            open last gui to player
+            make gui slot 29 with 1 paper named "&eFly Perk" with lore "&7Cost: &e20.0K Tokens" and "&cNOTE: /fly will not work in the mines!":
+                if {tokens::%player%} is greater than or equal to 20000:
+                    send "{@prefix} You have purchased a &eFlyPerk&7!"
+                    remove 20000 from {tokens::%player%}
+                    give 1 paper named "&fFlight perk &e(Right-click)" to player
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%20000-{tokens::%player%}% &7more!"
+            open last gui to player
+            make gui slot 30 with 1 grass block named "&e+1 Plot" with lore "&7Cost: &e10.0K Tokens" and "&c&lWARNING! Do not purchase if you purchased it once OR have more than 1 plot":
+                if {maxplots::%player's uuid%} is higher or equal to 1:
+                    send "&eYou can't purchase anymore plot slots"
+                    stop
+                else:
+                    if {tokens::%player%} is greater than or equal to 10000:
+                        send "{@prefix} You have purchased &e+1 Plot&7!"
+                        remove 10000 from {tokens::%player%}
+                        add 1 to {maxplots::%player's uuid%}
+                        execute console command "lp user %player% permission set plots.merge"
+                        execute console command "lp user %player% permission set plots.plot.2"
+                    else:
+                        send "{@prefix} You don't have enough tokens! You need &e%10000-{tokens::%player%}% &7more!"
+            make gui slot 19 with 1 tripwire hook named "&e+1 Rank Key" with lore "&7Cost: &e250.0K Tokens" and "&7%{rankkeymax::%player's uuid%}% &8&l/ &72":
+                if {tokens::%player%} is greater than or equal to 250000:
+                    if {rankkeymax::%player's uuid%} is 2:
+                        send "&6You reached the maximum amount of rank keys to purchase"
+                        play sound "ENTITY_VILLAGER_NO" to player
+                        stop
+                    else:
+                        send "{@prefix} You have purchased &e+1 Rank Key&7!"
+                        send "%player% » Has purchased a rank key" to channel with id "871638683411939338" with "AcidGens"
+                        remove 250000 from {tokens::%player%}
+                        execute console command "givekey %player% rank 1"
+                        add 1 to {rankkeymax::%player's uuid%}
+                else:
+                    send "{@prefix} You don't have enough tokens! You need &e%250000-{tokens::%player%}% &7more!"
+					
+on join:
+	if {rankkeymax::%player's uuid%} is not set:
+		set {rankkeymax::%player's uuid%} to 0
+	if {genmax::%player's uuid%} is not set:
+		set {genmax::%player's uuid%} to 0
+	if {maxxpgen::%player%} is not set:
+		set {maxxpgen::%player%} to 0
+		

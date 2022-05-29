@@ -1,0 +1,26 @@
+on drop:
+	send "%player% » Has dropped a %item% at %location%" to channel with id "875390967329456199" with "AcidGens"
+
+on pickup:
+	send "%player% » Has picked up %item% at %location%" to channel with id "875391072052846652" with "AcidGens"
+
+on right click on chest:
+	if player is holding a blaze rod:
+		cancel event
+	else:
+		send "%player% » Has opened a chest at %location%" to channel with id "875391123634421800" with "AcidGens"
+		
+		
+on block break:
+	send "%player% » Has broke %block% at %location%" to channel with id "876820063318057020" with "AcidGens"
+	
+	
+on place:
+	send "%player% » Has placed %block% at %location%" to channel with id "876820044741480498" with "AcidGens"
+		
+
+on place:
+	if player's offhand is not air:
+		send "&c&lERROR » &cYou can't place blocks while having something in your offhand!"
+		play sound "ENTITY_VILLAGER_NO" to player
+		cancel event

@@ -1,0 +1,124 @@
+on load:
+	loop {ore::coal ore::*}:
+		set block at loop-value to coal ore
+		remove {ore::iron ore::%loop-value%} from {ore::coal ore::*}
+	loop {ore::iron ore::*}:
+		set block at loop-value to iron ore
+		remove {ore::iron ore::%loop-value%} from {ore::iron ore::*}
+	loop {ore::gold ore::*}:
+		set block at loop-value to gold ore
+		remove {ore::iron ore::%loop-value%} from {ore::gold ore::*}
+	loop {ore::diamond ore::*}:
+		set block at loop-value to diamond ore
+		remove {ore::iron ore::%loop-value%} from {ore::diamond ore::*}
+	loop {ore::emerald ore::*}:
+		set block at loop-value to emerald ore
+		remove {ore::iron ore::%loop-value%} from {ore::emerald ore::*}
+	loop {ore::emerald block::*}:
+		set block at loop-value to emerald block
+		remove {ore::iron ore::%loop-value%} from {ore::emerald block::*}
+
+
+on any movement:
+	if player is in world "mine":
+		if player doesn't have permission "*":
+			if {parrot::%player%} is not set:
+				set player's flight mode to false
+
+
+
+on block break:
+	if "%region at player%" contains "mine":
+		cancel drops
+		if event-block is coal ore:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::coal}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::coal ore::*}
+			wait 30 seconds
+			set event-block to coal ore
+			remove location of event-block from {ore::coal ore::*}
+		else if event-block is iron ore:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::iron ingot}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::iron ore::*}
+			wait 30 seconds
+			set event-block to iron ore
+			remove location of event-block from {ore::iron ore::*}
+		else if event-block is gold ore:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::gold ingot}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::gold ore::*}
+			wait 30 seconds
+			set event-block to gold ore
+			remove location of event-block from {ore::gold ore::*}
+		else if event-block is diamond ore:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::diamond}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::diamond ore::*}
+			wait 30 seconds
+			set event-block to diamond ore
+			remove location of event-block from {ore::diamond ore::*}
+		else if event-block is emerald ore:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::emerald}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::emerald ore::*}
+			wait 30 seconds
+			set event-block to emerald ore
+			remove location of event-block from {ore::emerald ore::*}
+		else if event-block is emerald block:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::emerald block}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::emerald block::*}
+			wait 30 seconds
+			set event-block to emerald block
+			remove location of event-block from {ore::emerald block::*}
+		else if event-block is end stone:
+			set event-block to stone
+			if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+				add 1 to {backpack::%uuid of player%::end stone}
+			else:
+				send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to mine more! (/bp)"
+			add location of event-block to {ore::end stone::*}
+			wait 30 seconds
+			set event-block to end stone
+			remove location of event-block from {ore::end stone::*}
+		else:
+			if player does not have permission "admin":
+				cancel event
+
+
+function bpSize(p: player) :: number:
+	set {_p} to uuid of {_p}
+	if size of {backpack::%{_p}%::*} is greater than 0:
+		loop {backpack::%{_p}%::*}:
+			add loop-value to {_size}
+	else:
+		set {_size} to 0
+	return {_size}
+
+on death of zombie:
+	clear drops
+
+command minelocation:
+	permission: *
+	trigger:
+		add location of player to {boss_locs::*}
+		send "You added your location (%location of player%) to the list" to player

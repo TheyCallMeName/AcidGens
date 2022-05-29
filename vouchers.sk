@@ -1,0 +1,160 @@
+on join:
+	if {giftcard::%player%} is not set:
+		set {giftcard::%player%} to 0
+
+on rightclick:
+	if name of player's tool is "&6&l5$ &6Giftcard":
+		remove 1 of player's tool from player
+		send ""
+		send "&65$ Has been added to your giftcard balance"
+		send "&6/giftcard"
+		send ""
+		add 5 to {giftcard::%player%}
+
+on rightclick:
+	if name of player's tool is "&a5$ Giftcard":
+		remove 1 of player's tool from player
+		send ""
+		send "&65$ Has been added to your giftcard balance"
+		send "&6/giftcard"
+		send ""
+		add 5 to {giftcard::%player%}
+
+on rightclick:
+	if name of player's tool is "&e&l5$ &eStoreCredit":
+		remove 1 of player's tool from player
+		send ""
+		send "&65$ Has been added to your giftcard balance"
+		send "&6/giftcard"
+		send ""
+		add 5 to {giftcard::%player%}
+
+
+
+on rightclick:
+	if name of player's tool is "&6&l2$ Giftcard (Legendary Zombie)":
+		remove 1 of player's tool from player
+		send ""
+		send "&62$ Has been added to your giftcard balance"
+		send "&6/giftcard"
+		send ""
+		add 2 to {giftcard::%player%}
+
+command giftcard <player>:
+	trigger:
+		send ""
+		send "&b%arg-1% currently have &e%{giftcard::%arg-1%}%&a&l$"
+		send ""
+
+command removegiftcard <player> <integer>:
+	permission: *
+	trigger:
+		remove arg-2 from {giftcard::%arg-1%}
+		send "&6%arg-2%&6$ Was removed from %arg-1%&6's balance"
+
+command addgiftcard <player> <integer>:
+	permission: *
+	trigger:
+		add arg-2 to {giftcard::%arg-1%}
+		send "&6%arg-2%&6$ Was added to %arg-1%&6's balance"
+
+on rightclick:
+	if player's tool is paper named "&4&l✦ &c&lPresident Rank &4&l✦":
+		remove 1 of player's tool from player
+		execute console command "/lp user %player% parent add president"
+		broadcast ""
+		broadcast "&4&l✦ &c&lPresident Rank &4&l✦ &eHas been used by &c&l&N%player%"
+		broadcast ""
+
+
+command giftcardpay <player> <integer>:
+	trigger:
+		if arg-2 is higher or equal to 1:
+			if {giftcard::%player%} is higher or equal to arg-2:
+				remove arg-2 from {giftcard::%player%}
+				add arg-2 to {giftcard::%arg-1%}
+				send "&b&lPAYMENT &8&l» &eYou have received %arg-2%&e$ from &n%player%" to arg-1
+				send "&b&lPAYMENT &8&l» &eYou have payed %arg-2%&e$ to &n%arg-1%" to player
+			else:
+				send "&eYou don't have enough balance!"
+
+		else:
+			send "&eYou need to put higher amounts!"
+
+command /giftcardshop:
+	trigger:
+		create a gui with virtual chest inventory with 3 rows named "Giftcard Shop":
+			make gui slot 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 10 and 11 and 12 and 13 and 14 and 15 and 16 and 17 and 18 and 19 and 20 and 21 and 22 and 23 and 24 and 25 and 26 and 27 with 1 of black stained glass pane named "&0"
+			make gui slot 10 with 1 of glowing paper named "&71$ Giftcard" with lore "" and "&7You currently have %{giftcard::%player%}%&7$" and "&7Right-Click to purchase" and "&7NOTE: Giftcards are seasonal":
+				if {giftcard::%player%} is higher or equal to 1:
+					remove 1 from {giftcard::%player%}
+					log "%player% bought 1$ Giftcard" to "giftcard.log"
+					send "&6&lSHOP &8&l» &7Open a ticket on discord to claim your giftcard"
+				else:
+					send "&eYou don't have enough to purchase this giftcard!"
+
+			make gui slot 11 with 1 of glowing paper named "&75$ Giftcard" with lore "" and "&7You currently have %{giftcard::%player%}%&7$" and "&7Right-Click to purchase" and "&7NOTE: Giftcards are seasonal":
+				if {giftcard::%player%} is higher or equal to 5:
+					remove 5 from {giftcard::%player%}
+					log "%player% bought 5$ Giftcard" to "giftcard.log"
+					send "&6&lSHOP &8&l» &7Open a ticket on discord to claim your giftcard"
+				else:
+					send "&eYou don't have enough to purchase this giftcard!"
+
+			make gui slot 12 with 1 of glowing paper named "&710$ Giftcard" with lore "" and "&7You currently have %{giftcard::%player%}%&7$" and "&7Right-Click to purchase" and "&7NOTE: Giftcards are seasonal":
+				if {giftcard::%player%} is higher or equal to 10:
+					remove 10 from {giftcard::%player%}
+					log "%player% bought 10$ Giftcard" to "giftcard.log"
+					send "&6&lSHOP &8&l» &7Open a ticket on discord to claim your giftcard"
+				else:
+					send "&eYou don't have enough to purchase this giftcard!"
+
+			make gui slot 13 with 1 of glowing paper named "&715$ Giftcard" with lore "" and "&7You currently have %{giftcard::%player%}%&7$" and "&7Right-Click to purchase" and "&7NOTE: Giftcards are seasonal":
+				if {giftcard::%player%} is higher or equal to 15:
+					remove 15 from {giftcard::%player%}
+					log "%player% bought 15$ Giftcard" to "giftcard.log"
+					send "&6&lSHOP &8&l» &7Open a ticket on discord to claim your giftcard"
+				else:
+					send "&eYou don't have enough to purchase this giftcard!"
+
+			make gui slot 14 with 1 of glowing paper named "&720$ Giftcard" with lore "" and "&7You currently have %{giftcard::%player%}%&7$" and "&7Right-Click to purchase" and "&7NOTE: Giftcards are seasonal":
+				if {giftcard::%player%} is higher or equal to 20:
+					remove 20 from {giftcard::%player%}
+					log "%player% bought 20$ Giftcard" to "giftcard.log"
+					send "&6&lSHOP &8&l» &7Open a ticket on discord to claim your giftcard"
+				else:
+					send "&eYou don't have enough to purchase this giftcard!"
+		open last gui to player
+
+
+
+
+command /referral:
+	trigger:
+		create a gui with virtual chest inventory with 3 rows named "Staff Referral":
+			make gui slot 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 10 and 11 and 12 and 13 and 14 and 15 and 16 and 17 and 18 and 19 and 20 and 21 and 22 and 23 and 24 and 25 and 26 and 27 with 1 of black stained glass pane named "&0"
+			make gui slot 10 with 1 of book named "&6&lAngelBoy's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/AngelBoy>https://acidgens.tebex.io/AngelBoy<reset>"
+				send ""
+			make gui slot 11 with 1 of book named "&6&lChrisP123's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/ChrisP123>https://acidgens.tebex.io/ChrisP123<reset>"
+				send ""
+			make gui slot 12 with 1 of book named "&6&lRqen's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/rqen>https://acidgens.tebex.io/rqen<reset>"
+				send ""
+			make gui slot 13 with 1 of book named "&6&lXd_Dcomany's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/xddocmany>https://acidgens.tebex.io/xddocmany<reset>"
+				send ""
+			make gui slot 14 with 1 of book named "&6&lXzx4453's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/Xzx4453>https://acidgens.tebex.io/Xzx4453<reset>"
+				send ""
+			make gui slot 15 with 1 of book named "&6&lTjhoward98's Referal" with lore "" and "&7Right-Click to receive the link":
+				send ""
+				send "&a&lLINK &8&l: &e<tooltip:&7Click here!><link:https://acidgens.tebex.io/tjhoward98>	https://acidgens.tebex.io/tjhoward98<reset>"
+				send ""
+		open last gui to player

@@ -1,0 +1,43 @@
+options:
+    bot: AcidGens
+    token: ODY0MjYzNzAxMzY0MzQyODA1.YOy6Sw.jlleXv8fJHFwijtKInEu6bqRKM8
+    prefix: ;
+
+on skript load:
+    login to "{@token}" with the name "{@bot}"
+    mark "{@bot}" as playing "AcidGens.minehut.gg"
+
+on join:
+    if player has permission "*":
+        stop
+    else:
+        player has permission "helper"
+        make embed:
+            set description of the embed to "%player% has joined"
+            set color of the embed to green
+            set timestamp of the embed to now
+        send last created embed to channel with name "activity" with "{@bot}"
+
+on disconnect:
+    if player has permission "*":
+        stop
+    else:
+        player has permission "helper"
+        make embed:
+            set description of the embed to "%player% has left"
+            set color of the embed to red
+            set timestamp of the embed to now
+        send last created embed to channel with name "activity" with "{@bot}"
+
+
+
+
+
+
+on chat:
+	if message contains "@everyone" or "@here" or "FluxBoys":
+		stop
+	if {teams::chat::%uuid of player%} is set:
+		stop
+	else:
+		send "%player% » %uncolored message%" to channel with id "870369929222832199" with "AcidGens"

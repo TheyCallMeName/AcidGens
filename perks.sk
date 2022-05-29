@@ -1,0 +1,154 @@
+options:
+    prefix: &3&lAcid&b&lGens&7
+
+
+on join:
+	if {perks1::%player%} is not set:
+		set {perks1::%player%} to 0
+	if {perks2::%player%} is not set:
+		set {perks2::%player%} to 0
+	if {perks3::%player%} is not set:
+		set {perks3::%player%} to 0
+	if {treasuregoblin::%player%} is not set:
+		set {treasuregoblin::%player%} to 0
+	if {watertreasure::%player%} is not set:
+		set {watertreasure::%player%} to 0
+
+command /perks:
+	aliases: /perk
+	trigger:
+		create a gui with virtual chest inventory with 3 rows named "Perk Shop":
+			make gui slot 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 17 and 18 and 26 and 27 and 35 and 36 and 37 and 38 and 39 and 40 and 41 and 42 and 43 and 44 and 45 and 19 and 20 and 21 and 22 and 23 and 24 and 25 and 26 and 27 with 1 of gray stained glass pane named "&0"
+			set {price} to 15000 * {perks1::%player%} + 15000
+			make gui slot 10 with 1 of zombie spawn egg named "&e&l&nTREASURE GOBLINS" with lore "&7Price: %format({price})% &7Tokens" and "" and "&7Increase the chance to spawn" and "&7A goblin treasure by &e1.1x" and "" and "&7Upgrades: %{perks1::%player%}% &8&l/ &75":
+				if {perks1::%player%} is higher or equal to 5:
+					send "{@prefix} You can't upgrade this perk anymore (MAXED OUT)!"
+					play sound "ENTITY_VILLAGER_NO" to player
+					stop
+				if {tokens::%player%} is greater than or equal to {price}:
+					remove {price} from {tokens::%player%}
+					send "{@prefix} You have increased your chances to spawn a treasure goblin!"
+					add 0.25 to {treasuregoblin::%player%}
+					add 1 to {perks1::%player%}
+					play sound "block.conduit.activate" to player
+					close player's inventory
+				else:
+					play sound "ENTITY_VILLAGER_NO" to player
+					send "{@prefix} You don't have enough tokens! You need &e%{price}-{tokens::%player%}% &7more!"
+			set {price2} to 15000 * {perks2::%player%} + 15000
+			make gui slot 11 with 1 of diamond pickaxe named "&e&l&nQUEST SCROLLS" with lore "&7Price: %format({price2})% &7Tokens" and "" and "&7Increase the chance to get" and "&7Quest Scrolls by &e1.1x" and "&7From mining" and "" and "&7Upgrades: %{perks2::%player%}% &8&l/ &75":
+				if {perks2::%player%} is higher or equal to 5:
+					send "{@prefix} You can't upgrade this perk anymore (MAXED OUT)!"
+					play sound "ENTITY_VILLAGER_NO" to player
+					stop
+				if {tokens::%player%} is greater than or equal to {price2}:
+					remove {price2} from {tokens::%player%}
+					send "{@prefix} You have increased your chances to get a quest scroll!"
+					add 0.02 to {scroll::%player%}
+					add 1 to {perks2::%player%}
+					play sound "block.conduit.activate" to player
+					close player's inventory
+				else:
+					play sound "ENTITY_VILLAGER_NO" to player
+					send "{@prefix} You don't have enough tokens! You need &e%{price2}-{tokens::%player%}% &7more!"
+			set {price3} to 15000 * {perks3::%player%} + 15000
+			make gui slot 12 with 1 of fishing rod named "&e&l&nQUEST SCROLLS" with lore "&7Price: %format({price3})% &7Tokens" and "" and "&7Increase the chance to get" and "&7Quest Scrolls by &e1.1x" and "&7From fishing" and "" and "&7Upgrades: %{perks3::%player%}% &8&l/ &75":
+				if {perks3::%player%} is higher or equal to 5:
+					send "{@prefix} You can't upgrade this perk anymore (MAXED OUT)!"
+					play sound "ENTITY_VILLAGER_NO" to player
+					stop
+				if {tokens::%player%} is greater than or equal to {price3}:
+					remove {price3} from {tokens::%player%}
+					send "{@prefix} You have increased your chances to get a quest scroll!"
+					add 0.02 to {scrollfishing::%player%}
+					add 1 to {perks3::%player%}
+					play sound "block.conduit.activate" to player
+					close player's inventory
+				else:
+					play sound "ENTITY_VILLAGER_NO" to player
+					send "{@prefix} You don't have enough tokens! You need &e%{price3}-{tokens::%player%}% &7more!"
+			set {price4} to 15000 * {perks4::%player%} + 15000
+			make gui slot 13 with 1 of drowned spawn egg named "&e&l&nWATER TREASURE" with lore "&7Price: %format({price4})% &7Tokens" and "" and "&7Increase the chance to get" and "&7Water Treasure Goblins by &e1.05x" and "&7From fishing" and "" and "&7Upgrades: %{perks4::%player%}% &8&l/ &75":
+				if {perks4::%player%} is higher or equal to 5:
+					send "{@prefix} You can't upgrade this perk anymore (MAXED OUT)!"
+					play sound "ENTITY_VILLAGER_NO" to player
+					stop
+				if {tokens::%player%} is greater than or equal to {price4}:
+					remove {price4} from {tokens::%player%}
+					send "{@prefix} You have increased your chances to get a quest scroll!"
+					add 0.02 to {watertreasure::%player%}
+					add 1 to {perks4::%player%}
+					play sound "block.conduit.activate" to player
+					close player's inventory
+				else:
+					play sound "ENTITY_VILLAGER_NO" to player
+					send "{@prefix} You don't have enough tokens! You need &e%{price4}-{tokens::%player%}% &7more!"
+		open last gui to player
+
+
+
+
+
+on fish:
+	fish state is CAUGHT_FISH
+	set {watert} to {watertreasure::%player%}
+	chance of {watert}%:
+		send title "<##89CFF0>&k! <##89CFF0>&lWater Treasure <##89CFF0>&k!" to player
+		spawn 1 drowned at player's location
+		equip last spawned drowned with diamond helmet and diamond chestplate
+		set name of last spawned drowned to "<##89CFF0>&lWater Treasure"
+		
+on death of drowned:
+	clear drops
+	if name of victim is "<##89CFF0>&lWater Treasure":
+		set {bbb} to random integer between 1 and 100
+		if {bbb} is between 1 and 5:
+			give attacker 1 trident of loyalty 3 and sharpness 7 and quick charge 3 named "<##89CFF0>&lWater Trident" with lore "" and "&bOwned: %attacker%"
+			broadcast "<##89CFF0>&lWater Treasure &8&l» &7%attacker%&7 Has received the Water Trident"
+		if {bbb} is between 6 and 15:
+			give attacker 1 netherite helmet of protection 7 and thorns 4 named "<##89CFF0>&lWater Helmet" with lore "" and "&bOwned: %attacker%"
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received Water Helmet" to attacker
+		if {bbb} is between 16 and 20:
+			give attacker 1 netherite chestplate of protection 7 and thorns 4 named "<##89CFF0>&lWater Chestplate" with lore "" and "&bOwned: %attacker%"
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received Water Chestplate" to attacker
+		if {bbb} is between 21 and 30:
+			give attacker 1 netherite leggings of protection 7 and thorns 4 named "<##89CFF0>&lWater Leggings" with lore "" and "&bOwned: %attacker%"
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received Water Leggings" to attacker
+		if {bbb} is between 31 and 45:
+			give attacker 1 netherite boots of protection 7 and thorns 4 named "<##89CFF0>&lWater Boots" with lore "" and "&bOwned: %attacker%"
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received Water Boots" to attacker
+		if {bbb} is between 46 and 50:
+			console command "givetag %attacker% ticket 1"
+			broadcast "<##89CFF0>&lWater Treasure &8&l» &7%attacker% Has received &n1&7 Ticket tag (/createtag)"
+		if {bbb} is between 51 and 55:
+			add 0.5 to attacker's health
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received half a heart" to attacker
+		if {bbb} is between 56 and 70:
+			add 5 to {hopperlimit::%uuid of attacker%}
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received 5 Hopper slots" to attacker
+		if {bbb} is between 71 and 100:
+			console command "givelootbox %attacker% mega" 
+			send "<##89CFF0>&lWater Treasure &8&l» &7You received 1 Mega Lootbox" to attacker
+			
+	
+	
+		
+		
+
+
+
+
+on mine of coal ore or iron ore or gold ore or diamond ore or emerald ore or emerald block:
+	if player is in world "mine":
+		set {chance5} to 0.08 + {scroll::%player%}
+		chance of {chance5}%:
+			make console execute "givemap %player%"
+			send title "&6Scroll Discovered!" with subtitle "&7Right-click to decode"
+
+on fish:
+	if player is in world "mine":
+		fish state is CAUGHT_FISH
+		set {chance5} to 0.08 + {scrollfishing::%player%}
+		chance of {chance5}%:
+			make console execute "givemap %player%"
+			send title "&6Scroll Discovered!" with subtitle "&7Right-click to decode"

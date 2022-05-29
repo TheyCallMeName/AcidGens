@@ -1,0 +1,122 @@
+on mine of coal ore or iron ore or gold ore or diamond ore or emerald ore or emerald block:
+	if player is in world "mine":
+		add 1 to {mined::%player%}
+		add 1 to {bpmined::%player%}
+		if {bpmined::%player%} is higher or equal to 25:
+			add 1 to {extraStorage::%uuid of player%}
+			send ""
+			send centered "&a&lBACKPACK &8&l» &7Backpack increased (+1)" to player
+			send ""
+			play sound "entity.experience_orb.pickup" to player
+			set {bpmined::%player%} to 0
+
+every 5 seconds:
+    loop all players:
+        wipe loop-player's sidebar
+        set {_tokens} to {tokens::%loop-player%}
+        if {_tokens} is not set:
+            set {_tokens} to 0
+        set {_mined} to {mined::%loop-player%}
+        if {_mined} is not set:
+            set {_mined} to 0
+        set {_prestige} to {prestige::%loop-player%}
+        if {_prestige} is not set:
+            set {_prestige} to 0
+        set {_level} to {level::%loop-player%}
+        if {_level} is not set:
+            set {_level} to 0
+        set {_bal} to balance of loop-player
+        replace all ",", " " and "$" with "" in {_bal}
+        set {_bal} to format({_bal})
+        set {_gensMax} to getGens(loop-player)
+        set {_gens} to size of {generators::%loop-player%::*}
+        set {_multi} to getMulti(loop-player)
+        set {_bpMax} to 50 + {extraStorage::%uuid of loop-player%}
+        set {_bpSize} to bpSize(loop-player)
+        if {_bpSize} is not set:
+            set {_bpSize} to 0
+        set name of sidebar of loop-player to "&3&lAcid&b&lGens"
+        set score "&e%loop-player%" in sidebar of loop-player to 13
+        set score "&b&l❆ &7Balance: &a$%{_bal}%" in sidebar of loop-player to 12
+        set score "&b&l❆ &7Tokens: &f%format({_tokens})%&e&l✫" in sidebar of loop-player to 11
+        set score "&b&l❆ &7Hoppers: &f(%size of {hoppercount::%uuid of loop-player%::*}%/%{hopperlimit::%uuid of loop-player%}%)" in sidebar of loop-player to 10
+        set score "&r" in sidebar of loop-player to 9
+        set score "&a&lProgress" in sidebar of loop-player to 8
+        set score "&b&l❆ &7Prestige: &b%{_prestige}%" in sidebar of loop-player to 7
+        set score "&b&l❆ &7Level: &f%{_level}%" in sidebar of loop-player to 6
+        set score "&f" in sidebar of loop-player to 5
+
+        if "%region at loop-player%" contains "mine":
+            set score "&a&lMINE" in sidebar of loop-player to 4
+            set score "&b&l❆ &7Mined: &f%{_mined}%" in sidebar of loop-player to 3
+            set score "&b&l❆ &7Backpack: &f&f%{_bpSize}%&8/&f%{_bpMax}%" in sidebar of loop-player to 2
+            set score "&1" in sidebar of loop-player to 1
+            set score "&7AcidGens.minehut.gg" in sidebar of loop-player to 0
+        else:
+            set score "&a&lStats" in sidebar of loop-player to 4
+            set score "&b&l❆ &7Generators: &f%{_gens}%&8/&f%{_gensMax}%" in sidebar of loop-player to 3
+            set score "&b&l❆ &7Multiplier: &f%{_multi}%&fx" in sidebar of loop-player to 2
+            set score "&1" in sidebar of loop-player to 1
+            set score "&7AcidGens.minehut.gg" in sidebar of loop-player to 0
+        wait 1 tick
+
+on hunger meter change:
+	cancel event
+
+function getMulti(p: player) :: number:
+	set {_uuid} to uuid of {_p}
+	set {_multi} to 1
+	if {_p} has permission "president":
+		add 0.65 to {_multi}
+	else if {_p} has permission "acid+":
+		add 0.55 to {_multi}
+	else if {_p} has permission "acid":
+		add 0.4 to {_multi}
+	else if {_p} has permission "venom":
+		add 0.3 to {_multi}
+	else if {_p} has permission "deadly":
+		add 0.2 to {_multi}
+	else if {_p} has permission "toxic":
+		add 0.1 to {_multi}
+	if {addmulti::%{_uuid}%} is set:
+		add {addmulti::%{_uuid}%} to {_multi}
+	return {_multi}
+
+on first join:
+	add 5000 to player's balance
+
+command /addgens [<player>] [<integer>]:
+    permission: admin
+    trigger:
+        add arg-2 to {addgens::%uuid of arg-1%}
+
+
+
+function getGens(p: player) :: number:
+	set {_uuid} to uuid of {_p}
+	set {_gens} to 20
+	if {_p} has permission "president":
+		add 65 to {_gens}
+	else if {_p} has permission "acid+":
+		add 55 to {_gens}
+	else if {_p} has permission "acid":
+		add 40 to {_gens}
+	else if {_p} has permission "venom":
+		add 30 to {_gens}
+	else if {_p} has permission "deadly":
+		add 20 to {_gens}
+	else if {_p} has permission "toxic":
+		add 10 to {_gens}
+	if {addgens::%{_uuid}%} is set:
+		add {addgens::%{_uuid}%} to {_gens}
+	return {_gens}
+
+on death of player:
+	if player is in world "mine":
+		force victim to respawn
+		wait 3 ticks
+		make player execute command "/spawn"
+
+on right click:
+	if event-block is tnt:
+		cancel event

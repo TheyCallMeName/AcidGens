@@ -1,0 +1,67 @@
+Options:
+	MainColor: &3&l #<-- IF YOU CHANGE THIS TO ANY COLOR, EVERYTHING THAT IS {@MainColor} WILL CHANGE TO THAT COLOR!
+	SecondaryColor: &b&l #<-- SAME AS ABOVE
+	PrestigeTopLevelColor: &f&l
+	PrestigeTopMessage: Prestige Top
+
+every 30 minutes:
+	execute console command "/resetPrestigetop"
+
+command /CreatePrestigeTop:
+	permission: Admin
+	trigger:
+		make player execute "holograms create Prestigetop"
+		loop 13 times:
+			make player execute "hologram addline Prestigetop 1"
+		make player execute "hologram addline Prestigetop &r "
+		make player execute "hologram addline Prestigetop &f&lUpdates every 30 minutes!&f"
+		make player execute "resetPrestigetop"
+		loop 20 times:
+			send "&r " to player
+		wait 1 tick
+		send "&7Successfully created Prestigetop-top leaderboard!"
+
+command /ResetPrestigeTop:
+    permission: Admin
+    permission message: &cOnly admins can do that!
+    trigger:
+        set {_list::*} to sorted {Prestige::*} from highest to lowest with format "@index"
+        wait 1 tick
+        set {_i} to 0
+        set {_startline} to 5
+        set {_topnumber} to 1
+
+        execute console command "holograms setline Prestigetop 1 {@MainColor}&l{@PrestigeTopMessage}&8:"
+        execute console command "holograms setline Prestigetop 2 &6"
+        execute console command "holograms setline Prestigetop 3 &b&m&l︾︾︾&7&m&l︾︾︾&8&m&l︾︾︾&7&m&l︾︾︾&b&m&l︾︾︾"
+        execute console command "holograms setline Prestigetop 4 &6"
+        execute console command "holograms setline Prestigetop 5 &6"
+        execute console command "holograms setline Prestigetop 6 &6"
+        execute console command "holograms setline Prestigetop 7 &6"
+        execute console command "holograms setline Prestigetop 8 &6"
+        execute console command "holograms setline Prestigetop 9 &6"
+        execute console command "holograms setline Prestigetop 10 &5"
+        execute console command "holograms setline Prestigetop 11 &5(( Updates every 30 minutes &7))"
+
+        set {_size} to size of {_list::*}
+        if {_size} < 11:
+            set {_fill} to true
+        loop {_list::*}:
+            set {_player} to ("%loop-value%" parsed as offline player)
+            set {_uuid} to ({_player} parsed as offline player)'s uuid
+            execute console command "holograms setline Prestigetop %{_startline}% {@MainColor}&l##%{_topnumber}% {@SecondaryColor}%{_player}% &a- {@PrestigeTopLevelColor}%{Prestige::%loop-value%}% &7Prestige"
+            add 1 to {_topnumber}
+            add 1 to {_startline}
+            add 1 to {_i}
+            if {_topnumber} > 10:
+                stop
+        if {_fill} is true:
+            set {_startingline} to 5+{_size}
+            set {_amount} to 10-{_size}
+            loop {_amount} times:
+                execute console command "holograms setline Prestigetop %{_startline}% &f&l##%{_topnumber}% &7None &8- &b0"
+                add 1 to {_topnumber}
+                add 1 to {_startline}
+                add 1 to {_i}
+                if {_topnumber} > 10:
+                    stop

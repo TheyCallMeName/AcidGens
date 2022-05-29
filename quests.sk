@@ -1,0 +1,542 @@
+
+function registerQuest(id: string):
+    add {_id} to {quests::*}
+
+function setQuestTask(id: string, task: string):
+    set {quest::%{_id}%::task} to {_task}
+
+function setQuestCount(id: string, range: integers):
+    set {quest::%{_id}%::count::*} to {_range::*}
+
+function setQuestRewards(id: string, rewards: items, chances: numbers):
+    set {quest::%{_id}%::reward::items::*} to {_rewards::*}
+    set {quest::%{_id}%::reward::chances::*} to {_chances::*}
+
+function setQuestDifficulty(id: string, difficulty: integer):
+    set {quest::%{_id}%::difficulty} to {_difficulty}
+
+function setQuestBlock(id: string, block: item):
+    set {quest::%{_id}%::extra} to {_block}
+
+function setQuestAnyBlock(id: string):
+    set {quest::%{_id}%::extra} to "any"
+
+function setQuestMob(id: string, mob: entity type):
+    set {quest::%{_id}%::extra} to {_mob}
+
+function setQuestAnyMob(id: string):
+    set {quest::%{_id}%::extra} to "any"
+
+function setQuestAnyFish(id: string):
+    set {quest::%{_id}%::extra} to "any"
+
+function getQuestData(id: string, data: string) :: object:
+    return {quest::%{_id}%::%{_data}%}
+
+function createQuest(id: string, task: string, range: integers, rewards: items, chances: numbers, difficulty: integer, extra: string, extradata: string):
+    registerQuest({_id})
+    setQuestTask({_id}, {_task})
+    setQuestCount({_id}, {_range::*})
+    setQuestRewards({_id}, ({_rewards::*}), ({_chances::*}))
+    setQuestDifficulty({_id}, {_difficulty})
+    if {_extra} is "block":
+        setQuestBlock({_id}, ({_extradata} parsed as item))
+    else if {_extra} is "anyblock":
+        setQuestAnyBlock({_id})
+    else if {_extra} is "mob":
+        setQuestMob({_id}, ({_extradata} parsed as entity type))
+    else if {_extra} is "anymob":
+        setQuestAnyMob({_id})
+    else if {_extra} is "fish":
+        setQuestAnyFish({_id})
+
+# UTILITY QUEST FUNCTIONS #
+
+function getIconDifficulty(difficulty: integer) :: string:
+    return "&a☠" if {_difficulty} <= 1
+    return "&2☠" if {_difficulty} = 2
+    return "&6☠" if {_difficulty} = 3
+    return "&c☠" if {_difficulty} = 4
+    return "&4☠" if {_difficulty} >= 5
+
+function getIconTask(task: string) :: string:
+    return "⛏" if {_task} = "mine"
+    return "⚔" if {_task} = "kill"
+    return "🎣" if {_task} = "fish"
+
+function toString(o: object) :: string:
+    return "%{_o}%"
+
+function toInteger(o: object) :: integer:
+    return "%{_o}%" parsed as integer
+
+function weightedChance(elements: items, chances: numbers) :: item:
+    set {_size} to size of {_elements::*}
+    {_size} = size of {_chances::*}
+    set {_r} to random integer between 1 and sum({_chances::*})
+    loop {_size} times:
+        add {_chances::%loop-number%} to {_sum}
+        if {_sum} >= {_r}:
+            return {_elements::%loop-number%}
+
+# PLAYER QUEST FUNCTIONS #
+
+function giveQuest(p: player, id: string):
+    set {_i} to enchanted book of lure 1 with all flags hidden
+    set name of {_i} to "44"
+    set {_difficulty} to toInteger(getQuestData({_id}, "difficulty"))
+    set {_task} to toString(getQuestData({_id}, "task"))
+    set {_count} to random integer between {quest::%{_id}%::count::1} and {quest::%{_id}%::count::2}
+    set {_extra} to toString(getQuestData({_id}, "extra"))
+    set nbt of {_i} to "{id:""%{_id}%"",task:""%{_task}%"",difficulty:%{_difficulty}%,progress:0,count:%{_count}%,extra:""%{_extra}%""}"
+    set line 1 of lore of {_i} to "&7Difficulty: %getIconDifficulty({_difficulty})%"
+    set line 2 of lore of {_i} to "&7Task: &b%{_task} in proper case% &3%getIconTask({_task})% &b%{_extra} in proper case%"
+    set line 3 of lore of {_i} to "&7Progress: &8[&7■■■■■■■■■■&8] &8[&70/%{_count}%&8]"
+    play sound "block.enchantment_table.use" to {_p}
+    send title "&6&lCLUE SCROLL DECODED!" with subtitle "&7Complete your quest to receive a reward!" to {_p}
+    give {_i} to {_p}
+
+function updateQuest(i: item) :: item:
+    set {_nbt} to nbt compound of {_i}
+    set {_progress} to tag "tag;progress" of {_nbt}
+    set {_count} to tag "tag;count" of {_nbt}
+    if {_progress} >= {_count}:
+        set line 3 of lore of {_i} to "&7Progress: &a&lDONE"
+    else:
+        loop 10 times:
+            set {_bar::%loop-number%} to "&a■" if floor({_progress} / {_count} * 10) >= loop-number, else ("&7■")
+        set line 3 of lore of {_i} to "&7Progress: &8[%join {_bar::*}%&8] &8[&7%{_progress}%&7/&7%{_count}%&8]"
+    return {_i}
+
+# GIVE QUEST COMMAND #
+
+command /givequest <string> <player=%player%>:
+    permission: *
+    trigger:
+        giveQuest(arg-2, arg-1)
+
+command /givemap <player=%player%>:
+    permission: *
+    trigger:
+        give map named "&eMystery Clue Scroll" with lore "&7Right-Click to decode the clue scroll." to arg
+
+# RANDOM QUEST FROM MAP #
+
+on right click:
+    tool is map named "&eMystery Clue Scroll" with lore "&7Right-Click to decode the clue scroll."
+    cancel event
+    remove 1 of tool from player
+    giveQuest(player, "%random element out of {quests::*}%")
+# QUEST REGISTERY #
+
+on load:
+    loop {quests::*}:
+        delete {quest::%loop-value%::*}
+    delete {quests::*}
+    createQuest("mine_coal", "mine", (50 and 200), ((enchanted book named "&a&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 1, "block", "coal ore")
+    createQuest("mine_iron", "mine", (100 and 200), ((enchanted book named "&2&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 2, "block", "iron ore")
+    createQuest("mine_gold", "mine", (125 and 200), ((enchanted book named "&6&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 3, "block", "gold ore")
+    createQuest("mine_diamonds", "mine", (150 and 250), ((enchanted book named "&c&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 4, "block", "diamond ore")
+    createQuest("mine_emeralds", "mine", (200 and 300), ((enchanted book named "&4&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 5, "block", "emerald ore")
+    createQuest("mine_emerald_blocks", "mine", (200 and 300), ((enchanted book named "&4&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 5, "block", "emerald block")
+    createQuest("kill_zombies_1", "kill", (1 and 1), ((enchanted book named "&a&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 1, "mob", "zombie")
+    createQuest("kill_zombies_2", "kill", (1 and 2), ((enchanted book named "&2&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 2, "mob", "zombie")
+    createQuest("kill_zombies_3", "kill", (2 and 2), ((enchanted book named "&6&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 3, "mob", "zombie")
+    createQuest("kill_zombies_4", "kill", (2 and 3), ((enchanted book named "&c&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 4, "mob", "zombie")
+    createQuest("kill_zombies_5", "kill", (3 and 4), ((enchanted book named "&4&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 5, "mob", "zombie")
+    createQuest("fish_1", "fish", (1 and 10), ((enchanted book named "&a&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 1, "fish", "fish")
+    createQuest("fish_2", "fish", (10 and 25), ((enchanted book named "&2&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 2, "fish", "fish")
+    createQuest("fish_3", "fish", (25 and 50), ((enchanted book named "&6&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 3, "fish", "fish")
+    createQuest("fish_4", "fish", (50 and 75), ((enchanted book named "&c&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 4, "fish", "fish")
+    createQuest("fish_5", "fish", (75 and 100), ((enchanted book named "&4&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!")), (100), 5, "fish", "fish")
+
+
+# QUEST PROGRESS EVENTS #
+
+on mine:
+    if player is in world "mine":
+        loop 36 times:
+            set {_slot} to slot loop-value - 1 of player's inventory
+            set {_nbt} to nbt compound of {_slot}
+            set {_id} to tag "tag;id" of {_nbt}
+            set {_task} to tag "tag;task" of {_nbt}
+            set {_difficulty} to tag "tag;difficulty" of {_nbt}
+            set {_progress} to tag "tag;progress" of {_nbt}
+            set {_count} to tag "tag;count" of {_nbt}
+            set {_extra} to tag "tag;extra" of {_nbt}
+            if {_task} is "mine":
+                if {_progress} < {_count}:
+                    if {_extra} is not "any":
+                        if {_extra} parsed as itemtype is not type of event-block:
+                            stop
+                    add "{progress:%{_progress} + 1%}" to nbt of {_slot}
+                    set slot loop-value - 1 of player's inventory to updateQuest({_slot})
+                    if {_progress} + 1 = {_count}:
+                        set slot loop-value - 1 of player's inventory to weightedChance(({quest::%{_id}%::reward::items::*}), ({quest::%{_id}%::reward::chances::*}))
+                        send "" to player
+                        send center "&e+1 Clue Casket!." to player
+                        send "" to player
+                        play sound "ui.toast.challenge_complete" for player
+                exit loop
+
+on death:
+    attacker is a player
+    loop 36 times:
+        set {_slot} to slot loop-value - 1 of attacker's inventory
+        set {_nbt} to nbt compound of {_slot}
+        set {_id} to tag "tag;id" of {_nbt}
+        set {_task} to tag "tag;task" of {_nbt}
+        set {_difficulty} to tag "tag;difficulty" of {_nbt}
+        set {_progress} to tag "tag;progress" of {_nbt}
+        set {_count} to tag "tag;count" of {_nbt}
+        set {_extra} to tag "tag;extra" of {_nbt}
+        if {_task} is "kill":
+            if {_progress} < {_count}:
+                if {_extra} is not "any":
+                    if {_extra} parsed as entitytype is not type of victim:
+                        stop
+                add "{progress:%{_progress} + 1%}" to nbt of {_slot}
+                set slot loop-value - 1 of attacker's inventory to updateQuest({_slot})
+                if {_progress} + 1 = {_count}:
+                    set slot loop-value - 1 of attacker's inventory to weightedChance(({quest::%{_id}%::reward::items::*}), ({quest::%{_id}%::reward::chances::*}))
+                    send "" to attacker
+                    send center "&e+1 Clue Casket!." to attacker
+                    send "" to attacker
+                    play sound "ui.toast.challenge_complete" for attacker
+            exit loop
+
+on fish:
+    fish state is CAUGHT_FISH
+    set {_e} to caught fish
+    {_e} is set
+    loop 36 times:
+        set {_slot} to slot loop-value - 1 of player's inventory
+        set {_nbt} to nbt compound of {_slot}
+        set {_id} to tag "tag;id" of {_nbt}
+        set {_task} to tag "tag;task" of {_nbt}
+        set {_difficulty} to tag "tag;difficulty" of {_nbt}
+        set {_progress} to tag "tag;progress" of {_nbt}
+        set {_count} to tag "tag;count" of {_nbt}
+        set {_extra} to tag "tag;extra" of {_nbt}
+        if {_task} is "fish":
+            if {_progress} < {_count}:
+                add "{progress:%{_progress} + 1%}" to nbt of {_slot}
+                set slot loop-value - 1 of player's inventory to updateQuest({_slot})
+                if {_progress} + 1 = {_count}:
+                    set slot loop-value - 1 of player's inventory to weightedChance(({quest::%{_id}%::reward::items::*}), ({quest::%{_id}%::reward::chances::*}))
+                    send "" to player
+                    send center "&e+1 Clue Casket!." to player
+                    send "" to player
+                    play sound "ui.toast.challenge_complete" for player
+            exit loop
+			
+			
+			
+command givecasket <player> <text> <number>:
+	permission: op
+	trigger:
+		if arg-2 is "t1":
+			give arg-3 of chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &a☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.02x Multiplier" and "&6&l⁎ &fSmall Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f25,000,000$" and "&6&l⁎ &f10,000 Tokens" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)" to arg-1
+		if arg-2 is "t2":
+			give arg-3 of chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &2☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.03x Multiplier" and "&6&l⁎ &fMedium Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f50,000,000$" and "&6&l⁎ &f15,000 Tokens" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)" to arg-1
+		if arg-2 is "t3":
+			give arg-3 of chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &6☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.04x Multiplier" and "&6&l⁎ &fLarge Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f75,000,000$" and "&6&l⁎ &f20,000 Tokens" and "&6&l⁎ &f+1 Booster Key" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+5 Special Keys" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)" to arg-1
+		if arg-2 is "t4":
+			give arg-3 of chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &c☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.06x Multiplier" and "&6&l⁎ &fx2 Large Lootboxes" and "&6&l⁎ &fx2 Token Generator" and "&6&l⁎ &f100,000,000$" and "&6&l⁎ &f40,000 Tokens" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+5 Special Keys" and "&6&l⁎ &f+1 Pet Key" and "&6&l⁎ &f5$ StoreCredit" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)" to arg-1
+		if arg-2 is "t5":
+			give arg-3 of chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &4☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.08x Multiplier" and "&6&l⁎ &fx1 Mega Lootbox" and "&6&l⁎ &fx3 Token Generator" and "&6&l⁎ &f200,000,000$" and "&6&l⁎ &f60,000 Tokens" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+10 Special Keys" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f5$ StoreCredit" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)" to arg-1
+			
+on right click:
+	tool is enchanted book named "&a&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!"
+	remove 1 of player's tool from player
+	execute console command "givecasket %player% t1 1"
+	play sound "block.bubble_column.upwards_inside" to player
+on right click:
+	tool is enchanted book named "&2&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!"
+	remove 1 of player's tool from player
+	execute console command "givecasket %player% t2 1"
+	play sound "block.bubble_column.upwards_inside" to player
+on right click:
+	tool is enchanted book named "&6&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!"
+	remove 1 of player's tool from player
+	execute console command "givecasket %player% t3 1"
+	play sound "block.bubble_column.upwards_inside" to player
+on right click:
+	tool is enchanted book named "&c&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!"
+	remove 1 of player's tool from player
+	execute console command "givecasket %player% t4 1"
+	play sound "block.bubble_column.upwards_inside" to player
+on right click:
+	tool is enchanted book named "&4&nQuest Scroll Casket" with lore "" and "&7Right-Click to receive your casket!"
+	remove 1 of player's tool from player
+	execute console command "givecasket %player% t5 1"
+	play sound "block.bubble_column.upwards_inside" to player
+
+
+on right click:
+	tool is chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &a☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.02x Multiplier" and "&6&l⁎ &fSmall Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f25,000,000$" and "&6&l⁎ &f10,000 Tokens" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)"
+	cancel event
+	remove 1 of player's tool from player
+	play sound "block.note_block.bell" to player
+	wait 2 tick
+	play sound "block.note_block.bit"
+	wait 1 tick
+	set {c1} to random integer between 1 and 100
+	play sound "block.note_block.pling" to player
+	if {c1} is between 1 and 10:
+		execute console command "addmultil %player% 0.02"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &a&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.02x Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 11 and 20:
+		execute console command "givelootbox %player% small"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &a&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lSmall Lootbox" to player
+		send message centered "" to player
+	if {c1} is between 21 and 25:
+		give player 1 white glazed terracotta named "<##89CFF0>Token Generator"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &a&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Token Generator" to player
+		send message centered "" to player
+	if {c1} is between 26 and 50:
+		set {pres} to 250000000 * {prestige::%player%} + 250000000
+		add {pres} to player's balance
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &a&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&a&l$" to player
+		send message centered "" to player
+	if {c1} is between 51 and 100:
+		set {pres} to 10000 * {prestige::%player%} + 10000
+		add {pres} to {tokens::%player%}
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &a&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&e&l Tokens" to player
+		send message centered "" to player
+
+on right click:
+	tool is chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &2☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.03x Multiplier" and "&6&l⁎ &fMedium Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f50,000,000$" and "&6&l⁎ &f15,000 Tokens" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)"
+	cancel event
+	remove 1 of player's tool from player
+	play sound "block.note_block.bell" to player
+	wait 2 tick
+	play sound "block.note_block.bit"
+	wait 1 tick
+	set {c1} to random integer between 1 and 100
+	play sound "block.note_block.pling" to player
+	if {c1} is between 1 and 10:
+		execute console command "addmultil %player% 0.03"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &2&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.03x Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 11 and 20:
+		execute console command "givelootbox %player% medium"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &2&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lMedium Lootbox" to player
+		send message centered "" to player
+	if {c1} is between 21 and 25:
+		give player 1 white glazed terracotta named "<##89CFF0>Token Generator"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &2&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Token Generator" to player
+		send message centered "" to player
+	if {c1} is between 26 and 50:
+		set {pres} to 500000000 * {prestige::%player%} + 500000000
+		add {pres} to player's balance
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &2&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&a&l$" to player
+		send message centered "" to player
+	if {c1} is between 51 and 100:
+		set {pres} to 15000 * {prestige::%player%} + 15000
+		add {pres} to {tokens::%player%}
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &2&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})% &e&lTokens" to player
+		send message centered "" to player
+
+on right click:
+	tool is chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &6☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.04x Multiplier" and "&6&l⁎ &fLarge Lootbox" and "&6&l⁎ &fx1 Token Generator" and "&6&l⁎ &f75,000,000$" and "&6&l⁎ &f20,000 Tokens" and "&6&l⁎ &f+1 Booster Key" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+5 Special Keys" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)"
+	cancel event
+	remove 1 of player's tool from player
+	play sound "block.note_block.bell" to player
+	wait 2 tick
+	play sound "block.note_block.bit"
+	wait 1 tick
+	set {c1} to random integer between 1 and 100
+	play sound "block.note_block.pling" to player
+	if {c1} is between 1 and 10:
+		execute console command "addmultil %player% 0.04"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.04x Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 11 and 20:
+		execute console command "givelootbox %player% large"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lLarge Lootbox" to player
+		send message centered "" to player
+	if {c1} is between 21 and 25:
+		give player 1 white glazed terracotta named "<##89CFF0>Token Generator"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Token Generators" to player
+		send message centered "" to player
+	if {c1} is between 26 and 50:
+		set {pres} to 750000000 * {prestige::%player%} + 750000000
+		add {pres} to player's balance
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&a&l$" to player
+		send message centered "" to player
+	if {c1} is between 51 and 70:
+		set {pres} to 20000 * {prestige::%player%} + 20000
+		add {pres} to {tokens::%player%}
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&e&l Tokens" to player
+		send message centered "" to player
+	if {c1} is between 71 and 85:
+		execute console command "givekey %player% booster 1"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l+1 Booster Key" to player
+		send message centered "" to player
+	if {c1} is between 86 and 95:
+		execute console command "givekey %player% special 5"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx5 Special keys" to player
+		send message centered "" to player
+	if {c1} is between 96 and 100:
+		execute console command "givekey %player% rank 1"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Rank Key" to player
+		send message centered "" to player
+
+on right click:
+	tool is chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &c☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.06x Multiplier" and "&6&l⁎ &fx2 Large Lootboxes" and "&6&l⁎ &fx2 Token Generator" and "&6&l⁎ &f100,000,000$" and "&6&l⁎ &f40,000 Tokens" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+5 Special Keys" and "&6&l⁎ &f+1 Pet Key" and "&6&l⁎ &f5$ StoreCredit" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)"
+	cancel event
+	remove 1 of player's tool from player
+	play sound "block.note_block.bell" to player
+	wait 2 tick
+	play sound "block.note_block.bit"
+	wait 1 tick
+	set {c1} to random integer between 1 and 100
+	play sound "block.note_block.pling" to player
+	if {c1} is between 1 and 10:
+		execute console command "addmultil %player% 0.06"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.06x Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 11 and 20:
+		execute console command "givelootbox %player% large"
+		execute console command "givelootbox %player% large"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx2 Large Lootboxes" to player
+		send message centered "" to player
+	if {c1} is between 21 and 25:
+		give player 2 white glazed terracotta named "<##89CFF0>Token Generator"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx2 Token Generators" to player
+		send message centered "" to player
+	if {c1} is between 26 and 65:
+		set {pres} to 1000000000 * {prestige::%player%} + 1000000000
+		add {pres} to player's balance
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&a&l$" to player
+		send message centered "" to player
+	if {c1} is between 66 and 85:
+		set {pres} to 40000 * {prestige::%player%} + 40000
+		add {pres} to {tokens::%player%}
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&e&l Tokens" to player
+		send message centered "" to player
+	if {c1} is between 86 and 95:
+		execute console command "givekey %player% Special 5"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx5 Special keys" to player
+		send message centered "" to player
+	if {c1} is between 96 and 100:
+		execute console command "givekey %player% rank 1"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Rank Key" to player
+		send message centered "" to player
+
+
+on right click:
+	tool is chest named "&b&l♦ &6&l&nClue Casket&b&l ♦" with lore "" and "&7Tier: &4☠" and "&6&lContents: &7(1 Item)" and "&6&l⁎ &f0.08x Multiplier" and "&6&l⁎ &fx1 Mega Lootbox" and "&6&l⁎ &fx3 Token Generator" and "&6&l⁎ &f200,000,000$" and "&6&l⁎ &f60,000 Tokens" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f+10 Special Keys" and "&6&l⁎ &f+1 Rank Key" and "&6&l⁎ &f5$ StoreCredit" and "" and "&7Obtained from completing a Clue Scroll." and "" and "&7(Right-Click to open!)"
+	cancel event
+	remove 1 of player's tool from player
+	play sound "block.note_block.bell" to player
+	wait 2 tick
+	play sound "block.note_block.bit"
+	wait 1 tick
+	set {c1} to random integer between 1 and 100
+	play sound "block.note_block.pling" to player
+	if {c1} is between 1 and 10:
+		execute console command "addmultil %player% 0.08"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.08x Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 11 and 20:
+		execute console command "addbpmulti %player% 0.09"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l0.09x BP Multiplier" to player
+		send message centered "" to player
+	if {c1} is between 21 and 25:
+		give player 3 white glazed terracotta named "<##89CFF0>Token Generator"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx3 Token Generators" to player
+		send message centered "" to player
+	if {c1} is between 26 and 64:
+		set {pres} to 1000000000 * {prestige::%player%} + 1000000000
+		add {pres} to player's balance
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&a&l$" to player
+		send message centered "" to player
+	if {c1} is between 65 and 85:
+		set {pres} to 60000 * {prestige::%player%} + 60000
+		add {pres} to {tokens::%player%}
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l%format({pres})%&e&l Tokens" to player
+		send message centered "" to player
+	if {c1} is between 86 and 92:
+		execute console command "givekey %player% Special 10"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx10 Special keys" to player
+		send message centered "" to player
+	if {c1} is between 93 and 98:
+		execute console command "givekey %player% rank 1"
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&lx1 Rank Key" to player
+		send message centered "" to player
+	if {c1} is 100:
+		give 1 paper named "&a5$ Giftcard" with lore "" and "&7Open a ticket on discord" and "&7(%player%)" to player
+		send message centered "" to player
+		send message centered "&e&l(!) &e%player% has just opened a &6&lClue Casket&e and received" to player
+		send "&6&l⁎ &e&l5$ Giftcard" to player
+		send message centered "" to player	
+	
+
+			

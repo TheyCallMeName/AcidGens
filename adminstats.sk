@@ -1,0 +1,21 @@
+command /adminstats [<offlineplayer>]:
+	permission: op
+	trigger:
+		if arg-1 is set:
+			set {_mined} to {mined::%uuid of arg-1%}
+			if {_mined} is not set:
+				set {_mined} to 0
+			send ""
+			send "&6&l User Stats"
+			send ""
+			send "&e   Player: &f%arg-1%"
+			send ""
+			send "&e   Balance: &f%balance of arg-1%"
+			send "&e   Prestige: &f%{prestige::%arg-1%}%"
+			send "&e   Generators: &f%size of {generators::%uuid of arg-1%::*}%&8/&f%getGens(arg-1)%"
+			send "&e   Tokens: &f%format({tokens::%arg-1%})%"
+			send "&e   UUID: &f%uuid of arg-1%"
+			send ""
+		else:
+			send "&cPlease specify a player who you would like to see the stats of!"
+			stop

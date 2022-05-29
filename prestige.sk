@@ -1,0 +1,118 @@
+options:
+	balvalue: 2500000000 #This is the starting price requirement balance for prestige
+	tokvalue: 7000 #This is the starting price requirement token for prestige
+	valincrease: 2.25 #This increases the price per level of prestige
+	levelreq: 125 #Level requirement to prestige
+
+
+on join:
+	if {prestige::%player%} is not set:
+		set {prestige::%player%} to 0
+
+
+#===========#
+# FUNCTIONS #
+#===========#
+
+function PrestigeGUI(p: player):
+	set metadata tag "PrestigeGUI" of {_p} to hopper inventory named "&8&lPRESTIGE GUI"
+	set {_player} to {_p}'s uuid
+	set {slot1} to 25 + (10 * {prestige::%{_p}%})
+	set {multi1} to 0.1 + (0.05 * {prestige::%{_p}%})
+	set slot 2 of metadata tag "PrestigeGUI" of {_p} to end crystal of mending named "&a&lPrestige" with nbt "{HideFlags:71}" with lore "&7Current: &e&l%{prestige::%{_p}%}%" and "&7Required level: &8[&e{@levelreq}&8]" and "" and "&3Costs:" and "&b* %format({@balvalue} * ({@valincrease} ^ {prestige::%{_p}%}))%&b$" and "&b* %format({@tokvalue} * ({@valincrease} ^ {prestige::%{_p}%}))%&b Tokens" and "" and "&4Resets:" and "&c* Level 1" and "" and "&2Prestige Perks:" and "&a* +1 Heart" and "&a* %{slot1}% Genslots" and "&a* %{multi1}% Multiplier"
+	open (metadata tag "PrestigeGUI" of {_p}) to {_p}
+
+
+function toRoman(n: number) :: string:
+  set {_r::*} to split "M,1000|CM,900|D,500|CD,400|C,100|XC,90|L,50|XL,40|X,10|IX,9|V,5|IV,4|I,1" at "|"
+  loop {_r::*}:
+    set {_d::*} to loop-value parsed as "%string%,%int%"
+    while {_n} >= {_d::2}:
+      remove {_d::2} from {_n}
+      set {_result::*} to {_result::*} and {_d::1}
+  return (join {_result::*} with "") ? ""
+
+
+function toNumber(s: string) :: number:
+  set {_r::*} to split "M,1000|CM,900|D,500|CD,400|C,100|XC,90|L,50|XL,40|X,10|IX,9|V,5|IV,4|I,1" at "|"
+  while length of {_s} > 0:
+    set {_l} to length of {_s}
+    loop {_r::*}:
+      set {_d::*} to loop-value parsed as "%string%,%int%"
+      if {_s} starts with {_d::1}:
+        add {_d::2} to {_n}
+        replace first {_d::1} in {_s} with ""
+    length of {_s} = {_l}
+    stop
+  return {_n} ? 0
+
+
+#===========#
+# Inventory #
+#===========#
+
+on inventory click:
+	event-inventory = (metadata tag "PrestigeGUI" of player)
+	cancel event
+	if index of event-slot = 2:
+		if player's balance is higher or equal to 2500000000 * (2.25 ^ {prestige::%player%}):
+			if {tokens::%player%} >= 7500 * (2.25 ^ {prestige::%player%}):
+				if {level::%player%} >= {@levelreq}:
+					remove 2500000000 * (2.25 ^ {prestige::%player%}) from player's balance
+					remove 7500 * (2.25 ^ {prestige::%player%}) from {tokens::%player%}
+					execute console command "/setlevel %player% 1"
+					execute console command "/addgens %player% %{slot1}%"
+					execute console command "/addmultil %player% %{multi1}%"
+					execute console command "/givekey %player% pet 1"
+					add 1 to player's max health
+					add 1 to {prestige::%player%}
+					broadcast ""
+					broadcast "&e&l[&6&l&kQ&e&l] &6&l&n%player%&r &6Has prestiged to prestige &6&l&n%{prestige::%player%}%&r &e&l[&6&l&kQ&e&l]"
+					broadcast ""
+					play sound "item.trident.riptide_3" to all players
+					PrestigeGUI(player)
+					set {prestige.reward} to true
+					wait 8 seconds
+					delete {prestige.reward}
+				else:
+					send "&cYou need to be lvl 150 for prestige"
+					play sound "entity.villager.no" to player
+					teleport player to player's location
+			else:
+				send "&cNot Enough Token Value"
+				play sound "entity.villager.no" to player
+				teleport player to player's location
+		else:
+			send "&cNot Enough balance"
+			play sound "entity.villager.no" to player
+			teleport player to player's location
+
+on chat:
+	if {prestige.reward} is true:
+		if {GG::%player%} is not set:
+			if message contains "GG":
+				execute console command "givekey %player% special 1"
+				send title "&e&lThank you!" with subtitle "&7You have been rewarded!" to player
+				set {GG::%player%} to true
+				wait 10 seconds
+				delete {GG::%player%}
+
+on load:
+	delete {prestige.reward}
+	delete {GG::*}
+#==========#
+# COMMANDS #
+#==========#
+
+command /prestige:
+	trigger:
+		PrestigeGUI(player)
+
+command /setprestige <player> <number>:
+	permission: op
+	trigger:
+		set {prestige::%arg-1%} to arg-2
+
+command /checkprestige <player>:
+	trigger:
+		send "&e&l%arg-1% &e&lis prestige &e&n%{prestige::%arg-1%}%"

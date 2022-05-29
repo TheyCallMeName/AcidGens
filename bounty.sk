@@ -1,0 +1,172 @@
+# ------------[ CONFIGURATION ]------------ #
+
+options:
+
+    # MESSAGES CONFIGURATION
+    message_prefix: &3&lAcid&b&lGens &8¬&7
+    message_borders: &8&m                                                &r
+
+    # COLORS CONFIGURATION
+    color_first: &7
+    color_second: &d
+    color_third: &5
+    color_fourth: &8
+    color_error: &c
+
+    # ERRORS CONFIIGURATION
+    # Use <arg> for the permission, correct usage, or incorrect type. <type> for the "error_not_correct_type"
+    error_no_permission: &c&l(!) &cI can't let you do that!%nl%&c&l(!) &cMissing Permission: &d<arg>
+    error_not_player: &c&l(!) &cOnly players can execute this command!
+    error_wrong_usage: &c&l(!) &cIncorrect Usage!%nl%&c&l(!)&cCorrect Usage: &d<arg>
+    error_not_correct_type: &c&l(!) &d<arg> &cisn't the required type! &8(&d<type>&8)
+
+    # ALERTS CONFIGURATION
+    # Use <script> for the skript file, And <reload_time> for the reloaded time.
+    alerts_reload_enabled: true
+    alerts_reload_message: &r%nl%&c&l(!) &d<script>.sk &7reloaded in &d<reload_time>!%nl%&r
+    alerts_reloading_enabled: true
+    alerts_reloading_message: &r%nl%&c&l(!) &d<script>.sk &7is being reloaded! This may cause lag.%nl%&r
+
+    # GUI ITEMS CONFIGURATION
+    # Here you can set the items used in GUIs.
+    filler: gray stained glass pane named ""
+# ------------[ CONFIGURATION ]------------ #
+
+
+
+# --------------[ FUNCTIONS ]-------------- #
+
+function Bounties_OpenBountyGUI(plr: player, page: number = 1):
+    set {_page} to round {_page}
+    set {_old_page} to {_page} - 1
+    set {_new_page} to {_page} + 1
+    set {_start} to ({_page} * 21) - 20
+    set {_uuid} to uuid of {_plr}
+    create a gui with virtual chest inventory with 5 rows named "{@color_third}Bounties {@color_fourth}({@color_second}##%{_page}%{@color_fourth})":
+        make gui slot (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44) with {@filler}
+        if {_page} >= 2:
+            make gui slot 38 with arrow named "{@color_second}Last Page":
+                Bounties_OpenBountyGUI({_plr}, {_old_page})
+        if (size of {bounties::current_bounty::*}) - 20 > {_start}:
+            make gui slot 42 with arrow named "{@color_second}Next Page":
+                Bounties_OpenBountyGUI({_plr}, {_new_page})
+        make gui slot 40 with name tag named "{@color_second}Your Bounty" with lore "{@color_first}Bounty: {@color_second}$%Information_MakeFancierNumber({bounties::current_bounty::%{_uuid}%}) ? ""No Bounty.""%":
+        set {_loops} to 0
+        set {_slot} to 10
+        loop {bounties::current_bounty::*}:
+            set {_player} to loop-index parsed as an offline player
+            set {_bounty} to loop-value
+            add 1 to {_loops}
+            if {_loops} >= {_start}:
+                if {_slot} = 17 or 26:
+                    add 2 to {_slot}
+                make gui slot {_slot} with skull of {_player} named "{@color_second}%{_player}%" with lore "{@color_first}Bounty: {@color_second}$%Information_MakeFancierNumber({_bounty})%"
+                add 1 to {_slot}
+                if {_slot} >= 35:
+                    exit loop
+        loop 54 times:
+            make next gui slot with barrier named "{@color_second}&lEMPTY ENTRY" with lore "{@color_fourth}No Bounty..."
+    open last gui to {_plr}
+# --------------[ FUNCTIONS ]-------------- #
+
+
+
+# ---------------[ EVENTS ]--------------- #
+
+# LOAD / UNLOAD MESSAGE
+
+
+on death:
+    if attacker is victim:
+        stop
+    else:
+        {bounties::current_bounty::%uuid of victim%} is set
+        add {bounties::current_bounty::%uuid of victim%} to attacker's balance
+        attacker is a player
+        Lib_Broadcast("%nl%{@message_prefix} {@color_second}%attacker% {@color_first}killed {@color_second}%victim% {@color_first}and got their bounty of {@color_second}$%Information_MakeFancierNumber({bounties::current_bounty::%uuid of victim%})%{@color_first}! GG...")
+        delete {bounties::current_bounty::%uuid of victim%}
+# ---------------[ EVENTS ]--------------- #
+
+
+
+# ---------------[ COMMANDS ]--------------- #
+
+command /bounties:
+    trigger:
+        Bounties_OpenBountyGUI(player)
+
+command /bounty [<player>] [<number>]:
+    cooldown: 60 seconds
+    trigger:
+        if arg-1 or arg-2 is not set:
+            Lib_PlaySound(sender, "ENTITY_VILLAGER_NO", 1.0)
+            set {_message} to "{@error_wrong_usage}"
+            replace "<arg>" in {_message} with "/bounty WizAcid 100000"
+            send {_message} to sender
+            stop
+        if arg-1 hasn't played before:
+            Lib_PlaySound(player, "ENTITY_VILLAGER_NO", 1)
+            send "{@message_prefix} {@color_error}That player never played before." to player
+            stop
+        if arg-2 >= 10000:
+            if player's balance >= arg-2:
+                remove arg-2 from player's balance
+                add arg-2 to {bounties::current_bounty::%uuid of arg-1%}
+                Lib_Broadcast("%nl%{@message_prefix} {@color_second}%player% {@color_first}put a bounty of {@color_second}$%Information_MakeFancierNumber(arg-2)% {@color_first}on {@color_second}%arg-1%{@color_first}! Kill them to get it.")
+            else if player's balance < arg-2:
+                Lib_PlaySound(player, "ENTITY_VILLAGER_NO", 1)
+                set {_amount} to arg-2
+                send "{@message_prefix} {@color_error}You don't have enough! You need {@color_second}$%Information_MakeFancierNumber({_amount} - player's balance)% {@color_error}more." to player
+                stop
+        else if arg-2 < 10000:
+            Lib_PlaySound(player, "ENTITY_VILLAGER_NO", 1)
+            send "{@message_prefix} {@color_error}You have to bounty atleast $10,000!" to player
+            stop
+# ---------------[ COMMANDS ]--------------- #
+
+function Lib_PlaySound(plr: player, sound: string, pitch: number):
+    {_sound} != "none"
+    play sound {_sound} at pitch {_pitch} to {_plr}
+
+function Lib_Broadcast(msg: string):
+    loop all players:
+        Lib_PlaySound(loop-player, "BLOCK_NOTE_BLOCK_PLING", 0.9)
+        send {_msg} to loop-player
+
+function Information_MakeFancierTime(time: timespan) :: string:
+    set {_fancier_time} to "%{_time}%"
+    replace all " seconds" or " second" in {_fancier_time} with "s"
+    replace all " minutes" or " minute" in {_fancier_time} with "m"
+    replace all " hours" or " hour" in {_fancier_time} with "h"
+    replace all " days" or " day" in {_fancier_time} with "d"
+    replace all " weeks" or " week" in {_fancier_time} with "w"
+    replace all " and" or "and" or "and " or " and " in {_fancier_time} with " "
+    replace all "  " in {_fancier_time} with " "
+    return {_fancier_time}
+
+# GET TIME FROM STRING
+function Time_ConvertString(str_to_convert: string) :: timespan:
+    set {_convert} to {_str_to_convert}
+    replace "m" in {_conert} with " month"
+    replace "w" in {_convert} with " week"
+    replace "d" in {_convert} with " day"
+    replace "h" in {_convert} with " hour"
+    replace "m" in {_convert} with " minute"
+    replace "s" in {_convert} with " second"
+    replace "_" in {_convert} with " and "
+    return {_convert} parsed as an timespan
+
+# MAKE NUMBER LOOK BETTER
+function Information_MakeFancierNumber(n: number) :: string:
+    set {_l::*} to split "k|M|B|T|Qn|Qi|Sx" at "|"
+    set {_i} to min(floor(log({_n})/3), size of {_l::*})
+    return "%{_n}%" if {_i} <= 0
+    set {_i2} to 1000^{_i}
+    return "%{_n}/{_i2}%%{_l::%{_i}%}%"
+
+function Staff_AlertStaff(message: string):
+    loop all players:
+        loop-player has permission "staff.alerts_see"
+        send "&2&lALERTS &8| &f%{_message}%" to loop-player
+
+# PROGRESS BAR TO SHOW PROGRESS

@@ -1,0 +1,392 @@
+
+
+
+options:
+	prefix: <##DE3163>&lLOOTBOX »<##D2042D>
+
+command givelootbox <player> <text>:
+	permission: op
+	trigger:
+		if arg-2 is "small":
+			give 1 of glowing sea lantern named "<##F33A6A>&lSMALL LOOTBOX" with lore "" and "<##E37383>&lRewards:" and "" and "<##E0B0FF>■ 500 Tokens" and "<##E0B0FF>■ 1,000 Tokens" and "<##E0B0FF>■ +1 Genslot" and "<##E0B0FF>■ +0.01x Multiplier" and "<##E0B0FF>■ 1 Epic Key" and "" and "<##7F00FF>&lPlace down to claim your reward!" to arg-1
+		else if arg-2 is "medium":
+			give 1 of glowing sea lantern named "<##F33A6A>&lMEDIUM LOOTBOX" with lore "" and "<##E37383>&lRewards:" and "" and "<##E0B0FF>■ 2,500 Tokens" and "<##E0B0FF>■ 5,000 Tokens" and "<##E0B0FF>■ +3 Genslot" and "<##E0B0FF>■ +0.03x Multiplier" and "<##E0B0FF>■ 1 Legendary Key" and "<##E0B0FF>■ 1 Pro Pickaxe" and "<##E0B0FF>■ x1 Sellwand" and "" and "<##7F00FF>&lPlace down to claim your reward!" to arg-1
+		else if arg-2 is "large":
+			give 1 of glowing sea lantern named "<##F33A6A>&lLARGE LOOTBOX" with lore "" and "<##E37383>&lRewards:" and "" and "<##E0B0FF>■ 5,000 Tokens" and "<##E0B0FF>■ 10,000 Tokens" and "<##E0B0FF>■ +5 Genslot" and "<##E0B0FF>■ +0.05x Multiplier" and "<##E0B0FF>■ 1 Special Key" and "<##E0B0FF>■ 1 God Pickaxe" and "<##E0B0FF>■ x1 Sellwand" and "<##E0B0FF>■ x2 Sellwand" and "<##E0B0FF>■ x1 Rank Key" and "" and "<##7F00FF>&lPlace down to claim your reward!" to arg-1
+		else if arg-2 is "mega":
+			give 1 of glowing sea lantern named "<##F33A6A>&k!<##F33A6A>&lMEGA LOOTBOX<##F33A6A>&k!" with lore "" and "<##E37383>&lRewards:" and "" and "<##E0B0FF>■ 50,000 Tokens" and "<##E0B0FF>■ 25,000 Tokens" and "<##E0B0FF>■ +15 Genslot" and "<##E0B0FF>■ +0.10x Multiplier" and "<##E0B0FF>■ 3 Special Key" and "<##E0B0FF>■ 5 Special Keys" and "<##E0B0FF>■ x2 Sellwand" and "<##E0B0FF>■ x3 Sellwand" and "<##E0B0FF>■ x1 Rank Key" and "<##E0B0FF>■ x3 Token Generator" and "" and "<##CD7F32>&lBONUS REWARDS (25%%):" and "" and "<##E97451>&l■ 25 Genslots" and "<##E97451>&l■ 0.25x Multiplier" and "<##E97451>&l■ 5$ StoreCredit" and "<##E97451>&l■ x1 Autosell Chest" and "" and "<##7F00FF>&lPlace down to claim your reward!" to arg-1
+		
+
+on place of sea lantern:
+	if name of player's tool is "<##F33A6A>&lSMALL LOOTBOX":
+		remove 1 of player's tool from player
+		set event-block to air
+		wait 0.1 seconds
+		send title "&f&lU" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNB" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBO" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBOX" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXI" to player
+		wait 20 ticks
+		send title "&f&lUNBOXIN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		set {smallbox} to random integer between 1 and 100
+		if {smallbox} is between 1 and 30:
+			add 500 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n500 Tokens!"
+		else if {smallbox} is between 31 and 50:
+			add 1000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n1,000 Tokens!"
+		else if {smallbox} is between 51 and 70:
+			execute console command "addgens %player% 1"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n1 Genslot!"
+		else if {smallbox} is between 71 and 85:
+			execute console command "addmultil %player% 0.01"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+0.01 Multiplier!"
+		else if {smallbox} is between 86 and 100:
+			give 1 tripwire hook named "&5Epic Key" with lore "&7Use at /crates" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+1 Epic Key!"
+
+on place of sea lantern:
+	if name of player's tool is "<##F33A6A>&lMEDIUM LOOTBOX":
+		remove 1 of player's tool from player
+		set event-block to air
+		wait 0.1 seconds
+		send title "&f&lU" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNB" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBO" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBOX" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXI" to player
+		wait 20 ticks
+		send title "&f&lUNBOXIN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 10 ticks
+		send title "<##DC143C>&lUNBOXED!" to player
+		set {smallbox} to random integer between 1 and 100
+		if {smallbox} is between 1 and 30:
+			add 2500 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n2,500 Tokens!"
+		else if {smallbox} is between 31 and 50:
+			add 5000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n5,000 Tokens!"
+		else if {smallbox} is between 51 and 61:
+			execute console command "addgens %player% 3"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n3 Genslots!"
+		else if {smallbox} is between 71 and 79:
+			execute console command "addmultil %player% 0.03"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+0.03 Multiplier!"
+		else if {smallbox} is between 86 and 100:
+			give 1 tripwire hook named "&6Legendary Key" with lore "&7Use at /crates" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+1 Legendary Key!"
+		else if {smallbox} is between 80 and 85:
+			give 1 Netherite Pickaxe of efficiency 4 named "&6Pro Pickaxe" with lore "&7Obtained from medium loobox" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+1 Pro Pickaxe!"
+		else if {smallbox} is between 62 and 70:
+			execute console command "sellwand %player% 1"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx1 Sellwand!"
+
+on place of sea lantern:
+	if name of player's tool is "<##F33A6A>&lLARGE LOOTBOX":
+		remove 1 of player's tool from player
+		set event-block to air
+		wait 0.1 seconds
+		send title "&f&lU" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNB" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBO" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBOX" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXI" to player
+		wait 20 ticks
+		send title "&f&lUNBOXIN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 10 ticks
+		send title "<##DC143C>&lUNBOXED!" to player
+		set {smallbox} to random integer between 1 and 100
+		if {smallbox} is between 1 and 25:
+			add 5000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n5,000 Tokens!"
+		else if {smallbox} is between 26 and 40:
+			add 10000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n10,000 Tokens!"
+		else if {smallbox} is between 41 and 51:
+			execute console command "addgens %player% 5"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n5 Genslots!"
+		else if {smallbox} is between 52 and 60:
+			execute console command "addmultil %player% 0.05"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+0.05 Multiplier!"
+		else if {smallbox} is between 61 and 75:
+			give 1 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+1 Special Key!"
+		else if {smallbox} is between 76 and 85:
+			give 1 Netherite Pickaxe of efficiency 6 named "&e&lGod Pickaxe" with lore "&7Obtained from large loobox" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+1 God Pickaxe!"
+		else if {smallbox} is between 86 and 95:
+			execute console command "sellwand %player% 1"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx1 Sellwand!"
+		else if {smallbox} is between 96 and 99:
+			execute console command "sellwand %player% 2"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx2 Sellwand!"
+		else if {smallbox} is 100:
+			give player 1 tripwire hook named "&cRank Key" with lore "&7Use at /crates"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx1 Rank Key!"
+
+on place of sea lantern:
+	if name of player's tool is "<##F33A6A>&k!<##F33A6A>&lMEGA LOOTBOX<##F33A6A>&k!":
+		remove 1 of player's tool from player
+		set event-block to air
+		wait 0.1 seconds
+		send title "&f&lU" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNB" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBO" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		send title "&f&lUNBOX" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXI" to player
+		wait 20 ticks
+		send title "&f&lUNBOXIN" to player
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING" to player
+		wait 20 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING.." to player
+		wait 5 ticks
+		play sound "BLOCK_NOTE_BLOCK_BELL" to player
+		send title "&f&lUNBOXING..." to player
+		wait 10 ticks
+		send title "<##DC143C>&lUNBOXED!" to player
+		set {smallbox} to random integer between 1 and 100
+		if {smallbox} is between 1 and 25:
+			add 25000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n25,000 Tokens!"
+		else if {smallbox} is between 26 and 35:
+			add 50000 to {tokens::%player%}
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n50,000 Tokens!"
+		else if {smallbox} is between 36 and 40:
+			give player 3 white glazed terracotta named "<##89CFF0>Token Generator"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx3 Token Generator!"
+		else if {smallbox} is between 41 and 51:
+			execute console command "addgens %player% 15"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n15 Genslots!"
+		else if {smallbox} is between 52 and 60:
+			execute console command "addmultil %player% 0.10"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+0.10 Multiplier!"
+		else if {smallbox} is between 61 and 75:
+			give 3 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+3 Special Key!"
+		else if {smallbox} is between 76 and 85:
+			give 5 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" to player
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &n+5 Special Keys!"
+		else if {smallbox} is between 86 and 95:
+			execute console command "sellwand %player% 2"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx2 Sellwand!"
+		else if {smallbox} is between 96 and 99:
+			execute console command "sellwand %player% 3"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx3 Sellwand!"
+		else if {smallbox} is 100:
+			give player 1 tripwire hook named "&cRank Key" with lore "&7Use at /crates"
+			play sound "BLOCK_NOTE_BLOCK_PLING" to player
+			send "{@prefix} You have received &nx1 Rank Key!"
+		set {extra} to random integer between 1 and 100
+		if {extra} is between 1 and 25:
+			wait 0.1 seconds
+			send title "<##E0115F>&lB" to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			send title "<##E0115F>&lBO" to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			send title "<##E0115F>&lBON" to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			send title "&f&lBONU" to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			send title "<##E0115F>&lBONUS" to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			send title "<##E0115F>&lBONUS." to player
+			wait 20 ticks
+			send title "<##E0115F>&lBONUS.." to player
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			wait 20 ticks
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			send title "<##E0115F>&lBONUS..." to player
+			wait 20 ticks
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			send title "<##E0115F>&lBONUS." to player
+			wait 5 ticks
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			send title "<##E0115F>&lBONUS.." to player
+			wait 5 ticks
+			play sound "BLOCK_NOTE_BLOCK_BELL" to player
+			send title "<##E0115F>&lBONUS..." to player
+			wait 10 ticks
+			send title "<##DC143C>&lREVEAL!" to player
+			set {extra1} to random integer between 1 and 100
+			if {extra1} is between 1 and 33:
+				execute console command "addgens %player% 25"
+				play sound "BLOCK_NOTE_BLOCK_PLING" to player
+				send "{@prefix} You have received &n25 Genslots!"
+			if {extra1} is between 34 and 70:
+				execute console command "addmultil %player% 0.25"
+				play sound "BLOCK_NOTE_BLOCK_PLING" to player
+				send "{@prefix} You have received &n0.25x Multiplier!"
+			if {extra1} is between 86 and 100:
+				give player 1 paper named "&6&l5$ &6Giftcard" with lore "&aOpen a ticket on discord" and "&dWinner: %player%"
+			if {extra1} is between 71 and 85:
+				execute console command "giveasc %player% 1"
+				play sound "BLOCK_NOTE_BLOCK_PLING" to player
+				send "{@prefix} You have received &nx1 Autosell chest!"

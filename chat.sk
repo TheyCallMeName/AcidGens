@@ -1,0 +1,172 @@
+every 7 minutes:
+	broadcast ""
+	send "&b&lWEEKEND SALE &8&l» &eWe currently have a 40%% SALE! /buy" to all players
+	broadcast ""
+	play sound "entity.llama.chest" to all players
+	wait 1 minutes
+	broadcast ""
+	send "&e&lTIP &8&l» &7You can get tokens at /mine" to all players
+	broadcast ""
+	play sound "entity.llama.chest" to all players
+	wait 1 minutes
+	broadcast ""
+	send "&a&lGIVEAWAYS &8&l» &7Join our discord for daily/weekly giveaways" to all players
+	broadcast ""
+	play sound "entity.llama.chest" to all players
+	wait 1 minutes
+	#broadcast ""
+	#send centered "&9&lDISCORD &8&l» &7Link your discord account for rewards (/link)" to all players
+	#broadcast ""
+	#play sound "entity.llama.chest" to all players
+	wait 1 minutes
+	broadcast ""
+	send "&b&lCHRISTMAS &8&l» &7{ Secret Christmas Coupon }" to all players
+	send "&b&lCHRISTMAS &8&l» &e&l20%%&7 Coupon &eCandy &75 Uses Left" to all players
+	broadcast ""
+	play sound "entity.llama.chest" to all players
+
+
+
+on chat:
+	cancel event
+	if {mute} is true:
+		if player does not have permission "staff":
+			cancel event
+			send "&cChat is currently muted."
+			play "ENTITY_VILLAGER_NO" to player at volume 10
+			stop
+	if {teams::chat::%uuid of player%} is set:
+		stop
+	if message contains "&":
+		if player doesn't have permission "*":
+			stop
+	if {punish::mute::%uuid of player%} is true:
+		send "&c&lYou're currently Permanently Muted!"
+		send "&fReason: &7%{punish::mute::reason::%uuid of player%}%"
+		send "&fExpiry time: &7Never."
+		cancel event
+		stop
+	if {punish::tempmute::%uuid of player%} is set:
+		set {_waited} to difference between now and {punish::tempmute::%uuid of player%}
+		if {_waited} is more than {punish::tempmute::timespan::%uuid of player%}:
+			delete {punish::tempmute::%uuid of player%}
+			delete {punish::tempmute::timespan::%uuid of player%}
+			add "&a&lMute Expired." to {history::%uuid of player%::mutes::*}
+			delete {punish::mute::reason::%uuid of player%}
+		else:
+			set {_time} to "%difference between {punish::tempmute::timespan::%uuid of player%} and {_waited}%"
+			send "&3&lYou're currently Temporarily Muted!"
+			send "&fReason: &7%{punish::mute::reason::%uuid of player%}%"
+			send "&fExpiry time: &7%{_time}%."
+			cancel event
+			stop
+	if message contains "nigga" or "nigger"  or "n1gger" or "n1gg3r" or "n1gger" or "fuck" or "shit":
+		cancel event
+		add "&fChat-Filter: &7Inappropriate language (15 minutes)" to {history::%uuid of player%::mutes::*}
+		set {punish::tempmute::timespan::%uuid of player%} to true
+		set {punish::mute::reason::%uuid of player%} to "Inappropriate language"
+		set {punish::tempmute::timespan::%uuid of player%} to 15 minutes
+		set {punish::tempmute::%uuid of player%} to now
+		broadcast "&eChat-Filter &ftemporarily muted &e%player% &ffor &eInappropriate language&7. (&f15 minutes&7)"
+		stop
+	set {_waited} to difference between {messagecooldown::%uuid of player%} and now
+	if {slowmode} is set:
+		if player does not have permission "staff":
+			if {_waited} is less than 5 seconds:
+				cancel event
+				send "&c&lSLOWMODE ENABLED"
+				send "&cYou must wait 5 seconds before each message"
+				play "ENTITY_VILLAGER_NO" to player at volume 10
+				stop
+			else:
+				set {messagecooldown::%uuid of player%} to now
+	if {latestMessage::%uuid of player%} = message:
+		cancel event
+		send "&cYou can't say the same message twice"
+		play "ENTITY_VILLAGER_NO" to player at volume 10
+		stop
+	set {latestMessage::%uuid of player%} to message
+	if message contains "https://discord.gg":
+		if player does not have permission "staff":
+			cancel event
+			send "&cDiscord links are not allowed in the chat."
+			play "ENTITY_VILLAGER_NO" to player at volume 10
+			stop
+	cancel event
+	set {_prestige} to {prestige::%player%}
+	set {_level} to {level::%player%}
+	if {_level} is greater than 0:
+		set {_level} to "&8&l[<##DFFF00>&l%{_level}%&8&l]"
+	else:
+		set {_level} to "&8• &e0"
+	if {_prestige} is greater than 0:
+		set {_pprefix} to "&8&l[&e<##FF00FF>℗&l%{_prestige}%&e&8&l] "
+	else:
+		set {_pprefix} to ""
+	set {_lprefix} to "%{_level}% &r%{_pprefix}%"
+
+	set {_mainmessage} to "&f%message%"
+
+	if {tag::%uuid of player%::tag} is set:
+		set {_tag} to {tag::%uuid of player%::tag}
+		if {tag::%uuid of player%::color} is set:
+			set {_tagc} to {tag::%uuid of player%::color}
+		else:
+			set {_tagc} to "&f&l"
+		set {_suf} to "&r&7[%{_tagc}%&l%{_tag}%&7] &r"
+	else:
+		if {link::%player%} is not set:
+			broadcast "&r%{_lprefix}%<##9FE2BF>%display name of player% &8&l[&c&l✗&8&l] &8»&r %{_mainmessage}%"
+			stop
+		else if {link::%player%} is set:
+			if {main::current_tag::%uuid of player%} is set:
+				send formatted "&r%{_lprefix}%<##9FE2BF>%display name of player%%{main::current_tag::%uuid of player%}% &8&l[&a&l✔&8&l] &8»&r %{_mainmessage}%" to all players
+			else:
+				broadcast "&r%{_lprefix}%<##9FE2BF>%display name of player% &8&l[&a&l✔&8&l] &8»&r %{_mainmessage}%"
+				stop
+
+command /bc [<text>]:
+	permission: admin
+	trigger:
+		if arg-1 is set:
+			broadcast "&f %nl%&3&lAcid&b&lGens &e%colored arg-1%%nl%&r "
+		else:
+			send "usage: /bc <text>"
+
+command /mutechat:
+	permission: mod
+	trigger:
+		if {mute} is true:
+			delete {mute}
+			broadcast "&aChat is now enabled."
+		else:
+			set {mute} to true
+			broadcast "&cChat is disabled. You may not speak."
+
+command /clearchat:
+	aliases: /cc
+	permission: mod
+	trigger:
+		loop 100 times:
+			broadcast "&r"
+		broadcast "&f%player's prefix%%player%&c&l has cleared the chat!"
+
+on command "/minecraft:me":
+	cancel event
+
+command /resetlatest:
+	permission: *
+	trigger:
+		delete {latestmessage::*}
+
+command /slowmode:
+	permission: staff
+	trigger:
+		if {slowmode} is set:
+			delete {slowmode}
+			broadcast "&3&lAcid&b&lGens &a&lSLOWMODE DISABLED"
+			broadcast "&3&lAcid&b&lGens &fYou may now speak again!"
+		else if {slowmode} is not set:
+			set {slowmode} to true
+			broadcast "&3&lAcid&b&lGens &c&lSLOWMODE ENABLED"
+			broadcast "&3&lAcid&b&lGens &fThis is to avoid chat flood!"

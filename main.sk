@@ -1,0 +1,205 @@
+command /stats [<player>]:
+	trigger:
+		if arg-1 is set:
+			send ""
+			send "&6&l User Stats"
+			send ""
+			send "&e   Player: &f%arg-1%"
+			send ""
+			send "&e   Balance: &f%balance of arg-1%"
+			send "&e   Generators: &f%size of {generators::%uuid of arg-1%::*}%&8/&f%getGens(arg-1)%"
+			send "&e   Tokens: &f%format({tokens::%arg-1%})%"
+			send "&e   Mined: &f%{mined::%arg-1%}%"
+			send "&e   Fished: &f%{fish::%arg-1%}%"
+			send ""
+		else:
+			send "&cPlease specify a player who you would like to see the stats of!"
+			stop
+
+
+
+on place of tripwire hook:
+	cancel event
+	send "&cYou cannot place keys!"
+
+on npc right click:
+	if citizen is named "&3&lSTART":
+		make player execute command "/warp plots"
+		wait 1 second
+		make player execute command "/p auto"
+
+on npc right click:
+	if citizen is named "&3&lSHOP":
+		make player execute command "/shop"
+
+on npc right click:
+	if citizen is named "&3&lTOKENSHOP":
+		make player execute command "/tokenshop"
+
+on npc right click:
+	if citizen is named "&6&lBACKPACK":
+		make player execute command "/bp"
+
+on npc right click:
+	if citizen is named "&b&lBUYCRAFT":
+		make player execute command "/buy"
+
+
+command /discord [<text>]:
+	trigger:
+		send "&3&lAcid&b&lGens &7Connect to the discord here: &e<tooltip:&7Click here!><link:https://discord.gg/spDNVXrwXh>https://discord.gg/spDNVXrwXh<reset>" to player
+		play "ENTITY_PLAYER_LEVELUP" to player at volume 1
+
+command /rules:
+    trigger:
+        send "&3&lAcid&b&lGens &7Read rules here: &e<tooltip:&7Click here!><link:https://discord.gg/spDNVXrwXh>https://discord.gg/spDNVXrwXh<reset>" to player
+        play "ENTITY_PLAYER_LEVELUP" to player at volume 1
+
+command /spawn [<text>]:
+	trigger:
+		teleport player to {warps::spawn}
+		send "&3&lAcid&b&lGens &7Sending you to &eSPAWN&7."
+		send title "&e&lSPAWN" with subtitle "&7Teleporting..."
+		play "entity_enderman_teleport" to player at volume 10
+
+command /crates [<text>]:
+	trigger:
+		teleport player to {warps::crates}
+		send "&3&lAcid&b&lGens &7Sending you to &eCRATES&7."
+		send title "&e&lCRATES" with subtitle "&7Teleporting..."
+		play "entity_enderman_teleport" to player at volume 10
+
+command /mine [<text>]:
+	trigger:
+		send "&3&lAcid&b&lGens &7Sending you to &eMINE&7."
+		apply blindness without particles to player for 3 seconds
+		send title "&e&lMINE" with subtitle "&7Teleporting..."
+		play sound "item.trident.throw" to player
+		wait 1 second
+		set {_loc} to random element out of {boss_locs::*}
+		teleport player at {_loc}
+		play sound "item.trident.thunder" to player
+
+command /fishing [<text>]:
+	trigger:
+		teleport player to {warps::fishing}
+		send "&3&lAcid&b&lGens &7Sending you to &ePOND&7."
+		send title "&e&lFISHING" with subtitle "&7Teleporting..."
+		play "entity_enderman_teleport" to player at volume 10
+
+
+command /setwarp [<text>]:
+	permission: admin
+	trigger:
+		if arg-1 is set:
+			set {warps::%arg-1%} to location of player
+			send "&aSuccessfully set &f%arg-1% &aas a warp."
+		else:
+			send "&cUsage: /setwarp [name]"
+
+command /delwarp [<text>]:
+	permission: admin
+	trigger:
+		if arg-1 is set:
+			if {warps::%arg-1%} is set:
+				send "&aDeleted warp &f%arg-1%&a."
+				delete {warps::%arg-1%}
+			else:
+				send "&cThere is no warp with that name."
+		else:
+			send "&cUsage: /delwarp [name]"
+
+
+
+command /listwarps:
+	permission: admin
+	trigger:
+		loop {warps::*}:
+			send loop-index to player
+
+on command:
+	if command is "warps":
+		make player execute "warp"
+		cancel event
+
+function format(n: number) :: text:
+	set {_data} to "SX,21|QT,18|Q,15|T,12|B,9|M,6|k,3"
+	loop split {_data} at "|":
+		set {_s::*} to split loop-value at ","
+		{_n} >= 10 ^ {_s::2} parsed as number
+		return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+	return "%{_n}%"
+
+function format2(b: text) :: text:
+	if length of {_b} > 3:
+		return "%format2(first length of {_b} - 3 characters of {_b})%,%last 3 characters of {_b}%"
+	return {_b}
+
+function time(t: text) :: text:
+	if {_t} contains "hours" or "minutes":
+		set {_time::*} to {_t} split at " "
+		set {_time2::*} to {_time::4} split at "."
+		return "%{_time::1}% %{_time::2}% %{_time::3}% %{_time2::1}% %{_time::5}%"
+	else if {_t} contains "seconds":
+		set {_time::*} to {_t} split at " "
+		set {_time2::*} to {_time::1} split at "."
+		return "%{_time2::1}% %{_time::2}%"
+	else:
+		return {_t}
+
+
+command /altcheck [<integer>]:
+    permission: op
+    trigger:
+        loop all players:
+            add 1 to {_IpList::%IP of loop-players%}
+
+        if arg is set:
+            set {_min} to arg
+        else:
+            set {_min} to 2
+
+        loop {_IpList::*}:
+            if loop-value is greater or equal to {_min}:
+                send "IP: %loop-index%"
+                loop all players:
+                    if IP of loop-player is loop-index:
+                        set {_p} to loop-player
+                        send "&eUser: %{_p}%"
+
+                send " "
+
+
+command /announce <text>:
+	permission: bc.use
+	usage: /bc [text]
+	trigger:
+		broadcast ""
+		broadcast "&6&l[&k!&6&l] &5&lTHANK YOU! &8» &4&l✦ &f%colored arg-1% &4&l✦"
+		broadcast ""
+		play sound "entity.dolphin.play" with volume 5 to all players
+		set {prestige.reward} to true
+		wait 8 seconds
+		delete {prestige.reward}
+
+command /broadcast [<text>]:
+    permission: *
+    trigger:
+        broadcast ""
+        broadcast "&3&lAcid&b&lGens %colored argument%"
+        broadcast ""
+        play sound "item.bottle.fill_dragonbreath" to all players
+
+
+
+on drop of blaze rod:
+	cancel event
+	send "&3&lAcid&b&lGens &eYou can't throw sellwands!"
+
+command /sc <text>:
+    permission: staff.punish
+    trigger:
+        loop all players:
+            if loop-player has permission "fc.sc":
+                send "&e[&lSC&e] &e%player% : &a%arg%" to loop-player
+

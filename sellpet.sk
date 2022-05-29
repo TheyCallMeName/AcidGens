@@ -1,0 +1,105 @@
+command sellpet:
+	trigger:
+		create a gui with virtual chest inventory with 4 rows named "&aSell Your Pets":
+			make gui slot 0 and 1 and 2 and 3 and 4 and 5 and 6 and 7 and 8 and 9 and 27 and 28 and 29 and 30 and 31 and 32 and 33 and 34 and 35 and 36 with 1 of lime stained glass pane named "&0"
+			make gui slot 9 with 1 of player's skull named "&6&nHaste Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Re-usable Mining Speed Booster!":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nHaste Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nHaste Pet"
+			make gui slot 10 with 1 of player's skull named "&6&nSonic Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Speed boost on-demand!":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nSonic Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nSonic Pet"
+			make gui slot 11 with 1 of player's skull named "&6&nCupid Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7On use you will become":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nCupid Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nCupid Pet"
+			make gui slot 12 with 1 of player's skull named "&6&nPlague Doctor Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Better chance to find":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nPlague Doctor Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nPlague Doctor Pet"
+			make gui slot 13 with 1 of player's skull named "&6&nLifesteal Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Has a chance to steal":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nLifesteal Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nLifesteal Pet"
+			make gui slot 14 with 1 of player's skull named "&6&nKey Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7On use you will receive":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nKey Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nKey Pet"
+			make gui slot 15 with 1 of player's skull named "&6&nParrot Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Gives you the ability to":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nParrot Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nParrot Pet"
+			make gui slot 16 with 1 of player's skull named "&6&nFishing Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Chance to obtain":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nFishing Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nFishing Pet"
+			make gui slot 17 with 1 of player's skull named "&6&nStrength Pet" with lore "" and "&6&lReceive: &n30,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 1 of lore of player's tool contains "&7Gives you strength I":
+					remove 1 of player's tool from player's inventory
+					add 30000 to {tokens::%player%}
+					send ""
+					send "&6&l&nStrength Pet&6 Has been sold for &n30,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nStrength Pet"
+			make gui slot 18 with 1 of player's skull named "&6&nFishing+ Pet" with lore "" and "&6&lReceive: &n150,000 Tokens" and "" and "&7(( Right-Click to sell ))":
+				if line 5 of lore of player's tool contains "&7 2.5%% Chance":
+					remove 1 of player's tool from player's inventory
+					add 150000 to {tokens::%player%}
+					send ""
+					send "&6&l&nFishing+ Pet&6 Has been sold for &n150,000 Tokens"
+					send ""
+					play sound "block.conduit.activate" to player
+				else:
+					send "&6&lYou are not holding a &nFishing+ Pet"
+		open last gui to player

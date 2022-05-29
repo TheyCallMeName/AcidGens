@@ -1,0 +1,86 @@
+options:
+
+    # MESSAGES CONFIGURATION
+    prefix: &3&lAcid&b&lGens &8¬&7
+    message_borders: &8&m                                                &r
+
+    # COLORS CONFIGURATION
+    color_first: &7
+    color_second: &e
+    color_third: &6
+    color_fourth: &8
+    color_error: &c
+
+on place of hopper:
+    if {hopperlimit::%uuid of player%} is not set:
+        set {hopperlimit::%uuid of player%} to 100
+    if size of {hoppercount::%uuid of player%::*} ? 0 < {hopperlimit::%uuid of player%}:
+        add location of event-block to {hoppercount::%uuid of player%::*}
+        play sound "entity.experience_orb.pickup" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} You've placed a hopper! &f(%size of {hoppercount::%uuid of player%::*}%/%{hopperlimit::%uuid of player%}%)"
+    else:
+        play sound "entity.villager.no" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} You've reached the max hopper limit." to player
+        cancel event
+
+on break of hopper:
+    if player has permission "*":
+        stop
+    else:
+        if {hoppercount::%uuid of player%::*} does not contain location of event-block:
+            play sound "entity.villager.no" with volume 5 and pitch 1.5 at player for player
+            send "{@prefix} This isn't your hopper!" to player
+            cancel event
+            stop
+        remove location of event-block from {hoppercount::%uuid of player%::*}
+        play sound "entity.item.pickup" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} You've removed a hopper!" to player
+
+on place of chest:
+    if name of player's tool contains "Auto":
+        stop
+    if {chestlimit::%uuid of player%} is not set:
+        set {chestlimit::%uuid of player%} to 200
+    if size of {chestcount::%uuid of player%::*} ? 0 < {chestlimit::%uuid of player%}:
+        add location of event-block to {chestcount::%uuid of player%::*}
+        play sound "entity.experience_orb.pickup" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} You've placed a chest! &f(%size of {chestcount::%uuid of player%::*}%/%{chestlimit::%uuid of player%}%)"
+    else:
+        play sound "entity.villager.no" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} You've reached the max chest limit." to player
+        cancel event
+
+on break of chest:
+    if {aschests::%location of event-block%::*} is set:
+        stop
+    if player has permission "*":
+        stop
+    if {chestcount::%uuid of player%::*} does not contain location of event-block:
+        play sound "entity.villager.no" with volume 5 and pitch 1.5 at player for player
+        send "{@prefix} This isn't your chest!" to player
+        cancel event
+        stop
+    remove location of event-block from {chestcount::%uuid of player%::*}
+    play sound "entity.item.pickup" with volume 5 and pitch 1.5 at player for player
+    send "{@prefix} You've removed a chest!" to player
+
+
+command /fixhoppers:
+    trigger:
+        loop {hoppercount::%uuid of player%::*}:
+            if block at loop-value = hopper:
+                set block at loop-value to air
+                give 1 of hopper to player
+            delete {hoppercount::%uuid of player%::%loop-index%}
+
+command /fixchests:
+    trigger:
+        loop {chestcount::%uuid of player%::*}:
+            if block at loop-value = chest:
+                set block at loop-value to air
+                give 1 of chest to player
+            delete {chestcount::%uuid of player%::%loop-index%}
+
+on join:
+    if {hopperlimit::%uuid of player%} is not set:
+        set {hopperlimit::%uuid of player%} to 100

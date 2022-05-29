@@ -1,0 +1,67 @@
+Options:
+	MainColor: &3&l #<-- IF YOU CHANGE THIS TO ANY COLOR, EVERYTHING THAT IS {@MainColor} WILL CHANGE TO THAT COLOR!
+	SecondaryColor: &b&l #<-- SAME AS ABOVE
+	TokensTopLevelColor: &f&l
+	TokensTopMessage: Tokens Top
+
+every 30 minutes:
+	execute console command "/resetTokenstop"
+
+command /CreateTokensTop:
+	permission: Admin
+	trigger:
+		make player execute "holograms create Tokenstop"
+		loop 13 times:
+			make player execute "hologram addline Tokenstop 1"
+		make player execute "hologram addline Tokenstop &r "
+		make player execute "hologram addline Tokenstop &f&lUpdates every 30 minutes!&f"
+		make player execute "resetTokenstop"
+		loop 20 times:
+			send "&r " to player
+		wait 1 tick
+		send "&7Successfully created Tokenstop-top leaderboard!"
+
+command /ResetTokensTop:
+    permission: Admin
+    permission message: &cOnly admins can do that!
+    trigger:
+        set {_list::*} to sorted {tokens::*} from highest to lowest with format "@index"
+        wait 1 tick
+        set {_i} to 0
+        set {_startline} to 5
+        set {_topnumber} to 1
+
+        execute console command "holograms setline Tokenstop 1 {@MainColor}&l{@TokensTopMessage}&8:"
+        execute console command "holograms setline Tokenstop 2 &6"
+        execute console command "holograms setline Tokenstop 3 &b&m&l︾︾︾&7&m&l︾︾︾&8&m&l︾︾︾&7&m&l︾︾︾&b&m&l︾︾︾"
+        execute console command "holograms setline Tokenstop 4 &6"
+        execute console command "holograms setline Tokenstop 5 &6"
+        execute console command "holograms setline Tokenstop 6 &6"
+        execute console command "holograms setline Tokenstop 7 &6"
+        execute console command "holograms setline Tokenstop 8 &6"
+        execute console command "holograms setline Tokenstop 9 &6"
+        execute console command "holograms setline Tokenstop 10 &5"
+        execute console command "holograms setline Tokenstop 11 &5(( Updates every 30 minutes &7))"
+
+        set {_size} to size of {_list::*}
+        if {_size} < 11:
+            set {_fill} to true
+        loop {_list::*}:
+            set {_player} to ("%loop-value%" parsed as offline player)
+            set {_uuid} to ({_player} parsed as offline player)'s uuid
+            execute console command "holograms setline Tokenstop %{_startline}% {@MainColor}&l##%{_topnumber}% {@SecondaryColor}%{_player}% &a- {@TokensTopLevelColor}%format({tokens::%loop-value%})% &7Tokens"
+            add 1 to {_topnumber}
+            add 1 to {_startline}
+            add 1 to {_i}
+            if {_topnumber} > 10:
+                stop
+        if {_fill} is true:
+            set {_startingline} to 5+{_size}
+            set {_amount} to 10-{_size}
+            loop {_amount} times:
+                execute console command "holograms setline Tokenstop %{_startline}% &f&l##%{_topnumber}% &7None &8- &b0"
+                add 1 to {_topnumber}
+                add 1 to {_startline}
+                add 1 to {_i}
+                if {_topnumber} > 10:
+                    stop

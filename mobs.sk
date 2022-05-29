@@ -1,0 +1,268 @@
+on mine of coal ore or iron ore or gold ore or diamond ore or emerald ore or emerald block or end stone:
+	if player is in world "mine":
+		set {chance50} to 1.5 + {treasuregoblin::%player%}
+		chance of {chance50}%:
+			set {treasure} to random number between 1 and 100
+			if {treasure} is between 1 and 70:
+				spawn 1 adult zombie at player's location
+				equip last spawned zombie with leather helmet and leather chestplate and wood sword
+				apply speed 1 without particles to last spawned zombie
+				apply strength 1 without particles to last spawned zombie
+				apply resistance 1 without particles to last spawned zombie
+				set name of last spawned zombie to "&6&lGoblin Treasure &8&l(&7Common&8&l)"
+				send title "&6&lTREASURE!" with subtitle "&7Rarity: Common" to player
+				play sound "ENTITY_PICK_UP" to player
+				wait 5 tick
+				send title "&e&lTREASURE!" with subtitle "&7Rarity: Common" to player
+				wait 10 tick
+				send title "&d&lTREASURE!" with subtitle "&7Rarity: Common" to player
+				wait 10 tick
+				send title "&b&lTREASURE!" with subtitle "&7Rarity: Common" to player
+			if {treasure} is between 70.01 and 90:
+				spawn 1 adult zombie at player's location
+				equip last spawned zombie with gold helmet and gold chestplate and gold sword
+				apply speed 2 without particles to last spawned zombie
+				apply strength 2 without particles to last spawned zombie
+				apply resistance 2 without particles to last spawned zombie
+				set name of last spawned zombie to "&6&lGoblin Treasure &8&l(&9Rare&8&l)"
+				send title "&6&lTREASURE!" with subtitle "&9Rarity: Rare" to player
+				play sound "ENTITY_PICK_UP" to player
+				wait 5 tick
+				send title "&e&lTREASURE!" with subtitle "&9Rarity: Rare" to player
+				wait 10 tick
+				send title "&d&lTREASURE!" with subtitle "&9Rarity: Rare" to player
+				wait 10 tick
+				send title "&b&lTREASURE!" with subtitle "&9Rarity: Rare" to player
+			if {treasure} is between 90.01 and 95:
+				spawn 1 adult zombie at player's location
+				equip last spawned zombie with iron helmet and iron chestplate and iron sword
+				apply speed 3 without particles to last spawned zombie
+				apply strength 3 without particles to last spawned zombie
+				apply resistance 3 without particles to last spawned zombie
+				set name of last spawned zombie to "&6&lGoblin Treasure &8&l(&5Epic&8&l)"
+				send title "&6&lTREASURE!" with subtitle "&5Rarity: Epic" to player
+				play sound "ENTITY_PICK_UP" to player
+				wait 5 tick
+				send title "&e&lTREASURE!" with subtitle "&5Rarity: Epic" to player
+				wait 10 tick
+				send title "&d&lTREASURE!" with subtitle "&5Rarity: Epic" to player
+				wait 10 tick
+				send title "&b&lTREASURE!" with subtitle "&5Rarity: Epic" to player
+			if {treasure} is between 95.01 and 100:
+				spawn 1 adult zombie at player's location
+				equip last spawned zombie with diamond helmet and diamond chestplate and iron sword
+				apply speed 4 without particles to last spawned zombie
+				apply strength 4 without particles to last spawned zombie
+				apply resistance 4 without particles to last spawned zombie
+				set name of last spawned zombie to "&6&lGoblin Treasure &8&l(&6Legendary&8&l)"
+				send title "&6&lTREASURE!" with subtitle "&6Rarity: Legendary" to player
+				play sound "ENTITY_PICK_UP" to player
+				wait 5 tick
+				send title "&e&lTREASURE!" with subtitle "&6Rarity: Legendary" to player
+				wait 10 tick
+				send title "&d&lTREASURE!" with subtitle "&6Rarity: Legendary" to player
+				wait 10 tick
+				send title "&b&lTREASURE!" with subtitle "&6Rarity: Legendary" to player
+
+
+
+
+
+
+on combust:
+    if event-entity is a zombie:
+        cancel the event
+
+on death of zombie:
+	if attacker is in world "mine":
+		victim's name is "&6&lGoblin Treasure &8&l(&7Common&8&l)"
+		set {zombie} to random integer between 1 and 100
+		if {zombie} is between 1 and 25:
+			set {math} to 1000 * ({prestige::%attacker%}) + 1000
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##7CFC00>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 26 and 35:
+			set {math} to 1500 * ({prestige::%attacker%}) + 1500
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##7CFC00>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 36 and 45:
+			execute console command "givelootbox %attacker% small"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received small lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 46 and 50:
+			execute console command "givelootbox %attacker% medium"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received medium lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 51 and 52:
+			execute console command "givelootbox %attacker% large"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received large lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 53 and 70:
+			set {drop} to random integer between 1 and 3
+			execute console command "addgens %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>genslot(s)!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 71 and 85:
+			set {drop} to random number between 0.01 and 0.05
+			execute console command "addmultil %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>multiplier!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 86 and 95:
+			give attacker 1 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 1 special key!" to attacker
+		if {zombie} is between 96 and 100:
+			give attacker 1 tripwire hook named "&bBooster Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 1 booster key!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+
+on death of zombie:
+	if attacker is in world "mine":
+		victim's name is "&6&lGoblin Treasure &8&l(&9Rare&8&l)"
+		set {zombie} to random integer between 1 and 100
+		if {zombie} is between 1 and 25:
+			set {math} to 2500 * ({prestige::%attacker%}) + 2500
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 26 and 35:
+			set {math} to 5000 * ({prestige::%attacker%}) + 5000
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 36 and 45:
+			execute console command "givelootbox %attacker% medium"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received medium lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 46 and 50:
+			execute console command "givelootbox %attacker% large"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received large lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 51 and 52:
+			execute console command "givelootbox %attacker% mega"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received mega lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 53 and 70:
+			set {drop} to random integer between 3 and 5
+			execute console command "addgens %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>genslot(s)!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 71 and 85:
+			set {drop} to random number between 0.03 and 0.08
+			execute console command "addmultil %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>multiplier!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 86 and 95:
+			give attacker 3 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 3 special keys!" to attacker
+		if {zombie} is between 96 and 100:
+			give attacker 1 tripwire hook named "&bBooster Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 1 booster key!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+
+on death of zombie:
+	if attacker is in world "mine":
+		victim's name is "&6&lGoblin Treasure &8&l(&5Epic&8&l)"
+		set {zombie} to random integer between 1 and 100
+		if {zombie} is between 1 and 15:
+			set {math} to 7500 * ({prestige::%attacker%}) + 7500
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 16 and 20:
+			set {math} to 9000 * ({prestige::%attacker%}) + 9000
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 21 and 35:
+			execute console command "givelootbox %attacker% large"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received large lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 36 and 40:
+			execute console command "givelootbox %attacker% mega"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received mega lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 41 and 42:
+			execute console command "givelootbox %attacker% mega"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received mega lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 43 and 60:
+			set {drop} to random integer between 10 and 15
+			execute console command "addgens %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>genslot(s)!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 61 and 75:
+			set {drop} to random number between 0.10 and 0.15
+			execute console command "addmultil %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>multiplier!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 76 and 85:
+			give attacker 5 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 5 special keys!" to attacker
+		if {zombie} is between 86 and 90:
+			give attacker 2 tripwire hook named "&bBooster Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 2 booster keys!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 91 and 95:
+			give attacker 3 respawn anchor named "<##89CFF0>Death Generator"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 3 Death Generators!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 96 and 100:
+			execute console command "givemap %attacker%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received a clue scroll!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+
+on death of zombie:
+	if attacker is in world "mine":
+		victim's name is "&6&lGoblin Treasure &8&l(&6Legendary&8&l)"
+		set {zombie} to random integer between 1 and 100
+		if {zombie} is between 1 and 15:
+			set {math} to 10000 * ({prestige::%attacker%}) + 10000
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 16 and 20:
+			set {math} to 12500 * ({prestige::%attacker%}) + 12500
+			add {math} to {tokens::%attacker%}
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %format({math})% <##E4D00A>Tokens!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 21 and 23:
+			give attacker 1 paper named "&6&l2$ Giftcard (Legendary Zombie)" with lore "" and "&7Contact the owner" and "&7To claim"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 2$ Giftcard!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 24 and 40:
+			execute console command "givelootbox %attacker% mega"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received mega lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 41 and 42:
+			execute console command "givelootbox %attacker% mega"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received mega lootbox!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 43 and 60:
+			set {drop} to random integer between 15 and 20
+			execute console command "addgens %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>genslot(s)!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 61 and 75:
+			set {drop} to random number between 0.15 and 0.20
+			execute console command "addmultil %attacker% %{drop}%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received %{drop}% <##7CFC00>multiplier!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 76 and 85:
+			give attacker 8 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 8 special keys!" to attacker
+		if {zombie} is between 86 and 90:
+			give attacker 3 tripwire hook named "&bBooster Key" with lore "&7Use at /crates"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 3 booster keys!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 91 and 95:
+			give attacker 3 beehive named "<##89CFF0>Acid Generator"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received 3 Acid Generators!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+		if {zombie} is between 96 and 100:
+			execute console command "givemap %attacker%"
+			send "<##E4D00A>&lGOBLIN TREASURE » <##7CFC00>You have received a clue scroll!" to attacker
+			play sound "ENTITY_PICK_UP" to player
+
+			

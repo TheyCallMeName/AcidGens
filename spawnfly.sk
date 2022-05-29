@@ -1,0 +1,4 @@
+on any movement:
+	if player is in world "spawn":
+		player does not have permission "*"
+		set player's flight mode to false

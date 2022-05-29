@@ -1,0 +1,173 @@
+options:
+    prefix:  &3&lAcid&b&lGens &8»&7
+    rewards_main: 5
+    rewards_special: 0
+    border_main: black stained glass pane named ""
+    border_second: black stained glass pane named ""
+    pagination_empty: red stained glass pane named ""
+    crate_name: &b&l❆&3&l❆&b&l❆ &b&lChristmas Lootbox &b&l❆&3&l❆&b&l❆
+
+on load:
+    delete {MonthlyActive::*}
+    delete {monthlycrate::rewards::*}
+    delete {monthlycrate::bonus::*}
+    wait 1 tick
+    # Monthly_RegisterReward(item: itemtype, command: string, name: string, chance: number, bonus: boolean = false)
+    Monthly_RegisterReward(carrot, "/give <p> paper 1 name:&e&lVenom_Rank", "&5☯ &5&lVenom Rank", 2)
+    Monthly_RegisterReward(carrot, "/tokens add <p> 1500000", "&5☯ &5&l1,500,000 Tokens", 13)
+    Monthly_RegisterReward(carrot, "/givekey <p> special 32", "&5☯ &5&lx32 Special Keys", 10)
+    Monthly_RegisterReward(carrot, "/givekey <p> rank 1", "&5☯ &5&lx1 Rank Key", 5)
+    Monthly_RegisterReward(carrot, "/givekey <p> pet 1", "&5☯ &5&lx1 Pet Key", 5)
+    Monthly_RegisterReward(paper, "/addmultil <p> 0.35", "&5☯ &5&l0.35x Multiplier", 5)
+    Monthly_RegisterReward(paper, "/give <p> paper 1 name:&bGen_Booster_&7(1_Day)", "&5☯ &5&l1 Day Gen Booster", 5)
+    Monthly_RegisterReward(paper, "/addbpmulti <p> 0.35", "&5☯ &5&l0.35x BP Multiplier", 5)
+    Monthly_RegisterReward(paper, "/addgens <p> 40", "&5☯ &5&lx40 Genslots", 10)
+    Monthly_RegisterReward(paper, "/give <p> beehive 10 name:&##89CFF0Death_Generator", "&5☯ &5&lx10 Acid Generators", 10)
+    Monthly_RegisterReward(paper, "/give <p> white_glazed_terracotta 6 name:&##89CFF0Token_Generator", "&5☯ &5&lx6 Token Generators", 10)
+    Monthly_RegisterReward(paper, "/eco give <p> 35000000000", "&5☯ &5&l35B$", 20)
+    Monthly_RegisterReward(paper, "/sellwand <p> 3.5", "&5☯ &5&l3.5x Sellwand", 5)
+    Monthly_RegisterReward(paper, "/give <p> paper 1 name:&4&l✦_&c&lPresident_Rank_&4&l✦", "&6&l☯ &4&l✦ &c&lPresident Rank &4&l✦", 5, true)
+    Monthly_RegisterReward(paper, "/addgens <p> 50", "&6&l☯ x50 Genslots", 10, true)
+    Monthly_RegisterReward(paper, "/addmultil <p> 0.4", "&6&l☯ 0.40x Multiplier", 10, true)
+    Monthly_RegisterReward(paper, "/addbpmulti <p> 0.4", "&6&l☯ 0.40x BP Multiplier", 10, true)
+    Monthly_RegisterReward(paper, "/giveasc <p> 1", "&6&l☯ x1 Autosell Chest", 9, true)
+    Monthly_RegisterReward(paper, "/sellwand <p> 4", "&6&l☯ 4x Sellwand", 10, true)
+    Monthly_RegisterReward(paper, "/tokens add <p> 2500000", "&6&l☯ 2,500,000 Tokens", 21, true)
+    Monthly_RegisterReward(paper, "/eco give <p> 65000000000", "&6&l☯ 65B$", 20, true)
+    Monthly_RegisterReward(paper, "/givepet <p> fishing+", "&6&l☯ Fishing+ Pet", 5, true)
+
+function Monthly_OpenCrate(plr: player, loc: location):
+    set {_uuid} to {_plr}'s uuid
+    set {_origin} to {_loc}
+    loop indices of {monthlycrate::rewards::*}:
+        set {_rewards_main::%loop-value%::name} to {monthlycrate::rewards::%loop-value%::name}
+        set {_rewards_main::%loop-value%::item} to {monthlycrate::rewards::%loop-value%::item}
+        set {_rewards_main::%loop-value%::command} to {monthlycrate::rewards::%loop-value%::command}
+        set {_chances::%loop-value%} to {monthlycrate::rewards::%loop-value%::chance} parsed as an integer
+        add loop-value parsed as an integer to {_rewards::*}
+    set {_main} to {_loc}
+    set {_main}'s y position to {_main}'s y position
+    set {_holo} to {_main}
+    remove 0.5 from y-pos of {_holo}
+    Holograms_Create("Monthly_Hologram_main_%{_uuid}%", "&bRevealing...:", {_holo}, true)
+    play 10 of crit at {_loc}
+    wait 3 seconds
+    set {_offset} to true
+    set {_total2} to 0
+    set {_v} to vector from yaw {_total2} and pitch 0
+    set vector length of {_v} to 3
+    set {_broadcast} to "&3&l» &e&l%{_plr}% &7just opened a {@crate_name} &7and won:%nl%&c&B"
+    set {_rewardLoops} to 0
+    set {_isSpecialReward} to false
+    loop {@rewards_main} + {@rewards_special} times:
+        add 1 to {_rewardLoops}
+        if {_rewardLoops} >= {@rewards_main}:
+            set {_isSpecialReward} to true
+            delete {_rewards_main::*}, {_chances::*} and {_rewards::*}
+            loop indices of {monthlycrate::bonus::*}:
+                set {_rewards_main::%loop-value-2%::name} to {monthlycrate::bonus::%loop-value-2%::name}
+                set {_rewards_main::%loop-value-2%::item} to {monthlycrate::bonus::%loop-value-2%::item}
+                set {_rewards_main::%loop-value-2%::command} to {monthlycrate::bonus::%loop-value-2%::command}
+                set {_chances::%loop-value-2%} to {monthlycrate::bonus::%loop-value-2%::chance} parsed as an integer
+                add loop-value-2 parsed as an integer to {_rewards::*}
+        set {_item} to Random_WeightRandom(({_chances::*}), ({_rewards::*}))
+        add {_rewards_main::%{_item}%::command} to {_reward_main::*}
+        set {_line} to "&7%{_rewards_main::%{_item}%::name}%"
+        set {_broadcast} to "%{_broadcast}%%nl%  &c%{_line}%&r"
+        set {_loc} to {_origin} ~ {_v}
+        Holograms_Create("Monthly_Hologram_reward_%{_uuid}%", "&7%{_line}%", {_loc})
+        set {_e} to last spawned entity
+        set helmet of {_e} to {_item}
+        set {_len} to 3
+        set {_loops} to 0
+        set {_loops2} to 0
+        set {_lines::*} to circle at {_main} with radius 2 and density 5
+        loop {_lines::*}:
+            add 1 to {_loops} and {_loops2}
+            set {_total2} to {_total2} + 1
+            teleport {_e} to loop-value-2
+            play 1 of dust using dustOption(aqua, 1) at loop-value-2
+            chance of (100 - ({_loops2} / 1.5))%:
+                wait 1 tick
+        kill {_e}
+        Holograms_Insertline("Monthly_Hologram_main_%{_uuid}%", 1, "&7[Bonus] &f%{_line}%") if {_rewardLoops} >= {@rewards_main}
+        Holograms_Insertline("Monthly_Hologram_main_%{_uuid}%", 1, "&7[Main] &f%{_line}%") if {_rewardLoops} < {@rewards_main}
+        Holograms_Delete("Monthly_Hologram_reward_%{_uuid}%")
+    wait 40 ticks
+    play 5 of dust using dustOption(white, 10) at {_origin}
+    loop {_reward_main::*}:
+        set {_str} to loop-value
+        replace "<p>" with "%{_plr}%" in {_str}
+        console command {_str}
+    set {_broadcast} to "%{_broadcast}%%nl%&c%nl%&bYou can purchase one at &n/buy"
+    broadcast "%{_broadcast}%"
+    Holograms_Delete("Monthly_Hologram_main_%{_uuid}%")
+    delete {MonthlyActive::%{_uuid}%}
+    set block at {_origin} to air
+
+function Monthly_SetLore():
+    delete {monthlycrate::item::lore::*}
+    set {_lore::*} to ""
+    add "&3&l>&b&l> &f{@rewards_main} Normal Reward(s):" to {_lore::*}
+    loop indices of {monthlycrate::rewards::*}:
+        add " %{monthlycrate::rewards::%loop-value%::name}%" to {_lore::*}
+    add "" to {_lore::*}
+    add "&3&l>&b&l> &f1 Special Reward(s):" to {_lore::*}
+    loop indices of {monthlycrate::bonus::*}:
+        add " %{monthlycrate::bonus::%loop-value%::name}%" to {_lore::*}
+    if {monthlycrate::bonus::*} is not set:
+        add " &cCouldn't get Bonus Reward" to {_lore::*}
+    set {monthlycrate::lore::*} to {_lore::*}
+
+function Monthly_RegisterReward(item: itemtype, command: string, name: string, chance: number, bonus: boolean = false):
+    set {_check} to "%{_chance}%"
+    if {_check} contains ".":
+        stop
+    set {_monthly_reward_id} to {monthlycrate::total} + 1
+    set {monthlycrate::total} to {monthlycrate::total} + 1
+    if {_chance} is less than or equal to 0:
+        stop
+    set {monthlycrate::rewards::%{_monthly_reward_id}%::name} to "%{_name}%" if {_bonus} = false
+    set {monthlycrate::rewards::%{_monthly_reward_id}%::item} to {_item} if {_bonus} = false
+    set {monthlycrate::rewards::%{_monthly_reward_id}%::command} to {_command} if {_bonus} = false
+    set {monthlycrate::rewards::%{_monthly_reward_id}%::chance} to "%{_chance}%" if {_bonus} = false
+    set {monthlycrate::bonus::%{_monthly_reward_id}%::name} to "%{_name}%" if {_bonus} = true
+    set {monthlycrate::bonus::%{_monthly_reward_id}%::item} to {_item} if {_bonus} = true
+    set {monthlycrate::bonus::%{_monthly_reward_id}%::command} to {_command} if {_bonus} = true
+    set {monthlycrate::bonus::%{_monthly_reward_id}%::chance} to "%{_chance}%" if {_bonus} = true
+    set {monthlycrate::chance} to {monthlycrate::chance} + {_chance}
+
+function Monthly_GiveCrate(plr: player, amount: number):
+    Monthly_SetLore()
+    set {_item} to ender chest named "{@crate_name}"
+    loop {monthlycrate::lore::*}:
+        set line (loop-index parsed as an number) of lore of {_item} to loop-value
+    give {_item} to {_plr}
+
+on block place:
+    if name of player's tool = "{@crate_name}":
+        cancel event
+        if {MonthlyActive::%player's uuid%} is true:
+            send "{@prefix} You are already opening a monthly crate!"
+        else:
+            set {MonthlyActive::%player's uuid%} to true
+            set {_loc} to event-location
+            remove 1 of player's tool from player's tool
+            wait 3 ticks
+            set block at {_loc} to ender chest
+            Monthly_OpenCrate(player, {_loc})
+
+command /givemonthlycrate [<player>] [<number>]:
+    aliases: /givemonthly, /givemonthcrate
+    trigger:
+        if sender does not have permission "admin.monthly_crate":
+            Errors_NoPermission(sender, "admin.monthly_crate")
+            stop
+        if arg-1 or arg-2 is not set:
+            Errors_IncorrectUsage(sender, "/givemonthlycrate (player) (amount)")
+            stop
+        Monthly_GiveCrate(arg-1, arg-2)
+        send "{@prefix} You were given &f%arg-2% &7christmas crates by &f%sender%&7!" to arg-1
+        Sound_Yes(arg-1)
+        send "{@prefix} You gave &f%arg-1% %arg-2% &7christmas crates!" to arg-1
+        Sound_Yes(player)

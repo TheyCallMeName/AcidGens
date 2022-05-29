@@ -1,0 +1,11 @@
+command /rename <text>:
+	permission: rename
+	trigger:
+		if player's tool is pickaxe or sword or bow or shield or helmet or chestplate or leggings or boots or axe or shovel:
+			set name of player's tool to coloured arg-1
+			send title "&a&lSUCCESS!"
+			play sound "ENTITY_PLAYER_LEVELUP" to player
+		else:
+			send "&7You can't rename this item!" to player
+			play sound "ENTITY_VILLAGER_NO" to player
+			

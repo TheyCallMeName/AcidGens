@@ -1,0 +1,252 @@
+on npc right click:
+	if citizen is named "&b&lFISHING 🎣":
+		create a gui with virtual chest inventory with 3 rows named "Fishing":
+			make gui slot 10 with 1 of fishing rod named "&7&lSTARTER ROD" with lore "" and "&ePrice: &45,000 Tokens" and "&eRequirements: &4None" and "" and "&f&lStats" and "&7 Very Slow 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "" and "&f&lCustom Drops Available" and "&7 None" and "":
+				if {tokens::%player%} is higher or equal to 5000:
+					play sound "block.conduit.activate" to player
+					remove 5000 from {tokens::%player%}
+					give player 1 fishing rod named "&7&lSTARTER ROD" with lore "" and "&f&lStats" and "&7 Very Slow 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "" and "&f&lCustom Drops Available" and "&7 None"
+				else:
+					send "&c&lERROR &f&l» You don't have enough tokens!"
+					play sound "ENTITY_VILLAGER_NO" to player
+			make gui slot 11 with 1 of fishing rod named "&7&lNOVICE ROD" with lore "" and "&ePrice: &450,000 Tokens" and "&eRequirements: &4%{fish::%player%}% &8&l/ &450" and "" and "&f&lStats" and "&7 Slow 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "" and "&f&lCustom Drops Available" and "&7 250-2,500 Tokens" and "&7 500k-2m$" and "":
+				if {tokens::%player%} is higher or equal to 50000:
+					if {fish::%player%} is higher or equal to 50:
+						play sound "block.conduit.activate" to player
+						remove 50000 from {tokens::%player%}
+						set {fish::%player%} to 0
+						give player 1 fishing rod of lure 1 with hidden enchantments named "&a&lNOVICE ROD" with lore "" and "&f&lStats" and "&7 Slow 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "" and "&f&lCustom Drops Available" and "&7 250-2,500 Tokens" and "&7 500k-2m$"
+					else:
+						send "&c&lERROR &f&l» You don't have the requirements!"
+						play sound "ENTITY_VILLAGER_NO" to player
+				else:
+					send "&c&lERROR &f&l» You don't have the requirements!"
+					play sound "ENTITY_VILLAGER_NO" to player
+			make gui slot 12 with 1 of fishing rod named "&3&lADVANCED ROD" with lore "" and "&ePrice: &4100,000 Tokens" and "&eRequirements: &4%{fish::%player%}% &8&l/ &4200" and "" and "&f&lStats" and "&7 Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "" and "&f&lCustom Drops Available" and "&7 500-5,000 Tokens" and "&7 5m-10m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys" and "":
+				if {tokens::%player%} is higher or equal to 100000:
+					if {fish::%player%} is higher or equal to 200:
+						play sound "block.conduit.activate" to player
+						remove 100000 from {tokens::%player%}
+						set {fish::%player%} to 0
+						give player 1 fishing rod of lure 2 with hidden enchantments named "&3&lADVANCED ROD" with lore "" and "&f&lStats" and "&7 Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "" and "&f&lCustom Drops Available" and "&7 500-5,000 Tokens" and "&7 5m-10m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys"
+					else:
+						send "&c&lERROR &f&l» You don't have the requirements!"
+						play sound "ENTITY_VILLAGER_NO" to player
+				else:
+					send "&c&lERROR &f&l» You don't have the requirements!"
+					play sound "ENTITY_VILLAGER_NO" to player
+			make gui slot 13 with 1 of fishing rod named "&c&lPROFESSIONAL ROD" with lore "" and "&ePrice: &4250,000 Tokens" and "&eRequirements: &4%{fish::%player%}% &8&l/ &4750" and "" and "&f&lStats" and "&7 Very Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "&7 Tropical Fish - 500 Tokens" and "" and "&f&lCustom Drops Available" and "&7 2,000-7,500 Tokens" and "&7 10m-25m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys" and "&7 Pet Key" and "&7 Rank Key" and "&7 1$ StoreCredit" and "":
+				if {tokens::%player%} is higher or equal to 250000:
+					if {fish::%player%} is higher or equal to 750:
+						play sound "block.conduit.activate" to player
+						remove 250000 from {tokens::%player%}
+						set {fish::%player%} to 0
+						give player 1 fishing rod of lure 3 with hidden enchantments named "&c&lPROFESSIONAL ROD" with lore "" and "&f&lStats" and "&7 Very Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "&7 Tropical Fish - 500 Tokens" and "" and "&f&lCustom Drops Available" and "&7 2,000-7,500 Tokens" and "&7 10m-25m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys" and "&7 Pet Key" and "&7 Rank Key" and "&7 1$ StoreCredit"
+					else:
+						send "&c&lERROR &f&l» You don't have the requirements!"
+						play sound "ENTITY_VILLAGER_NO" to player
+				else:
+					send "&c&lERROR &f&l» You don't have the requirements!"
+					play sound "ENTITY_VILLAGER_NO" to player
+			make gui slot 14 with 1 of glowing fishing rod named "&4&lPRESIDENT ROD" with lore "" and "&ePrice: &41,000,000 Tokens" and "&eRequirements: &4%{fish::%player%}% &8&l/ &41,500" and "" and "&f&lStats" and "&7 Extremely Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "&7 Tropical Fish - 500 Tokens" and "&7 Cod Bucket - 2,500 Tokens" and "" and "&f&lCustom Drops Available" and "&7 15,000-25,000 Tokens" and "&7 50m-100m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys" and "&7 Pet Key" and "&7 Rank Key" and "&7 5$ StoreCredit" and "&7 LootboxAll" and "&7 Godly Lootbox" and "":
+				if {tokens::%player%} is higher or equal to 1000000:
+					if {fish::%player%} is higher or equal to 1500:
+						play sound "block.conduit.activate" to player
+						remove 1000000 from {tokens::%player%}
+						set {fish::%player%} to 0
+						give player 1 fishing rod of lure 4 with hidden enchantments named "&4&lPRESIDENT ROD" with lore "" and "&f&lStats" and "&7 Extremely Fast 🎣" and "" and "&f&lAvailable fish" and "&7 Raw Cod - 50 Tokens" and "&7 Raw Salmon - 100 Tokens" and "&7 Pufferfish - 250 Tokens" and "&7 Tropical Fish - 500 Tokens" and "&7 Axolotl Fish - 2,500 Tokens" and "" and "&f&lCustom Drops Available" and "&7 15,000-25,000 Tokens" and "&7 50m-100m$" and "&7 Mystery Clue Scroll" and "&7 Special Keys" and "&7 Pet Key" and "&7 Rank Key" and "&7 5$ StoreCredit" and "&7 LootboxAll" and "&7 Godly Lootbox"
+					else:
+						send "&c&lERROR &f&l» You don't have the requirements!"
+						play sound "ENTITY_VILLAGER_NO" to player
+				else:
+					send "&c&lERROR &f&l» You don't have the requirements!"
+					play sound "ENTITY_VILLAGER_NO" to player
+		open last gui to player
+
+on craft of fishing rod:
+	cancel event
+	
+on join:
+	if {fish::%player%} is not set:
+		set {fish::%player%} to 0
+
+command addfish <player> <integer>:
+	permission: op
+	trigger:
+		add arg-2 to {fish::%arg-1%}
+
+on fish:
+	fish state is CAUGHT_FISH
+	clear caught item
+	if name of player's tool is "&7&lSTARTER ROD":
+		if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+			add 1 to {fish::%player%}
+			add 1 to {backpack::%uuid of player%::raw cod}
+			send "&b&lFISHING » &6You have fished up 1 raw cod &7(/bp)"
+			play sound "entity.llama.chest" to player
+		else:
+			send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to fish more! (/bp)"
+	if name of player's tool is "&a&lNOVICE ROD":
+		if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+			add 1 to {fish::%player%}
+			set {fish} to random integer between 1 and 100
+			if {fish} is between 1 and 74:	
+				add 1 to {backpack::%uuid of player%::raw cod}
+				send "&b&lFISHING » &6You have fished up 1 raw cod &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 75 and 100:	
+				add 1 to {backpack::%uuid of player%::raw salmon}
+				send "&b&lFISHING » &6You have fished up 1 raw salmon &7(/bp)"
+				play sound "entity.llama.chest" to player
+			set {chance} to random integer between 1 and 100
+			if {chance} is between 1 and 10:
+				set {chance2} to random integer between 250 and 2500
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}% &6Tokens"
+				add {chance2} to {tokens::%player%}
+			if {chance} is between 11 and 20:
+				set {chance2} to random integer between 500000 and 2000000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}%&a&l$"
+				add {chance2} to player's balance
+		else:
+			send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to fish more! (/bp)"
+	if name of player's tool is "&3&lADVANCED ROD":
+		if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+			add 1 to {fish::%player%}
+			set {fish} to random integer between 1 and 100
+			if {fish} is between 1 and 50:	
+				add 1 to {backpack::%uuid of player%::raw cod}
+				send "&b&lFISHING » &6You have fished up 1 raw cod &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 51 and 80:	
+				add 1 to {backpack::%uuid of player%::raw salmon}
+				send "&b&lFISHING » &6You have fished up 1 raw salmon &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 81 and 100:	
+				add 1 to {backpack::%uuid of player%::pufferfish}
+				send "&b&lFISHING » &6You have fished up 1 pufferfish &7(/bp)"
+				play sound "entity.llama.chest" to player
+			set {chance} to random number between 1 and 100
+			if {chance} is between 1 and 5:
+				set {chance2} to random integer between 500 and 5000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}% &6Tokens"
+				add {chance2} to {tokens::%player%}
+			if {chance} is between 6 and 15:
+				set {chance2} to random integer between 5000000 and 10000000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}%&a&l$"
+				add {chance2} to player's balance
+			if {chance} is between 16 and 16.5:
+				execute console command "/givemap %player%"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Clue Scroll Mystery"
+			if {chance} is between 16.51 and 18:
+				execute console command "/givekey %player% special 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Special Key"
+		else:
+			send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to fish more! (/bp)"
+	if name of player's tool is "&c&lPROFESSIONAL ROD":
+		if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+			add 1 to {fish::%player%}
+			set {fish} to random integer between 1 and 100
+			if {fish} is between 1 and 50:	
+				add 1 to {backpack::%uuid of player%::raw cod}
+				send "&b&lFISHING » &6You have fished up 1 raw cod &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 51 and 80:	
+				add 1 to {backpack::%uuid of player%::raw salmon}
+				send "&b&lFISHING » &6You have fished up 1 raw salmon &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 81 and 90:	
+				add 1 to {backpack::%uuid of player%::pufferfish}
+				send "&b&lFISHING » &6You have fished up 1 pufferfish &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 91 and 100:	
+				add 1 to {backpack::%uuid of player%::tropical fish}
+				send "&b&lFISHING » &6You have fished up 1 tropical fish &7(/bp)"
+				play sound "entity.llama.chest" to player
+			set {chance} to random number between 1 and 100
+			if {chance} is between 1 and 5:
+				set {chance2} to random integer between 2000 and 7500
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}% &6Tokens"
+				add {chance2} to {tokens::%player%}
+			if {chance} is between 6 and 15:
+				set {chance2} to random integer between 10000000 and 25000000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %{chance2}%&a&l$"
+				add {chance2} to player's balance
+			if {chance} is between 16 and 17:
+				execute console command "/givemap %player%"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Clue Scroll Mystery"
+			if {chance} is between 17.01 and 20:
+				execute console command "/givekey %player% special 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Special Key"
+			if {chance} is between 21 and 21.10:
+				execute console command "/givekey %player% pet 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Pet Key"
+			if {chance} is between 22 and 22.05:
+				execute console command "/givekey %player% rank 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Rank Key"
+			if {chance} is between 25 and 25.05:
+				give player 1 paper named "&e&l1$ &eStoreCredit" with lore "" and "&7Open a ticket on discord to claim" and "&7%player%"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1$ Voucher"
+		else:
+			send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to fish more! (/bp)"
+	if name of player's tool is "&4&lPRESIDENT ROD":
+		if bpSize(player) < 50 + {extraStorage::%uuid of player%}:
+			add 1 to {fish::%player%}
+			set {fish} to random integer between 1 and 100
+			if {fish} is between 1 and 40:	
+				add 1 to {backpack::%uuid of player%::raw cod}
+				send "&b&lFISHING » &6You have fished up 1 raw cod &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 41 and 60:	
+				add 1 to {backpack::%uuid of player%::raw salmon}
+				send "&b&lFISHING » &6You have fished up 1 raw salmon &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 61 and 70:	
+				add 1 to {backpack::%uuid of player%::pufferfish}
+				send "&b&lFISHING » &6You have fished up 1 pufferfish &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 71 and 90:	
+				add 1 to {backpack::%uuid of player%::tropical fish}
+				send "&b&lFISHING » &6You have fished up 1 tropical fish &7(/bp)"
+				play sound "entity.llama.chest" to player
+			if {fish} is between 91 and 100:	
+				add 1 to {backpack::%uuid of player%::cod bucket}
+				send "&b&lFISHING » &6You have fished up 1 cod bucket &7(/bp)"
+				play sound "entity.llama.chest" to player
+			set {chance} to random number between 1 and 100
+			if {chance} is between 1 and 15:
+				set {chance2} to random integer between 15000 and 25000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %format({chance2})% &6Tokens"
+				add {chance2} to {tokens::%player%}
+			if {chance} is between 16 and 40:
+				set {chance2} to random integer between 50000000 and 100000000
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up %format({chance2})%&a&l$"
+				add {chance2} to player's balance
+			if {chance} is between 41 and 45:
+				execute console command "/givemap %player%"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Clue Scroll Mystery"
+			if {chance} is between 46 and 55:
+				execute console command "/givekey %player% special 3"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 3 Special Keys"
+			if {chance} is between 51 and 51.1:
+				execute console command "/givekey %player% pet 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Pet Key"
+			if {chance} is between 52 and 52.1:
+				execute console command "/givekey %player% rank 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 1 Rank Key"
+			if {chance} is between 55 and 55.1:
+				give player 1 paper named "&e&l5$ &eStoreCredit" with lore "" and "&7Open a ticket on discord to claim" and "&7%player%"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have fished up 5$ Voucher"
+				broadcast "&b&lFISHING &b&l» &6%player% Caught a 5$ Giftcard"
+			if {chance} is 60:
+				execute console command "givemonthly %player% 1"
+				send "&b&lFISHING &7(Bonus) &b&l» &6You have x1 Godly Lootbox"
+				broadcast "&b&lFISHING &b&l» &6%player% Caught x1 Godly Lootbox"
+			if {chance} is between 61 and 61.1:
+				broadcast ""
+				broadcast "&b&lFISHING &b&l» &6%player% Has activated a Lootbox all! Enjoy."
+				broadcast ""
+				loop all players:
+					give loop-player 1 chest named "&6&lRANDOM &eLootbox" with lore "&7This crate is from" and "&b&lFISHING » Caught by %player%"
+					play sound "entity.experience_orb.pickup" to loop-player
+		else:
+			send title "&c&lBackpack Full" with subtitle "&fPlease sell your backpack in order to fish more! (/bp)"

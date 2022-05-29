@@ -1,0 +1,31 @@
+on damage:
+	if attacker or victim is in world "mine":
+		if attacker is a player:
+			if attacker or victim has permission "op" or "staff":
+				stop
+			else:
+				set {combattag::%victim%} to 15
+				set {combattag::%attacker%} to 15
+				set attacker's flight mode to false
+				set victim's flight mode to false
+				delete {parrot::%attacker%}
+				delete {parrot::%victim%}
+				send action bar "&a&lYou got combat tagged!" to victim
+				send action bar "&a&lYou got combat tagged!" to attacker
+
+on death:
+	set {combattag::%player%} to 0
+
+every second:
+	loop {combattag::*}:
+		remove 1 from {combattag::%loop-index%}
+		if {combattag::%loop-index%} is less than or equal to 0:
+			delete {combattag::%loop-index%}
+
+on command:
+	if {combattag::%player%} is more than or equal to 0:
+		cancel event
+		send "&c&l[!] &bYou can't execute commands while in combat!"
+		send "&7Time left: &7&n%{combattag::%player%}% &7seconds"
+	
+		

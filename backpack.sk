@@ -1,0 +1,190 @@
+options:
+	perm: &cYou do not have the required permission to use this command.
+
+on load:
+	updatesellprice()
+
+function updatesellprice():
+    delete {sellprice::*}
+    set {sellprice::coal} to 5
+    set {sellprice::iron ingot} to 10
+    set {sellprice::gold ingot} to 15
+    set {sellprice::diamond} to 20
+    set {sellprice::emerald} to 25
+    set {sellprice::emerald block} to 50
+    set {sellprice::end stone} to 100
+    set {sellprice::raw cod} to 50
+    set {sellprice::raw salmon} to 100
+    set {sellprice::pufferfish} to 250
+    set {sellprice::tropical fish} to 500
+    set {sellprice::cod bucket} to 2500
+
+command /updatesellprice:
+	permission: admin
+	permission message: {@perm}
+	trigger:
+		updatesellprice()
+
+command /addblock [<offline player>] [<integer>] [<text>]:
+    permission: admin
+    trigger:
+        if arg-1 is set:
+            if arg-2 > 0:
+                if arg-3 is set:
+                    set {_item} to arg-3
+                    send "Added x%arg-2% %arg-3% to %arg-1%'s backpack." to player
+                    add arg-2 to {backpack::%uuid of arg-1%::%{_item}%}
+                else:
+                    send "usage: /addblock <user> <amount> <item>" to player
+            else:
+                send "usage: /addblock <user> <amount> <item>" to player
+        else:
+            send "usage: /addblock <user> <amount> <item>" to player
+
+every 30 seconds:
+	loop all players:
+		if {autosell::%uuid of loop-player%} is set:
+			sell(loop-player)
+
+function sell(p: player):
+	set {_uuid} to uuid of {_p}
+	{autosell::%{_uuid}%} is set
+	loop {backpack::%{_uuid}%::*}:
+		loop-value > 0:
+			set {_items} to loop-value
+			set {_money} to {_items} * {sellprice::%loop-index%}
+			add {_items} to {_counttotal}
+			add ({_money} * ({backpack_multi::%{_uuid}%} + 1)) to {_selltotal}
+	{_selltotal} > 0:
+		send "%nl%&6&l[AUTOSELL] &fYou sold &e%format({_counttotal})%&f ores(s) for &f%format({_selltotal})% &e&l✫&f.%nl% &r" to {_p}
+		add {_selltotal} to {tokens::%{_p}%}
+		delete {backpack::%{_uuid}%::*}
+		play "ENTITY_PLAYER_LEVELUP" to {_p} at volume 10
+
+
+
+function backpackMenu(p: player):
+	set {_player} to {_p}
+	set {_uuid} to uuid of {_p}
+	create a gui with virtual chest inventory with 6 rows named "Backpack - %{_p}%":
+		make gui slot 0 with 1 of iron bar named " "
+		make gui slot 8 with 1 of iron bar named " "
+		make gui slot 9 with 1 of iron bar named " "
+		make gui slot 17 with 1 of iron bar named " "
+		make gui slot 18 with 1 of iron bar named " "
+		make gui slot 26 with 1 of iron bar named " "
+		make gui slot 27 with 1 of iron bar named " "
+		make gui slot 35 with 1 of iron bar named " "
+		make gui slot 45 with white stained glass pane named " "
+		make gui slot 46 with white stained glass pane named " "
+		make gui slot 48 with white stained glass pane named " "
+		make gui slot 50 with white stained glass pane named " "
+		make gui slot 52 with white stained glass pane named " "
+		make gui slot 53 with white stained glass pane named " "
+		set {_slot} to 35
+		loop 9 times:
+			add 1 to {_slot}
+			make gui slot {_slot} with 1 of iron bar named " "
+
+		loop {backpack::%{_uuid}%::*}:
+			loop-value > 0:
+				set {_items} to loop-value
+				set {_money} to {_items} * {sellprice::%loop-index%}
+				add {_items} to {_counttotal}
+				add {_money} to {_selltotal}
+		if {_selltotal} is not set:
+			set {_selltotal1} to "N/A"
+		else:
+			set {_selltotal1} to format({_selltotal})
+		make gui slot 49 with 1 of beacon named "&e&lSell Backpack" with lore "&fClick here to sell all", "&fof your mined ores.","","&fValue: &f%{_selltotal1}%&e&l✫" and "&fMultiplier: &f%({backpack_multi::%{_uuid}%} + 1)%x":
+			if {autosell::%{_uuid}%} is set:
+				send "&cDisable autosell in order to sell manually!" to {_p}
+				play "ENTITY_VILLAGER_NO" to {_p} at volume 10
+			else:
+				if {_selltotal} > 0:
+					set {_selltotal} to 0
+					set {_counttotal} to 0
+					loop {backpack::%{_uuid}%::*}:
+						loop-value > 0
+						set {_items} to loop-value
+						set {_money} to {_items} * {sellprice::%loop-index%}
+						add {_items} to {_counttotal}
+						add ({_money} * ({backpack_multi::%{_uuid}%} + 1)) to {_selltotal}
+					{_selltotal} > 0:
+						send "%nl%&6&l[SELL] &fYou sold &e%format({_counttotal})%&f ores(s) for &f%format({_selltotal})%&e&l✫%nl% &r" to {_p}
+						add {_selltotal} to {tokens::%player%}
+						delete {backpack::%{_uuid}%::*}
+						play "ENTITY_PLAYER_LEVELUP" to {_p} at volume 10
+				else:
+					play "ENTITY_VILLAGER_NO" to {_p} at volume 10
+					send title "" with subtitle "&cBackpack is empty or has no value!" to {_p}
+					backpackMenu({_player})
+		if {autosell::%{_uuid}%} is not set:
+			set {_autosell} to "&c[Disabled]"
+		else:
+			set {_autosell} to "&a[Enabled]"
+		if {enchant::autosell::%{_uuid}%} is greater than 0:
+			add " " to {_access::*}
+		else if {_p} has permission "bpperm":
+			add " " to {_access::*}
+		else:
+			add " ", "&cYou do not have permission", "&cto use the autosell feature.", "", "&7Gain access to AutoSell with &f/buy" and " " to {_access::*}
+		make gui slot 51 with 1 of glowing emerald named "&e&lAuto Sell %{_autosell}%" with lore {_access::*}, "&fClick here to enable auto", "&fselling of backpack items.", "", "&7&oAutosell executes every" and "&7&o30 seconds.":
+			if {_p} has permission "bpperm":
+				if {autosell::%{_uuid}%} is not set:
+					set {autosell::%{_uuid}%} to true
+				else:
+					delete {autosell::%{_uuid}%}
+				backpackMenu({_player})
+			else:
+				close {_player}'s inventory
+				send "&cYou must have &4&lAcid &crank to use Autosell!" to {_player}
+
+		make gui slot 47 with nether star named "&e&lInformation" with lore "", "&7You can obtain ores from the &fMine!", "&7The mine is located at &f/warp Mine" and "&7but be careful, because PvP is &cON"
+		loop {backpack::%{_uuid}%::*}:
+			if loop-value > 0:
+				add 1 to {_count}
+				set {_value} to loop-value * {sellprice::%loop-index%}
+				set {_block} to loop-index parsed as item
+				set {_display} to capitalized "%{_block}%"
+				make next gui slot with 1 of {_block} named "&b&l%{_display}%" with lore "&7Quantity: &f%format(loop-value)%" and "&7Value: &f%format({_value} * ({backpack_multi::%{_uuid}%} + 1))%&e&l✫"
+				if {_count} is 27:
+					set {_size} to size of {backpack::%{_uuid}%::*} - 27
+					make next gui slot with bedrock named "&f.. and %{_size}% more!"
+					stop loop
+		if {_count} is not set:
+			loop 28 times:
+				make next gui slot with 1 of light blue stained glass pane named "&f"
+			make gui slot 13 with barrier named "&c&lBackpack Empty.":
+				send "&bGo mine and fill up your backpack to rankup!" to {_p}
+		else:
+			loop (29-{_count}) times:
+				make next gui slot with 1 of light blue stained glass pane named "&f"
+	open last gui to {_p}
+command /bp:
+	aliases: /backpack, /bp, /autosell
+	trigger:
+		backpackMenu(player)
+
+
+command /addbackpack <player> <number>:
+    permission: admin
+    trigger:
+        add arg-2 to {extraStorage::%uuid of arg-1%}
+
+on death of skeleton:
+  clear drops
+
+
+on mine of stone or coal ore or iron ore or diamond ore or emerald ore or emerald block:
+	if player is in world "mine":
+		add 1 to {mine::%player%}
+
+command /mined:
+	trigger:
+		send "&eYou have mined &n&e%{mine::%player%}% &eBlocks."
+
+command /addbpmulti <player> <number>:
+	permission: admin
+	trigger:
+		add arg-2 to {backpack_multi::%uuid of arg-1%}

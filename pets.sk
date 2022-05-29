@@ -1,0 +1,263 @@
+command sound <text>:
+	permission: op
+	trigger:
+		make player execute "playsound %arg-1% ambient %player%"
+
+command givepet <player> <text>:
+	permission: op
+	trigger:
+		if arg-2 is "cupid":
+			give arg-1 arg-1's head named "&d&lCupid Pet &7[%arg-1%]" with lore "&7On use you will become" and "&7unkillable temporarily" and "" and "&f&lStats" and "&7 5s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "haste":
+			give arg-1 arg-1's head named "&e&lHaste Pet &7[%arg-1%]" with lore "&7Re-usable Mining Speed Booster!" and "" and "&f&lStats" and "&7 50%% Mining Speed Booster" and "&7 1m duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "sonic":
+			give arg-1 arg-1's head named "&9&lSonic Pet &7[%arg-1%]" with lore "&7Speed boost on-demand!" and "" and "&f&lStats" and "&7 Speed IV speed boost" and "&7 15s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "plague":
+			give arg-1 arg-1's head named "&a&lPlague Doctor Pet &7[%arg-1%]" with lore "&7Better chance to find" and "&7Zombie treasure at mine" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 +25%% Treasure spawn" and "" and "&f&lCooldown" and "&7 None"
+		if arg-2 is "lifesteal":
+			give arg-1 arg-1's head named "&c&lLifesteal Pet &7[%arg-1%]" with lore "&7Has a chance to steal" and "&7hearts from players" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 10%% Chance" and "" and "&f&lCooldown" and "&7 None"
+		if arg-2 is "key":
+			give arg-1 arg-1's head named "&6&lKey Pet &7[%arg-1%]" with lore "&7On use you will receive" and "&7a random key you" and "&7will be able to receive" and "&7Common,Unique,Epic,Legendary,Special" and "" and "&f&lStats" and "&7 Random Key" and "" and "&f&lCooldown" and "&7 1h" and "" and "&7(Right-click to activate)"
+		if arg-2 is "fishing":
+			give arg-1 arg-1's head named "&1&lFishing Pet &7[%arg-1%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 0.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "fishing+":
+			give arg-1 arg-1's head named "&1&lFishing+ Pet &7[%arg-1%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 2.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "parrot":
+			give arg-1 arg-1's head named "&5&lParrot Pet &7[%arg-1%]" with lore "&7Gives you the ability to" and "&7Fly at /mine!" and "" and "&f&lStats" and "&7 10m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+		if arg-2 is "strength":
+			give arg-1 arg-1's head named "&c&lStrength Pet &7[%arg-1%]" with lore "&7Gives you strength I" and "" and "&f&lStats" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 20m" and "" and "&7(Right-click to activate)"
+
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&a&lPlague Doctor Pet &7[%player%]" with lore "&7Better chance to find" and "&7Zombie treasure at mine" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 +25%% Treasure spawn" and "" and "&f&lCooldown" and "&7 None"
+	cancel event
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&c&lStrength Pet &7[%player%]" with lore "&7Gives you strength I" and "" and "&f&lStats" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 20m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {strength.%player%.lastused} and now
+	if {_waited} is less than 20 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 20 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&c&lStrength Pet » <##E63B3B>&lStrength pet activated!" to player
+		send ""
+		apply strength 1 without particles to player for 5 minutes
+		play sound "entity.experience_orb.pickup"
+		set {strength.%player%.lastused} to now
+		
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&d&lCupid Pet &7[%player%]" with lore "&7On use you will become" and "&7unkillable temporarily" and "" and "&f&lStats" and "&7 5s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {cupid.%player%.lastused} and now
+	if {_waited} is less than 5 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 5 minutes and {_waited}%&7)" to player
+	else:
+		set {god.%player%} to true
+		send ""
+		send centered "&d&lCupid Pet » <##E0115F>&lCupid pet activated!" to player
+		send ""
+		play sound "entity.experience_orb.pickup"
+		set {cupid.%player%.lastused} to now
+		wait 5 seconds
+		delete {god.%player%}
+	
+on join:
+	delete {god.%player%}
+
+on damage:
+	if victim is in world "mine":
+		if attacker is a player:
+			if {god.%victim%} is true:
+				send "" to attacker
+				send centered "&d&lCupid Pet » <##E0115F>&lCupid pet protection!" to attacker
+				send centered "&7%victim% Has active cupid pet protection!" to attacker
+				send "" to attacker
+				cancel event
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&e&lHaste Pet &7[%player%]" with lore "&7Re-usable Mining Speed Booster!" and "" and "&f&lStats" and "&7 50%% Mining Speed Booster" and "&7 1m duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {haste.%player%.lastused} and now
+	if {_waited} is less than 5 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 5 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&e&lHaste Pet » <##FFFAA0>&lHaste pet activated!" to player
+		send ""
+		apply haste 1 without particles to player for 1 minute
+		play sound "entity.experience_orb.pickup"
+		set {haste.%player%.lastused} to now
+		
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&9&lSonic Pet &7[%player%]" with lore "&7Speed boost on-demand!" and "" and "&f&lStats" and "&7 Speed IV speed boost" and "&7 15s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {sonic.%player%.lastused} and now
+	if {_waited} is less than 5 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 5 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&9&lSonic Pet » <##A0BBFF>&lSonic pet activated!" to player
+		send ""
+		apply speed 4 without particles to player for 15 seconds
+		play sound "entity.experience_orb.pickup"
+		set {sonic.%player%.lastused} to now
+
+# ------------------------------------------------------------------------
+
+on damage:
+	if attacker is in world "mine":
+		if attacker's inventory contains skull of attacker named "&c&lLifesteal Pet &7[%attacker%]" with lore "&7Has a chance to steal" and "&7hearts from players" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 10%% Chance" and "" and "&f&lCooldown" and "&7 None":
+			set {steal} to random integer between 1 and 100
+			if {steal} is between 1 and 8:
+				set {steal2} to random integer between 1 and 3
+				damage victim by {steal2} hearts
+				heal attacker by {steal2} hearts
+				send centered "<##E0115F>&lLIFESTEAL » <##FF2400>You stole %{steal2}%<##FF2400> hearts from %victim%!" to attacker
+				send centered "<##E0115F>&lLIFESTEAL » <##FF2400>%attacker% Stole %{steal2}%<##FF2400> hearts from you!" to victim
+				send action bar "<##E0115F>&lLIFESTEAL » <##FF2400>You stole %{steal2}%<##FF2400> hearts from %victim%!" to attacker
+				send action bar "send <##E0115F>&lLIFESTEAL » <##FF2400>%attacker% Stole %{steal2}%<##FF2400> hearts from you!" to victim
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&5&lParrot Pet &7[%player%]" with lore "&7Gives you the ability to" and "&7Fly at /mine!" and "" and "&f&lStats" and "&7 10m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {parrot.%player%.lastused} and now
+	if {_waited} is less than 15 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 15 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&5&lParrot Pet » <##B00CE1>&lParrot pet activated!" to player
+		send ""
+		set {parrot::%player%} to true
+		play sound "entity.experience_orb.pickup"
+		set {parrot.%player%.lastused} to now
+		set player's flight mode to true
+		wait 10 minutes
+		delete {parrot::%player%}
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&1&lFishing Pet &7[%player%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 0.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {fishing.%player%.lastused} and now
+	if {_waited} is less than 15 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 15 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&1&lFishing Pet » <##184AC9>&lFishing pet activated!" to player
+		send ""
+		set {fishpet::%player%} to true
+		play sound "entity.experience_orb.pickup"
+		set {fishing.%player%.lastused} to now
+		wait 5 minutes
+		delete {fishpet::%player%}
+
+on join:
+	delete {fishpet::%player%}
+	
+on fish:
+	fish state is CAUGHT_FISH
+	if {fishpet::%player%} is true:
+		chance of 0.5%:
+			set {p} to random number between 0.01 and 1
+			give player paper named "&5&l%{p}%$ Store Credit" with lore "" and "&7Obtained from fishing pet" and "&7%player%"
+			broadcast "&1&lFishing Pet &8&l» &7&n%player%&r&7 Has obtained %{p}%$ Store Credit"
+	else if {fishpet+::%player%} is true:
+		chance of 2.5%:
+			set {p} to random number between 0.01 and 1
+			give player paper named "&5&l%{p}%$ Store Credit" with lore "" and "&7Obtained from fishing+ pet" and "&7%player%"
+			broadcast "&1&lFishing+ Pet &8&l» &7&n%player%&r&7 Has obtained %{p}%$ Store Credit"
+
+# ------------------------------------------------------------------------
+
+
+
+on right click:
+	tool is player's head named "&6&lKey Pet &7[%player%]" with lore "&7On use you will receive" and "&7a random key you" and "&7will be able to receive" and "&7Common,Unique,Epic,Legendary,Special" and "" and "&f&lStats" and "&7 Random Key" and "" and "&f&lCooldown" and "&7 1h" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {key.%player%.lastused} and now
+	if {_waited} is less than 1 hour:
+		send "&c&lPET COOLDOWN! &7(%difference between 1 hour and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&6&lKey Pet » <##A0BBFF>&lKey Pet activated!" to player
+		set {key.%player%.lastused} to now
+		send ""
+		wait 1 second
+		set {key} to random integer between 1 and 10
+		if {key} is between 1 and 2:
+			execute console command "givekey %player% common 1"
+			send title "&f&l+1 Common Key" with subtitle "&aKey Pet"
+		if {key} is between 3 and 4:
+			execute console command "givekey %player% unique 1"
+			send title "&f&l+1 Unique Key" with subtitle "&aKey Pet"
+		if {key} is between 5 and 6:
+			execute console command "givekey %player% epic 1"
+			send title "&f&l+1 Epic Key" with subtitle "&aKey Pet"
+		if {key} is between 7 and 8:
+			execute console command "givekey %player% legendary 1"
+			send title "&f&l+1 Legendary Key" with subtitle "&aKey Pet"
+		if {key} is 9:
+			execute console command "givekey %player% special 1"
+			send title "&f&l+1 Special Key" with subtitle "&aKey Pet"
+		if {key} is 10:
+			execute console command "givekey %player% booster 1"
+			send title "&f&l+1 Booster Key" with subtitle "&aKey Pet"
+		play sound "entity.experience_orb.pickup"
+
+# ------------------------------------------------------------------------
+
+on right click:
+	tool is player's head named "&1&lFishing+ Pet &7[%player%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 2.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+	cancel event
+	set {_waited} to difference between {fishing+.%player%.lastused} and now
+	if {_waited} is less than 15 minutes:
+		send "&c&lPET COOLDOWN! &7(%difference between 15 minutes and {_waited}%&7)" to player
+	else:
+		send ""
+		send centered "&1&lFishing+ Pet » <##184AC9>&lFishing+ pet activated!" to player
+		send ""
+		set {fishpet+::%player%} to true
+		play sound "entity.experience_orb.pickup"
+		set {fishing+.%player%.lastused} to now
+		wait 5 minutes
+		delete {fishpet+::%player%}
+
+
+
+command /pets:
+	aliases: /pet
+	trigger:
+		create a gui with virtual chest inventory with 4 rows named "Pets Preview":
+			make gui slot 10 with 1 of player's skull named "&d&lCupid Pet &7[%player%]" with lore "&7On use you will become" and "&7unkillable temporarily" and "" and "&f&lStats" and "&7 5s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+			make gui slot 11 with 1 of player's skull named "&e&lHaste Pet &7[%player%]" with lore "&7Re-usable Mining Speed Booster!" and "" and "&f&lStats" and "&7 50%% Mining Speed Booster" and "&7 1m duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+			make gui slot 12 with 1 of player's skull named "&9&lSonic Pet &7[%player%]" with lore "&7Speed boost on-demand!" and "" and "&f&lStats" and "&7 Speed IV speed boost" and "&7 15s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)"
+			make gui slot 13 with 1 of player's skull named "&a&lPlague Doctor Pet &7[%player%]" with lore "&7Better chance to find" and "&7Zombie treasure at mine" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 +25%% Treasure spawn" and "" and "&f&lCooldown" and "&7 None"
+			make gui slot 14 with 1 of player's skull named "&c&lLifesteal Pet &7[%player%]" with lore "&7Has a chance to steal" and "&7hearts from players" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 10%% Chance" and "" and "&f&lCooldown" and "&7 None"
+			make gui slot 15 with 1 of player's skull named "&6&lKey Pet &7[%player%]" with lore "&7On use you will receive" and "&7a random key you" and "&7will be able to receive" and "&7Common,Unique,Epic,Legendary,Special" and "" and "&f&lStats" and "&7 Random Key" and "" and "&f&lCooldown" and "&7 1h" and "" and "&7(Right-click to activate)"
+			make gui slot 16 with 1 of player's skull named "&1&lFishing Pet &7[%player%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 0.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+			make gui slot 19 with 1 of player's skull named "&1&lFishing+ Pet &7[%player%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 2.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)" and "" and "&7(( Obtained from the Godly Lootbox ))"
+			make gui slot 20 with 1 of player's skull named "&5&lParrot Pet &7[%player%]" with lore "&7Gives you the ability to" and "&7Fly at /mine!" and "" and "&f&lStats" and "&7 10m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)"
+			make gui slot 21 with 1 of player's skull named "&c&lStrength Pet &7[%player%]" with lore "&7Gives you strength I" and "" and "&f&lStats" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 20m" and "" and "&7(Right-click to activate)"
+
+
+
+		open last gui to player
+
+		
+on place of player head:
+	cancel event
+	

@@ -1,0 +1,138 @@
+options:
+    prefix: &3&lAcid&b&lGens <##FFBF00>&l
+    wheatItem: hay bale named "&eWheat Generator" with lore "&7Output: &e$5" and "&7Tier: &e1"
+    melonItem: melon block named "&eMelon Generator" with lore "&7Output: &e$10" and "&7Tier: &e2"
+    pumpkinItem: pumpkin named "&ePumpkin Generator" with lore "&7Output: &e$20" and "&7Tier: &e3"
+    coalItem: coal block named "&eCoal Generator" with lore "&7Output: &e$35" and "&7Tier: &e4"
+    ironItem: iron block named "&eIron Generator" with lore "&7Output: &e$50" and "&7Tier: &e5"
+    goldItem: gold block named "&eGold Generator" with lore "&7Output: &e$75" and "&7Tier: &e6"
+    redstoneItem: redstone block named "&eRedstone Generator" with lore "&7Output: &e$100" and "&7Tier: &e7"
+    lapisItem: lapis block named "&eLapis Generator" with lore "&7Output: &e$150" and "&7Tier: &e8"
+    diamondItem: diamond block named "&eDiamond Generator" with lore "&7Output: &e$200" and "&7Tier: &e9"
+    emeraldItem: emerald block named "&eEmerald Generator" with lore "&7Output: &e$250" and "&7Tier: &e10"
+    magmaItem: magma block named "&eMagma Generator" with lore "&7Output: &e$300" and "&7Tier: &e11"
+    obsidianItem: obsidian named "&eObsidian Generator" with lore "&7Output: &e$400" and "&7Tier: &e12"
+    netheriteItem: netherite block named "&eNetherite Generator" with lore "&7Output: &e$500" and "&7Tier: &e13"
+    starItem: beacon named "&eStar Generator" with lore "&7Output: &e$750" and "&7Tier: &e14"
+    abyssItem: crying obsidian named "&eAbyss Generator" with lore "&7Output: &e$1000" and "&7Tier: &e15"
+    dailyKey: tripwire hook named "&7Common Key" with lore "&7Use at /crates"
+    OddKey: tripwire hook named "&aUnique Key" with lore "&7Use at /crates"
+    MysticKey: tripwire hook named "&5Epic Key" with lore "&7Use at /crates"
+    AngelicKey: tripwire hook named "&6Legendary Key" with lore "&7Use at /crates"
+    TitanKey: tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+
+function isDivisible(level: integer, divisible: integer) :: boolean:
+    set {_mod} to mod({_level}, {_divisible})
+    if {_mod} is equal to 0:
+        return true
+    return false
+
+command /setlevel <offline player> <integer>:
+    permission: admin
+    trigger:
+        set {level::%arg-1%} to arg-2
+
+command /setxp <offline player> <integer>:
+    permission: admin
+    trigger:
+        set {experience::%arg-1%} to arg-2
+
+function xpNeeded(level: number) :: integer:
+    return round({_level}*25*2^(({_level}/10+1)/2))
+
+function itemCheck(item: item, inventory: inventory) :: number:
+    set {_amount} to amount of {_item} in {_inventory}
+    remove {_amount} of {_item} from {_inventory}
+    return  {_amount}
+
+function checkLevel(player: player):
+    set {_needed} to xpNeeded(1+{level::%{_player}%})
+    if {experience::%{_player}%} is greater than or equal to {_needed}:
+        set {experience::%{_player}%} to {experience::%{_player}%}-{_needed}
+        add 1 to {level::%{_player}%}
+        send "&3&lAcid&b&lGens <##FFBF00>&l &7You leveled up to &eLevel %{level::%{_player}%}% &7and earned a &e%getReward({_player})%&7!" to {_player}
+        play sound "ui.toast.challenge_complete" with volume 1 and pitch 2 at location of {_player} for {_player}
+        wait 3 tick
+        checkLevel({_player})
+
+function getReward(player: player) :: text:
+    set {_level} to {level::%{_player}%}
+    if isDivisible({_level}, 25):
+        give {_player} 1 of {@AngelicKey}
+        return "Legendary Key"
+    else if isDivisible({_level}, 10):
+        give {_player} 1 of {@MysticKey}
+        return "Epic Key"
+    else if isDivisible({_level}, 5):
+        give {_player} 1 of {@OddKey}
+        return "Unique Key"
+    else if isDivisible({_level}, 2):
+        set {_tokens} to {_level}*5
+        add {_tokens} to {tokens::%{_player}%}
+        return "%{_tokens}% Tokens"
+    else:
+        set {_random} to a random number between 1 and 4
+        if {_random} is 1:
+            set {_tokens} to {_level}*3
+            add {_tokens} to {tokens::%{_player}%}
+            return "%{_tokens}% Tokens"
+        if {_random} is 2:
+            set {_tokens} to {_level}*2
+            add {_tokens} to {tokens::%{_player}%}
+            return "%{_tokens}% Tokens"
+        else if {_random} is 3:
+            give {_player} 1 of {@dailyKey}
+            return "Common Key"
+        else:
+            give {_player} 2 of {@dailyKey}
+            return "Common Keys"
+
+function getItemXP(item: item) :: number:
+    if {_item} is wheat:
+        return 3
+    else if {_item} is melon slice:
+        return 6
+    else if {_item} is pumpkin pie:
+        return 9
+    else if {_item} is coal:
+        return 15
+    else if {_item} is iron ingot:
+        return 24
+    else if {_item} is gold ingot:
+        return 30
+    else if {_item} is redstone:
+        return 39
+    else if {_item} is lapis:
+        return 48
+    else if {_item} is diamond:
+        return 60
+    else if {_item} is emerald:
+        return 72
+    else if {_item} is magma cream:
+        return 84
+    else if {_item} is flint:
+        return 99
+    else if {_item} is netherite ingot:
+        return 120
+    else if {_item} is nether star:
+        return 135
+    else if {_item} is dried kelp:
+        return 150
+    else if {_item} is brown mushroom:
+        return 165
+    else if {_item} is red mushroom:
+        return 180
+    else if {_item} is crying obsidian:
+        return 195
+    else if {_item} is Crimson Fungus:
+        return 210
+    else if {_item} is Warped Fungus:
+        return 225
+    else if {_item} is Wither rose:
+        return 240
+    else if {_item} is bone:
+        return 255
+    else if {_item} is gunpowder:
+        return 270
+    else if {_item} is honeycomb:
+        return 285

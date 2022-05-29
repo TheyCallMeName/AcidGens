@@ -1,0 +1,299 @@
+options:
+	prefix: &3&lAcidGens &8»&7
+	color_main: &7
+	color_second: &b
+	color_third: &3
+	color_separator: &8
+	color_error: &c
+	no_permission: &c&l[!] &cYou need &7<permission> &cto do this command!
+	not_player: &c&l[!] &cOnly players can do this command!
+	wrong_usage: &c&l[!] &cCorrect usage: &7<usage>
+
+
+
+# Holograms
+function Holograms_Create(id: string, lines: string, loc: location, inverse: boolean = false):
+	if {api::holograms::%{_id}%::*} is not set:
+		set {_splitted_lines::*} to split {_lines} at "|"
+		if {_inverse} = true:
+			set {_splitted_lines::*} to reversed {_splitted_lines::*}
+		set {_offset} to 0
+		set {api::holograms::%{_id}%::inverse} to {_inverse}
+		set {api::holograms::%{_id}%::location} to {_loc}
+		set {api::holograms::%{_id}%::is_loaded} to false
+		set {_loops} to 0
+		loop {_splitted_lines::*}:
+			add 1 to {_loops}
+			set {api::holograms::%{_id}%::offset} to {_offset}
+			set {api::holograms::%{_id}%::lines::%{_loops}%} to loop-value
+		Holograms_Load({_id})
+
+function Holograms_Delete(id: string):
+	if {api::holograms::%{_id}%::*} is set:
+		set {_offset} to 0
+		set {_inverse} to {api::holograms::%{_id}%::inverse}
+		set {_location} to {api::holograms::%{_id}%::location}
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_offset} to {_offset} - 0.25 if {_inverse} = true
+			set {_offset} to {_offset} + 0.25 if {_inverse} = false
+			kill all entities in radius 0.01 of location {_offset} below {_location} where [input = armor stand]
+		delete {api::holograms::%{_id}%::*}
+
+function Holograms_SetLine(id: string, line: integer, new_line: string):
+	if {api::holograms::%{_id}%::*} is set:
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_loop_line} to loop-index parsed as an integer
+			if {_loop_line} = {_line}:
+				set {api::holograms::%{_id}%::lines::%loop-index%} to {_new_line}
+		Holograms_Unload({_id})
+		Holograms_Load({_id})
+
+function Holograms_Insertline(id: string, line: integer, new_line: string):
+	if {api::holograms::%{_id}%::*} is set:
+		set {_lines::*} to {api::holograms::%{_id}%::lines::*}
+		set {_loops} to 0
+		loop {_lines::*}:
+			add 1 to {_loops}
+			if {_loops} = {_line}:
+				add {_new_line} to {_new_lines::*}
+			add loop-value to {_new_lines::*}
+		set {api::holograms::%{_id}%::lines::*} to {_new_lines::*}
+		Holograms_Unload({_id})
+		Holograms_Load({_id})
+
+function Holograms_RemoveLine(id: string, line: integer):
+	if {api::holograms::%{_id}%::is_loaded} is true:
+		if {api::holograms::%{_id}%::lines::%{_line}%} is set:
+			delete {api::holograms::%{_id}%::lines::%{_line}%}
+			set {api::holograms::%{_id}%::lines::*} to {api::holograms::%{_id}%::lines::*}
+			Holograms_Unload({_id})
+			Holograms_Load({_id})
+
+function Holograms_LoadAll():
+	Holograms_UnloadAll()
+	loop indices of {api::holograms::*}:
+		set {_id} to loop-value
+		set {_offset} to 0
+		set {_inverse} to {api::holograms::%{_id}%::inverse}
+		set {_location} to {api::holograms::%{_id}%::location}
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_offset} to {_offset} - 0.25 if {_inverse} = true
+			set {_offset} to {_offset} + 0.25 if {_inverse} = false
+			if loop-value-2 != "{empty}":
+				spawn 1 armor stand at location {_offset} below {_location}
+				set {_stand} to the last spawned armor stand
+				add "{CustomNameVisible:1,Small:1,Invisible:1,Invulnerable:1,NoGravity:1}" to nbt of {_stand}
+				set the display name of {_stand} to colored loop-value-2
+		set {api::holograms::%{_id}%::is_loaded} to true
+
+function Holograms_UnloadAll():
+	loop indices of {api::holograms::*}:
+		set {_id} to loop-value
+		set {_offset} to 0
+		set {_inverse} to {api::holograms::%{_id}%::inverse}
+		set {_location} to {api::holograms::%{_id}%::location}
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_offset} to {_offset} - 0.25 if {_inverse} = true
+			set {_offset} to {_offset} + 0.25 if {_inverse} = false
+			kill all entities in radius 0.01 of location {_offset} below {_location} where [input = armor stand]
+		set {api::holograms::%{_id}%::is_loaded} to false
+
+function Holograms_Load(id: string):
+	Holograms_Unload({_id})
+	if {api::holograms::%{_id}%::*} is set:
+		set {_offset} to 0
+		set {_inverse} to {api::holograms::%{_id}%::inverse}
+		set {_location} to {api::holograms::%{_id}%::location}
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_offset} to {_offset} - 0.25 if {_inverse} = true
+			set {_offset} to {_offset} + 0.25 if {_inverse} = false
+			if loop-value != "{empty}":
+				spawn 1 armor stand at location {_offset} below {_location}
+				set {_stand} to the last spawned armor stand
+				add "{CustomNameVisible:1,Small:1,Invisible:1,Invulnerable:1,NoGravity:1}" to nbt of {_stand}
+				set the display name of {_stand} to colored loop-value
+		set {api::holograms::%{_id}%::is_loaded} to true
+
+function Holograms_Unload(id: string):
+	if {api::holograms::%{_id}%::*} is set:
+		set {_offset} to 0
+		set {_inverse} to {api::holograms::%{_id}%::inverse}
+		set {_location} to {api::holograms::%{_id}%::location}
+		loop {api::holograms::%{_id}%::lines::*}:
+			set {_offset} to {_offset} - 0.25 if {_inverse} = true
+			set {_offset} to {_offset} + 0.25 if {_inverse} = false
+			kill all entities in radius 0.01 of location {_offset} below {_location} where [input = armor stand]
+		set {api::holograms::%{_id}%::is_loaded} to false
+
+
+
+# Economy
+function Economy_Get(plr: offline player, currency: string) :: number:
+	set {_uuid} to uuid of {_plr}
+	return {api::balance_%{_currency}%::%{_uuid}%} ? 0
+
+function Economy_Set(plr: offline player, currency: string, amount: number):
+	set {_uuid} to uuid of {_plr}
+	set {api::balance_%{_currency}%::%{_uuid}%} to {_amount}
+
+function Economy_Give(plr: offline player, currency: string, amount: number):
+	set {_uuid} to uuid of {_plr}
+	if {_amount} >= 0:
+		add {_amount} to {api::balance_%{_currency}%::%{_uuid}%}
+
+function Economy_Take(plr: offline player, currency: string, amount: number):
+	set {_uuid} to uuid of {_plr}
+	if {_amount} >= 0:
+		remove {_amount} from {api::balance_%{_currency}%::%{_uuid}%}
+
+# Sounds
+function Sound_Click(plr: player):
+	play sound "ui.button.click" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Bass(plr: player):
+	play sound "block.note_block.bass" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Harp(plr: player):
+	play sound "block.note_block.harp" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Pling(plr: player):
+	play sound "block.note_block.pling" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Bit(plr: player):
+	play sound "block.note_block.bit" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_PageTurn(plr: player):
+	play sound "item.book.page_turn" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_OrbPickup(plr: player):
+	play sound "entity.experience_orb.pickup" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Levelup(plr: player):
+	play sound "entity.player.levelup" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Completed(plr: player):
+	play sound "ui.toast.challenge_complete" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_No(plr: player):
+	play sound "entity.villager.no" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Yes(plr: player):
+	play sound "entity.villager.yes" with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+function Sound_Custom(plr: player, sound: string):
+	play sound {_sound} with volume 1 with pitch 1 at location of {_plr} for {_plr}
+
+# Prettify
+function Prettify_Time(time: timespan) :: string:
+	set {_fancier_time} to "%{_time}%"
+	replace all " seconds" or " second" in {_fancier_time} with "s"
+	replace all " minutes" or " minute" in {_fancier_time} with "m"
+	replace all " hours" or " hour" in {_fancier_time} with "h"
+	replace all " days" or " day" in {_fancier_time} with "d"
+	replace all " weeks" or " week" in {_fancier_time} with "w"
+	replace all " and" or "and" or "and " or " and " in {_fancier_time} with " "
+	replace all "  " in {_fancier_time} with " "
+	return {_fancier_time}
+
+function Prettify_Number(n: number) :: string:
+	set {_n} to 0 if {_n} is not set
+	set {_l::*} to split "K|M|B|T|Qn|Qi|Sx|Sp|Oc|Ud|Td|Qad|Ocd" at "|"
+	set {_i} to min(floor(log({_n})/3), size of {_l::*})
+	return "%{_n}%" if {_i} <= 0
+	set {_i2} to 1000^{_i}
+	return "%{_n}/{_i2}%%{_l::%{_i}%}%"
+
+function Prettify_Number2(b: text) :: text:
+	if length of {_b} > 3:
+		return "%Prettify_Number2(first length of {_b} - 3 characters of {_b})%,%last 3 characters of {_b}%"
+	return {_b}
+
+# Staff Alerts
+function Staff_Alert(message: string):
+	loop all players:
+		loop-player has permission "staff.alerts_see"
+		send "{@color_third}&lStaff Alerts &8» {@color_main}%{_message}%" to loop-player
+
+
+
+# Conversions
+function Convert_StringToTime(str_to_convert: string) :: timespan:
+	set {_convert} to {_str_to_convert}
+	replace "m" in {_conert} with " month"
+	replace "w" in {_convert} with " week"
+	replace "d" in {_convert} with " day"
+	replace "h" in {_convert} with " hour"
+	replace "m" in {_convert} with " minute"
+	replace "s" in {_convert} with " second"
+	replace "_" in {_convert} with " and "
+	return {_convert} parsed as an timespan
+
+
+
+# Progress Bar
+function Information_ProgressBar(int: integer, max: integer, barsize: integer) :: string:
+	loop {_barsize} times:
+		set {_bar} to "%{_bar} ? """"%|"
+	return "&8&l[&a%((first floor({_barsize} * ({_int}/{_max})) characters of {_bar}) ? """")%&c%(last {_barsize} - floor({_barsize} * ({_int}/{_max})) characters of {_bar}) ? """"%&8&l]"
+
+
+
+# Errors
+function Errors_NoPermission(sender: sender, permission: string):
+	set {_message} to "{@no_permission}"
+	replace "<permission>" in {_message} with {_permission}
+	Sound_No({_plr})
+	send {_message} to {_sender}
+
+function Errors_NotPlayer(sender: sender):
+	set {_message} to "{@not_player}"
+	send {_message} to {_sender}
+
+function Errors_IncorrectUsage(sender: sender, usage: string):
+	set {_message} to "{@wrong_usage}"
+	replace "<usage>" in {_message} with {_usage}
+	Sound_No({_plr})
+	send {_message} to {_sender}
+
+
+
+# Miscallaneous
+function Misc_GenerateString(amount: integer, has_numbers: boolean) :: string:
+	set {_list::*} to ""
+	loop {_amount} times:
+		set {_random} to random element of {letters::list::*} if {_has_numbers} = false
+		set {_random} to random element of {letters::list::*} where ["0123456789" does not contain input] if {_has_numbers} = true
+		add {_random} to {_list::*}
+	return (join {_list::*} with "")
+
+
+
+# Random
+function Random_WeightRandom(chances: numbers, ids: objects, sum: number = 0) :: object:
+    if {_sum} = 0:
+        loop {_chances::*}:
+            add loop-value to {_sum}
+    set {_random} to random number between 0 and {_sum}
+    set {_a} to 0
+    loop {_chances::*}:
+        add 1 to {_n}
+        add loop-value to {_current}
+        {_random} <= {_current}
+        return {_n}th element of {_ids::*}
+
+
+
+# Letters List
+on script load:
+	delete {letters::*}
+	wait 10 ticks
+	set {_letters} to "Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz"
+	set {_pairedletters::*} to {_letters} split at " "
+	loop {_pairedletters::*}:
+		set {_pair::*} to loop-value split at ""
+		set {_uppercase} to {_pair::1}
+		set {_lowercase} to {_pair::2}
+		set {letters::uppercase::%{_lowercase}%} to {_uppercase}
+		set {letters::lowercase::%{_uppercase}%} to {_lowercase}
+		add {_lowercase} to {letters::list::*}
+	add "0", "1", "2", "3", "4", "5", "6", "7", "8" and "9" to {letters::list::*}

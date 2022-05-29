@@ -1,0 +1,421 @@
+options:
+
+    # The prefix of this Skript uses in messages.
+    prefix: &3&lAcid&b&lBosses &8»&7
+
+    # The message border this Skript uses, Make it "none" if you don't want it.
+    borders: none
+
+    # The colors this Skript uses in message.
+    color_main: &a
+    color_second: &e
+    color_third: &6
+    color_separator: &8
+    color_error: &c
+
+    # The items this Skript uses in GUIs.
+    border_main: black stained glass pane named ""
+    border_second: black stained glass pane named ""
+    pagination_empty: red stained glass pane named ""
+    air: air
+
+    # The error messages this Skript uses.
+    no_permission: &c&l[!] &cYou need &7<permission> &cto do this command!
+    not_player: &c&l[!] &cOnly players can do this command!
+    wrong_usage: &c&l[!] &cCorrect usage: &7<usage>
+
+    # The sounds this Skript uses.
+    sound_error: BLOCK_NOTE_BLOCK_BASS
+    sound_success: BLOCK_NOTE_BLOCK_PLING
+    sound_prompt: BLOCK_NOTE_BLOCK_BELL
+    sound_click: UI_BUTTON_CLICK
+    sound_boss_killed: item.totem.use
+
+    # Amount of bosses that spawn.
+    bosses_amount: 1
+
+    # Health of bosses that spawn.
+    bosses_health: 100
+
+    # The equipment of bosses.
+    sword: diamond sword of sharpness 20
+    helmet: diamond helmet of protection 5
+    chestplate: diamond chestplate of protection 5
+    leggings: diamond leggings of protection 5
+    boots: diamond boots of protection 5
+
+# How often sosses spawn.
+every 29 minutes:
+    set {bosses::last_spawned} to now
+    Bosses_SpawnBosses()
+
+#             WARNING!
+# Everything after this is hard code.
+# Editing the code may cause problems.
+
+
+
+# My API
+function Errors_NoPermission(sender: player, permission: string):
+	set {_message} to "{@no_permission}"
+	replace "<permission>" in {_message} with {_permission}
+	Sound_PlaySound({_plr}, "{@sound_error}")
+	send {_message} to {_sender}
+
+function Errors_NotPlayer(sender: player):
+	set {_message} to "{@not_player}"
+	send {_message} to {_sender}
+
+function Errors_IncorrectUsage(sender: player, usage: string):
+	set {_message} to "{@wrong_usage}"
+	replace "<usage>" in {_message} with {_usage}
+	Sound_PlaySound({_plr}, "{@sound_error}")
+	send {_message} to {_sender}
+
+function Sound_PlaySound(plr: player, sound: string, pitch: number = 1):
+    play sound {_sound} at pitch {_pitch} to {_plr}
+
+function Bosses_SpawnBosses():
+    wait 1 second
+    play sound "{@sound_success}" to all players
+    send "" to all players
+    send "{@prefix} {@color_main}&lBoss has just spawned in the mines!" to all players
+    send "{@prefix} {@color_main}&lGo find him!" to all players
+    send "" to all players
+    loop {@bosses_amount} times:
+        set {_loc} to random element out of {boss_locs::*}
+        Bosses_SpawnBoss({_loc})
+        wait 5 seconds
+        send "{@prefix} {@color_main}Boss was last seen at %{_loc}%" to all players
+
+function Bosses_SpawnBoss(loc: location):
+    set {_1} to random integer between 1 and 10
+    if {_1} is between 1 and 5:
+        summon adult drowned at {_loc}
+        set {_entity} to last spawned entity
+        set display name of {_entity} to "{@color_third}&lDrowned Boss"
+        set weapon of {_entity} to {@sword}
+        apply speed 1 to {_entity} for 1 hour
+        apply strength 1 to {_entity} for 1 hour
+        equip {_entity} with {@sword}
+        equip {_entity} with {@chestplate}
+        equip {_entity} with {@leggings}
+        equip {_entity} with {@boots}
+        apply resistance 2 without particles to {_entity} for 10 seconds
+        set max health of {_entity} to {@bosses_health}
+        heal {_entity}
+    if {_1} is between 6 and 9:
+        summon polar bear at {_loc}
+        set {_entity} to last spawned entity
+        set display name of {_entity} to "{@color_third}&lPolar Boss"
+        set weapon of {_entity} to {@sword}
+        apply speed 1 to {_entity} for 1 hour
+        apply strength 3 to {_entity} for 1 hour
+        equip {_entity} with {@sword}
+        equip {_entity} with {@chestplate}
+        equip {_entity} with {@leggings}
+        equip {_entity} with {@boots}
+        apply resistance 3 without particles to {_entity} for 10 seconds
+        set max health of {_entity} to 125
+        heal {_entity}
+    if {_1} is 10:
+        summon snowman at {_loc}
+        set {_entity} to last spawned entity
+        set display name of {_entity} to "{@color_third}&lSnowman Boss"
+        set weapon of {_entity} to {@sword}
+        apply speed 2 to {_entity} for 1 hour
+        apply strength 4 to {_entity} for 1 hour
+        equip {_entity} with {@sword}
+        equip {_entity} with {@chestplate}
+        equip {_entity} with {@leggings}
+        equip {_entity} with {@boots}
+        apply resistance 4 without particles to {_entity} for 10 seconds
+        set max health of {_entity} to 200
+        heal {_entity}
+
+
+on death:
+    if victim's display name contains "&6&l" and "boss" and "drowned":
+        play sound "{@sound_boss_killed}" to all players
+        clear drops
+        set {_top_damagers::*} to sorted {bosses_damage::%victim%::*} from highest to lowest with format "@index^@value"
+        set {_loops} to 3
+        set {_place} to 1
+        broadcast "{@prefix} {@color_main}Top Killers of {@color_second}%victim's display name%"
+        loop {_top_damagers::*}:
+            add 1 to {_loops}
+            if {_loops} >= 3:
+                set {_split_data} to "%loop-value%"
+                set {_data::*} to {_split_data} split at "^"
+                set {_player} to {_data::1} parsed as an player
+                set {_uuid} to uuid of {_player}
+                {_data::1} isn't "<none>"
+                {_data::1} isn't "null"
+                broadcast "{@prefix} &b&l##%{_place}%&b » &e%{_data::1} parsed as an offline player% &8- &e%round({_data::2} parsed as an number)% &edamage"
+                if {_loops} = 4:
+                    set {_first} to random integer between 1 and 100
+                    if {_first} is between 1 and 10:
+                        console command "addbpmulti %{_player}% 0.10"
+                        send "{@prefix} {@color_main}You got a 0.05x BP Multi!" to {_player}
+                    else if {_first} is between 11 and 20:
+                        console command "addgens %{_player}% 20"
+                        send "{@prefix} {@color_main}You got 10 Gen slots!" to {_player}
+                    else if {_first} is between 21 and 30:
+                        console command "addmultil %{_player}% 0.10"
+                        send "{@prefix} {@color_main}You got 0.05x Multiplier!" to {_player}
+                    else if {_first} is between 31 and 50:
+                        give {_player} 1 white glazed terracotta named "<##89CFF0>Token Generator"
+                        send "{@prefix} {@color_main}You got &n1&r Token Generator!" to {_player}
+                    else if {_first} is between 51 and 70:
+                        give {_player} 5 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" 
+                        send "{@prefix} {@color_main}You got x5 Special Key!" to {_player}
+                    else if {_first} is between 71 and 100:
+                        add 5000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 5B Balance!" to {_player}
+                if {_loops} = 5:
+                    set {_second} to random integer between 1 and 100
+                    if {_second} is between 1 and 20:
+                        add 25000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 25,000 Tokens!" to {_player}
+                    else if {_second} is between 21 and 40:
+                        add 3000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 3B Balance!" to {_player}
+                    else if {_second} is between 41 and 60:
+                        give {_player} 3 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+                        send "{@prefix} {@color_main}You got 3 Special Keys!" to {_player}
+                    else if {_second} is between 61 and 80:
+                        console command "addgens %{_player}% 10"
+                        send "{@prefix} {@color_main}You got 10 Gen slots!" to {_player}
+                    else if {_second} is between 81 and 100:
+                        console command "addbpmulti %{_player}% 0.05"
+                        send "{@prefix} {@color_main}You got a 0.05x BP Multi!" to {_player}
+                if {_loops} = 6:
+                    set {_third} to random integer between 1 and 100
+                    if {_third} is between 1 and 30:
+                        add 25000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 25,000 Tokens!" to {_player}
+                    else if {_third} is between 31 and 50:
+                        console command "addgens %{_player}% 5"
+                        send "{@prefix} {@color_main}You got 5 Gen Slots!" to {_player}
+                    else if {_third} is between 51 and 70:
+                        console command "addmultil %{_player}% 0.02"
+                        send "{@prefix} {@color_main}You got a 0.02x Multi!" to {_player}
+                    else if {_third} is between 71 and 90:
+                        add 1000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 1B Balance!" to {_player}
+                    else if {_third} is between 91 and 100:
+                        add 1000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 1B Balance!" to {_player}
+                add 1 to {_place}
+                if {_loops} >= 6:
+                    stop loop
+        delete {bosses_damage::%victim%::*}
+
+on death:
+    if victim's display name contains "&6&l" and "boss" and "polar":
+        play sound "{@sound_boss_killed}" to all players
+        clear drops
+        set {_top_damagers::*} to sorted {bosses_damage::%victim%::*} from highest to lowest with format "@index^@value"
+        set {_loops} to 3
+        set {_place} to 1
+        broadcast "{@prefix} {@color_main}Top Killers of {@color_second}%victim's display name%"
+        loop {_top_damagers::*}:
+            add 1 to {_loops}
+            if {_loops} >= 3:
+                set {_split_data} to "%loop-value%"
+                set {_data::*} to {_split_data} split at "^"
+                set {_player} to {_data::1} parsed as an player
+                set {_uuid} to uuid of {_player}
+                {_data::1} isn't "<none>"
+                {_data::1} isn't "null"
+                broadcast "{@prefix} &b&l##%{_place}%&b » &e%{_data::1} parsed as an offline player% &8- &e%round({_data::2} parsed as an number)% &edamage"
+                if {_loops} = 4:
+                    set {_first} to random integer between 1 and 100
+                    if {_first} is between 1 and 10:
+                        console command "addbpmulti %{_player}% 0.15"
+                        send "{@prefix} {@color_main}You got a 0.15x BP Multi!" to {_player}
+                    else if {_first} is between 11 and 20:
+                        console command "addgens %{_player}% 20"
+                        send "{@prefix} {@color_main}You got 20 Gen slots!" to {_player}
+                    else if {_first} is between 21 and 30:
+                        console command "addmultil %{_player}% 0.10"
+                        send "{@prefix} {@color_main}You got 0.15x Multiplier!" to {_player}
+                    else if {_first} is between 31 and 50:
+                        give {_player} 3 white glazed terracotta named "<##89CFF0>Token Generator"
+                        send "{@prefix} {@color_main}You got &n3&r Token Generator!" to {_player}
+                    else if {_first} is between 51 and 70:
+                        give netherite sword of sharpness 8 and fire aspect 3 named "&6&lLEGENDARY Sword" with lore "" and "&7Obtained from Polar Bear Boss" to {_player}
+                        send "{@prefix} {@color_main}You got a Legendary Sword!" to {_player}
+                    else if {_first} is between 71 and 100:
+                        add 15000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 15B Balance!" to {_player}
+                if {_loops} = 5:
+                    set {_second} to random integer between 1 and 100
+                    if {_second} is between 1 and 20:
+                        add 70000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 70,000 Tokens!" to {_player}
+                    else if {_second} is between 21 and 40:
+                        add 10000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 10B Balance!" to {_player}
+                    else if {_second} is between 41 and 60:
+                        give {_player} 3 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+                        send "{@prefix} {@color_main}You got 3 Special Keys!" to {_player}
+                    else if {_second} is between 61 and 80:
+                        console command "addgens %{_player}% 10"
+                        send "{@prefix} {@color_main}You got 10 Gen slots!" to {_player}
+                    else if {_second} is between 81 and 100:
+                        console command "addbpmulti %{_player}% 0.07"
+                        send "{@prefix} {@color_main}You got a 0.07x BP Multi!" to {_player}
+                if {_loops} = 6:
+                    set {_third} to random integer between 1 and 100
+                    if {_third} is between 1 and 30:
+                        add 50000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 50,000 Tokens!" to {_player}
+                    else if {_third} is between 31 and 50:
+                        console command "addgens %{_player}% 8"
+                        send "{@prefix} {@color_main}You got 8 Gen Slots!" to {_player}
+                    else if {_third} is between 51 and 70:
+                        console command "addmultil %{_player}% 0.05"
+                        send "{@prefix} {@color_main}You got a 0.05x Multi!" to {_player}
+                    else if {_third} is between 71 and 90:
+                        add 5000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 5B Balance!" to {_player}
+                    else if {_third} is between 91 and 100:
+                        add 6000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 6B Balance!" to {_player}
+                add 1 to {_place}
+                if {_loops} >= 6:
+                    stop loop
+        delete {bosses_damage::%victim%::*}
+
+on death:
+    if victim's display name contains "&6&l" and "boss" and "snowman":
+        play sound "{@sound_boss_killed}" to all players
+        clear drops
+        set {_top_damagers::*} to sorted {bosses_damage::%victim%::*} from highest to lowest with format "@index^@value"
+        set {_loops} to 3
+        set {_place} to 1
+        broadcast "{@prefix} {@color_main}Top Killers of {@color_second}%victim's display name%"
+        loop {_top_damagers::*}:
+            add 1 to {_loops}
+            if {_loops} >= 3:
+                set {_split_data} to "%loop-value%"
+                set {_data::*} to {_split_data} split at "^"
+                set {_player} to {_data::1} parsed as an player
+                set {_uuid} to uuid of {_player}
+                {_data::1} isn't "<none>"
+                {_data::1} isn't "null"
+                broadcast "{@prefix} &b&l##%{_place}%&b » &e%{_data::1} parsed as an offline player% &8- &e%round({_data::2} parsed as an number)% &edamage"
+                if {_loops} = 4:
+                    set {_first} to random integer between 1 and 100
+                    if {_first} is between 1 and 40:
+                        console command "/givemonthly %{_player}% 1"
+                        send "{@prefix} {@color_main}You got a Halloween Lootbox!" to {_player}
+                    else if {_first} is between 11 and 20:
+                        console command "addgens %{_player}% 50"
+                        send "{@prefix} {@color_main}You got 50 Gen slots!" to {_player}
+                    else if {_first} is between 41 and 50:
+                        give netherite axe of sharpness 9 and fire aspect 3 named "&6&lGOD Axe" with lore "" and "&7Obtained from Snowman Boss" to {_player}
+                        send "{@prefix} {@color_main}You got the GOD AXE!" to {_player}
+                    else if {_first} is between 51 and 60:
+                        give {_player} 5 white glazed terracotta named "<##89CFF0>Token Generator"
+                        send "{@prefix} {@color_main}You got &n5&r Token Generator!" to {_player}
+                    else if {_first} is between 61 and 80:
+                        give {_player} 15 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates" 
+                        send "{@prefix} {@color_main}You got x15 Special Key!" to {_player}
+                    else if {_first} is between 81 and 100:
+                        add 50000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 50B Balance!" to {_player}
+                if {_loops} = 5:
+                    set {_second} to random integer between 1 and 100
+                    if {_second} is between 1 and 20:
+                        add 100000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 100,000 Tokens!" to {_player}
+                    else if {_second} is between 21 and 40:
+                        add 25000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got 25B Balance!" to {_player}
+                    else if {_second} is between 41 and 60:
+                        give {_player} 10 tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+                        send "{@prefix} {@color_main}You got 10 Special Keys!" to {_player}
+                    else if {_second} is between 61 and 80:
+                        console command "addgens %{_player}% 15"
+                        send "{@prefix} {@color_main}You got 15 Gen slots!" to {_player}
+                    else if {_second} is between 81 and 100:
+                        console command "addbpmulti %{_player}% 0.15"
+                        send "{@prefix} {@color_main}You got a 0.15x BP Multi!" to {_player}
+                if {_loops} = 6:
+                    set {_third} to random integer between 1 and 100
+                    if {_third} is between 1 and 30:
+                        add 100000 to {tokens::%{_player}%}
+                        send "{@prefix} {@color_main}You got 100,000 Tokens!" to {_player}
+                    else if {_third} is between 31 and 50:
+                        console command "addgens %{_player}% 10"
+                        send "{@prefix} {@color_main}You got 10 Gen Slots!" to {_player}
+                    else if {_third} is between 51 and 70:
+                        console command "addmultil %{_player}% 0.05"
+                        send "{@prefix} {@color_main}You got a 0.05x Multi!" to {_player}
+                    else if {_third} is between 71 and 90:
+                        add 15000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 15B Balance!" to {_player}
+                    else if {_third} is between 91 and 100:
+                        add 15000000000 to balance of {_player}
+                        send "{@prefix} {@color_main}You got a 15B Balance!" to {_player}
+                add 1 to {_place}
+                if {_loops} >= 6:
+                    stop loop
+        delete {bosses_damage::%victim%::*}
+
+
+command /bosslocations [<string>] [<string>]:
+    aliases: /bosslocs, /bossloc, /bloc
+    trigger:
+        if sender is not player:
+            Errors_NotPlayer(sender)
+            stop
+        else if player does not have permission "boss.admin":
+            Errors_NoPermission({_plr}, "boss.admin")
+            stop
+        else if arg-1 = "create":
+            add location of player to {boss_locs::*}
+            Sound_PlaySound(player, "{@sound_success}")
+            send "{@prefix} {@color_main}You added your location {@color_second}(%location of player%{@color_second}) {@color_main}to the boss locations list!" to player
+        else if arg-1 = "list":
+            send "{@borders}" to sender if "{@borders}" != "none"
+            send "{@prefix} {@color_main}Locations List" to sender
+            send " " to sender
+            loop {boss_locs::*}:
+                set {_msg} to "<command:/bloc delete %loop-index%>{@color_main}##%loop-index%: {@color_second}%loop-value%<reset> {@color_separator}| {@color_main}Click here to Delete!"
+                send formatted {_msg} to player
+            send "{@borders}" to sender if "{@borders}" != "none"
+        else if arg-1 = "delete":
+            {boss_locs::%arg-2%} is set
+            Sound_PlaySound(player, "{@sound_success}")
+            send "{@prefix} {@color_main}You deleted a location {@color_second}(%{boss_locs::%arg-2%}%{@color_second}) {@color_main}from the boss locations list!" to player
+            delete {boss_locs::%arg-2%}
+        else:
+            Sound_PlaySound(sender, "{@sound_error}")
+            send "{@borders}" to sender if "{@borders}" != "none"
+            send "{@prefix} {@color_main}Version 1.0" to sender
+            send " " to sender
+            send "{@color_separator}• {@color_main}/bosslocations create" to sender
+            send "{@color_separator}• {@color_main}/bosslocations list" to sender
+            send "{@borders}" to sender if "{@borders}" != "none"
+
+command /bossesspawn:
+    aliases: /bspawn, /spawnbosses, /spawnb
+    trigger:
+        if sender is not player:
+            Errors_NotPlayer(sender)
+            stop
+        else if player does not have permission "boss.admin":
+            Errors_NoPermission({_plr}, "boss.admin")
+            stop
+        Bosses_SpawnBosses()
+on damage:
+    if victim's display name contains "boss" and "&6&l":
+        if attacker is a player:
+            add damage to {bosses_damage::%victim%::%uuid of attacker%}
+		
+on combust:
+	if entity is drowned:
+		cancel event

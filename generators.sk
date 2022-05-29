@@ -1,0 +1,894 @@
+options:
+    prefix: &3&lAcid&b&lGens <##89CFF0>
+    wheatItem: hay bale named "<##89CFF0>Wheat Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>1" and "&b﹃ &7Worth: <##7393B3>$15" and "&b﹃ &7Level Up: <##7393B3>$2.5K"
+    melonItem: melon block named "<##89CFF0>Melon Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>2" and "&b﹃ &7Worth: <##7393B3>$30" and "&b﹃ &7Level Up: <##7393B3>$7.5K"
+    pumpkinItem: pumpkin named "<##89CFF0>Pumpkin Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>3" and "&b﹃ &7Worth: <##7393B3>$60" and "&b﹃ &7Level Up: <##7393B3>$15.0K"
+    coalItem: coal block named "<##89CFF0>Coal Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>4" and "&b﹃ &7Worth: <##7393B3>$105" and "&b﹃ &7Level Up: <##7393B3>$30.0K"
+    ironItem: iron block named "<##89CFF0>Iron Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>5" and "&b﹃ &7Worth: <##7393B3>$150" and "&b﹃ &7Level Up: <##7393B3>$60.0K"
+    goldItem: gold block named "<##89CFF0>Gold Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>6" and "&b﹃ &7Worth: <##7393B3>$225" and "&b﹃ &7Level Up: <##7393B3>$120.0K"
+    redstoneItem: redstone block named "<##89CFF0>Redstone Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>7" and "&b﹃ &7Worth: <##7393B3>$300" and "&b﹃ &7Level Up: <##7393B3>$260.0K"
+    lapisItem: lapis block named "<##89CFF0>Lapis Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>8" and "&b﹃ &7Worth: <##7393B3>$450" and "&b﹃ &7Level Up: <##7393B3>$420.0K"
+    diamondItem: diamond block named "<##89CFF0>Diamond Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>9" and "&b﹃ &7Worth: <##7393B3>$600" and "&b﹃ &7Level Up: <##7393B3>$650.0K"
+    emeraldItem: emerald block named "<##89CFF0>Emerald Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>10" and "&b﹃ &7Worth: <##7393B3>$750" and "&b﹃ &7Level Up: <##7393B3>$1.0M"
+    magmaItem: magma block named "<##89CFF0>Magma Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>11" and "&b﹃ &7Worth: <##7393B3>$900" and "&b﹃ &7Level Up: <##7393B3>$1.5M"
+    obsidianItem: obsidian named "<##89CFF0>Obsidian Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>12" and "&b﹃ &7Worth: <##7393B3>$1.2K" and "&b﹃ &7Level Up: <##7393B3>$2.5M"
+    netheriteItem: netherite block named "<##89CFF0>Netherite Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>13" and "&b﹃ &7Worth: <##7393B3>$1.5K" and "&b﹃ &7Level Up: <##7393B3>$10.0M"
+    starItem: beacon named "<##89CFF0>Star Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>14" and "&b﹃ &7Worth: <##7393B3>$2.25K" and "&b﹃ &7Level Up: <##7393B3>$25.0M"
+    abyssItem: purple glazed terracotta named "<##89CFF0>Void Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>15" and "&b﹃ &7Worth: <##7393B3>$3.0K" and "&b﹃ &7Level Up: <##7393B3>$50.0M"
+    mushroomItem: brown glazed terracotta named "<##89CFF0>Mushroom Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>16" and "&b﹃ &7Worth: <##7393B3>$3.75K" and "&b﹃ &7Level Up: <##7393B3>$100.0M"
+    redmushroomItem: red glazed terracotta named "<##89CFF0>Red Mushroom Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>17" and "&b﹃ &7Worth: <##7393B3>$4.5K" and "&b﹃ &7Level Up: <##7393B3>$250.0M"
+    cryingItem: crying obsidian named "<##89CFF0>Crying Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>18" and "&b﹃ &7Worth: <##7393B3>$5.25K" and "&b﹃ &7Level Up: <##7393B3>$500.0M"
+    wartItem: nether wart block named "<##89CFF0>Blood Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>19" and "&b﹃ &7Worth: <##7393B3>$6.0K" and "&b﹃ &7Level Up: <##7393B3>$750.0M"
+    warpedItem: warped wart block named "<##89CFF0>Life Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>20" and "&b﹃ &7Worth: <##7393B3>$6.75K" and "&b﹃ &7Level Up: <##7393B3>$1.0B"
+    anchorItem: respawn anchor named "<##89CFF0>Death Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>21" and "&b﹃ &7Worth: <##7393B3>$7.5K" and "&b﹃ &7Level Up: <##7393B3>1.5B"
+    boneItem: bone block named "<##89CFF0>Bone Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>22" and "&b﹃ &7Worth: <##7393B3>$8.5K" and "&b﹃ &7Level Up: <##7393B3>1.5B"
+    clay blockItem: clay block named "<##89CFF0>Explosive Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>23" and "&b﹃ &7Worth: <##7393B3>$10.0K" and "&b﹃ &7Level Up: <##7393B3>2.0B"
+    acidItem: beehive named "<##89CFF0>Acid Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>24 (MAXED)" and "&b﹃ &7Worth: <##7393B3>$12.5K" and "&b﹃ &7Level Up: <##7393B3>2.75B"
+    token: white glazed terracotta named "<##89CFF0>Token Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>1" and "&b﹃ &7Worth: <##7393B3>1 Token" and "&b﹃ &7Level Up: <##7393B3>1.0K Tokens"
+    token2: orange glazed terracotta named "<##89CFF0>Token Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>2" and "&b﹃ &7Worth: <##7393B3>2.5 Tokens" and "&b﹃ &7Level Up: <##7393B3>2.5K Tokens"
+    token3: pink glazed terracotta named "<##89CFF0>Token Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>3" and "&b﹃ &7Worth: <##7393B3>5 Tokens" and "&b﹃ &7Level Up: <##7393B3>5.0K Tokens"
+    token4: light blue glazed terracotta named "<##89CFF0>Token Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>4 (MAXED)" and "&b﹃ &7Worth: <##7393B3>7.5 Tokens" and "&b﹃ &7Level Up: <##7393B3>MAX"
+    xpgen: slime block named "<##89CFF0>XP Generator" with lore "" and "<##7393B3>&lSTATS:" and "&b﹃ &7Tier: <##7393B3>1 (MAXED)" and "&b﹃ &7Worth: <##7393B3>1 XP Bottle" and "&b﹃ &7Level Up: <##7393B3>MAX"
+    wheat2melon: 2500
+    melon2pumpkin: 7500
+    pumpkin2coal: 15000
+    coal2iron: 30000
+    iron2gold: 60000
+    gold2redstone: 120000
+    redstone2lapis: 260000
+    lapis2diamond: 420000
+    diamond2emerald: 650000
+    emerald2magma: 1000000
+    magma2obsidian: 1500000
+    obsidian2netherite: 2500000
+    netherite2star: 10000000
+    star2abyss: 25000000
+    abyss2mushroom: 50000000
+    mushroom2redmushroom: 100000000
+    redmushroom2crying: 250000000
+    crying2wart: 500000000
+    wart2warped: 750000000
+    warped2anchor: 1000000000
+
+
+command /generators [<player>]:
+    aliases: /gens
+    trigger:
+        if arg-1 is not set:
+            send "{@prefix} You have &e%size of {generators::%player%::*}%&7/&e%getGens(player)% &7Generators placed"
+        else:
+            send "{@prefix} You have &e%size of {generators::%arg-1%::*}%&7/&e%getGens(arg-1)% &7Generators placed"
+
+command /generator <text> <number>:
+    permission: admin
+    aliases: /gen
+    trigger:
+        send "{@prefix} You were given a generator"
+        if arg-1 is "wheat":
+            give player arg-2 of {@wheatItem}
+        else if arg-1 is "melon":
+            give player arg-2 of {@melonItem}
+        else if arg-1 is "pumpkin":
+            give player arg-2 of {@pumpkinItem}
+        else if arg-1 is "coal":
+            give player arg-2 of {@coalItem}
+        else if arg-1 is "iron":
+            give player arg-2 of {@ironItem}
+        else if arg-1 is "gold":
+            give player arg-2 of {@goldItem}
+        else if arg-1 is "redstone":
+            give player arg-2 of {@redstoneItem}
+        else if arg-1 is "lapis":
+            give player arg-2 of {@lapisItem}
+        else if arg-1 is "diamond":
+            give player arg-2 of {@diamondItem}
+        else if arg-1 is "emerald":
+            give player arg-2 of {@emeraldItem}
+        else if arg-1 is "magma":
+            give player arg-2 of {@magmaItem}
+        else if arg-1 is "obsidian":
+            give player arg-2 of {@obsidianItem}
+        else if arg-1 is "netherite":
+            give player arg-2 of {@netheriteItem}
+        else if arg-1 is "star":
+            give player arg-2 of {@starItem}
+        else if arg-1 is "abyss":
+            give player arg-2 of {@abyssItem}
+        else if arg-1 is "mushroom":
+            give player arg-2 of {@mushroomItem}
+        else if arg-1 is "redmushroom":
+            give player arg-2 of {@redmushroomItem}
+        else if arg-1 is "crying":
+            give player arg-2 of {@cryingItem}
+        else if arg-1 is "wart":
+            give player arg-2 of {@wartItem}
+        else if arg-1 is "warped":
+            give player arg-2 of {@warpedItem}
+        else if arg-1 is "anchor":
+            give player arg-2 of {@anchorItem}
+        else if arg-1 is "bone":
+            give player arg-2 of {@boneItem}
+        else if arg-1 is "clay block":
+            give player arg-2 of {@clay blockItem}
+        else if arg-1 is "acid":
+            give player arg-2 of {@acidItem}
+        else if arg-1 is "token":
+            give player arg-2 of {@token}
+        else if arg-1 is "token2":
+            give player arg-2 of {@token2}
+        else if arg-1 is "token3":
+            give player arg-2 of {@token3}
+        else if arg-1 is "token4":
+            give player arg-2 of {@token4}
+        else if arg-1 is "xp":
+            give player arg-2 of {@xpgen}
+        else:
+            send "{@prefix} That is not a generator type!"
+
+on place:
+    if player's tool is hay block or melon or pumpkin or coal block or iron block or gold block or redstone block or lapis block or diamond block or emerald block or magma block or obsidian or netherite block or beacon or purple glazed terracotta or brown glazed terracotta or red glazed terracotta or crying obsidian or nether wart block or warped wart block or respawn anchor or white glazed terracotta or orange glazed terracotta or pink glazed terracotta or light blue glazed terracotta or slime block or clay block or bone block or beehive:
+        set {_name} to name of player's tool
+        if {_name} contains "Generator" and "<##89CFF0>":
+            if size of {generators::%player%::*} is less than getGens(player):
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+                add event-location to {generators::%player%::*}
+                send action bar "{@prefix} You have placed a generator &e(%size of {generators::%player%::*}%&e/%getGens(player)%&e)" to player
+            else:
+                cancel event
+                play "ENTITY_VILLAGER_NO" to player at volume 10
+                send "{@prefix} &cYou cannot place any more gens! &c(&f%size of {generators::%player%::*}%&c/&f%getGens(player)%&c)"
+        else:
+            cancel event
+            play "ENTITY_VILLAGER_NO" to player at volume 10
+            send "{@prefix} &cYou may not place this block as it is not a generator!"
+
+on leftclick:
+    if {generators::%player%::*} contains event-location:
+        if player doesn't have enough space for 1 diamond pickaxe:
+            send "{@prefix}&7Your inventory is FULL!"
+            cancel event
+            stop
+        play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+        set {_block} to block at event-location
+        if {_block} is hay bale:
+            give player 1 of {@wheatItem}
+        else if {_block} is melon block:
+            give player 1 of {@melonItem}
+        else if {_block} is pumpkin:
+            give player 1 of {@pumpkinItem}
+        else if {_block} is coal block:
+            give player 1 of {@coalItem}
+        else if {_block} is iron block:
+            give player 1 of {@ironItem}
+        else if {_block} is gold block:
+            give player 1 of {@goldItem}
+        else if {_block} is lapis block:
+            give player 1 of {@lapisItem}
+        else if {_block} is redstone block:
+            give player 1 of {@redstoneItem}
+        else if {_block} is diamond block:
+            give player 1 of {@diamondItem}
+        else if {_block} is emerald block:
+            give player 1 of {@emeraldItem}
+        else if {_block} is magma block:
+            give player 1 of {@magmaItem}
+        else if {_block} is obsidian:
+            give player 1 of {@obsidianItem}
+        else if {_block} is netherite block:
+            give player 1 of {@netheriteItem}
+        else if {_block} is beacon:
+            give player 1 of {@starItem}
+        else if {_block} is purple glazed terracotta:
+            give player 1 of {@abyssItem}
+        else if {_block} is brown glazed terracotta:
+            give player 1 of {@mushroomItem}
+        else if {_block} is red glazed terracotta:
+            give player 1 of {@redmushroomItem}
+        else if {_block} is crying obsidian:
+            give player 1 of {@cryingItem}
+        else if {_block} is nether wart block:
+            give player 1 of {@wartItem}
+        else if {_block} is warped wart block:
+            give player 1 of {@warpedItem}
+        else if {_block} is respawn anchor:
+            give player 1 of {@anchorItem}
+        else if {_block} is bone block:
+            give player 1 of {@boneItem}
+        else if {_block} is clay block:
+            give player 1 of {@clay blockItem}
+        else if {_block} is beehive:
+            give player 1 of {@acidItem}
+        else if {_block} is white glazed terracotta:
+            give player 1 of {@token}
+        else if {_block} is orange glazed terracotta:
+            give player 1 of {@token2}
+        else if {_block} is pink glazed terracotta:
+            give player 1 of {@token3}
+        else if {_block} is light blue glazed terracotta:
+            give player 1 of {@token4}
+        else if {_block} is slime block:
+            give player 1 of {@xpgen}
+        set block at event-location to air
+        remove event-location from {generators::%player%::*}
+        send action bar "{@prefix} You have removed a generator &e(%size of {generators::%player%::*}%&e/%getGens(player)%&e)" to player
+
+function Time_GetTicks(time: timespan) :: number:
+    set {_stringSpan} to "%{_time}%"
+    set {_strings::*} to {_stringSpan} split at " "
+    set {_index} to 0
+    set {_total} to 0
+    loop {_strings::*}:
+        add 1 to {_index}
+        if loop-value contains "second" or "minute" or "hour" or "day" or "week" or "month":
+            set {_numberIndex} to {_index} - 1
+            set {_number} to {_strings::%{_numberIndex}%}
+            set {_parsedNumber} to {_number} parsed as number
+            set {_flooredNumber} to floor({_parsedNumber})
+            if loop-value contains "second":
+                add {_flooredNumber} to {_total}
+            else if loop-value contains "minute":
+                add {_flooredNumber} * 60 to {_total}
+            else if loop-value contains "hour":
+                add {_flooredNumber} * 3600 to {_total}
+            else if loop-value contains "day":
+                add {_flooredNumber} * 86400 to {_total}
+            else if loop-value contains "week":
+                add {_flooredNumber} * 604800 to {_total}
+            else if loop-value contains "month":
+                add {_flooredNumber} * 2419200 to {_total}
+    return floor({_total} * 20) ? 0
+
+on quit:
+    set {playerLeft::%uuid of player%} to now
+
+every 5 minutes:
+	loop all players:
+		set {playerLeft::%uuid of loop-player%} to now
+on join:
+	delete {lastGenLoopStarted::%uuid of player%}
+
+on join:
+    if {playerLeft::%uuid of player%} is set:
+        set {_offlineMoney} to 0
+        set {_offlineTokens} to 0
+        set {_difference} to difference between {playerLeft::%uuid of player%} and now
+        wait 3 seconds
+        send "{@prefix} &7Calculating your &fonline earnings &7for being offline for &f%{_difference}%&7!" to player
+        set {_ticks} to Time_GetTicks({_difference})
+        set {_seconds} to {_ticks} / 20
+        set {_dropIntervals} to {_seconds} / 25
+        loop {generators::%player%::*}:
+            wait 1 tick
+            set {_block} to block at loop-value
+            set {_location} to loop-value
+            add 0.9 to the y-coordinate of {_location}
+            if {_block} is hay bale:
+                if player has permission "double":
+                    add 30 to {_offlineMoney}
+                else:
+                    add 15 to {_offlineMoney}
+            else if {_block} is melon block:
+                if player has permission "double":
+                    add 60 to {_offlineMoney}
+                else:
+                    add 30 to {_offlineMoney}
+            else if {_block} is pumpkin:
+                if player has permission "double":
+                    add 120 to {_offlineMoney}
+                else:
+                    add 60 to {_offlineMoney}
+            else if {_block} is coal block:
+                if player has permission "double":
+                    add 210 to {_offlineMoney}
+                else:
+                    add 105 to {_offlineMoney}
+            else if {_block} is iron block:
+                if player has permission "double":
+                    add 300 to {_offlineMoney}
+                else:
+                    add 150 to {_offlineMoney}
+            else if {_block} is gold block:
+                if player has permission "double":
+                    add 450 to {_offlineMoney}
+                else:
+                    add 225 to {_offlineMoney}
+            else if {_block} is redstone block:
+                if player has permission "double":
+                    add 600 to {_offlineMoney}
+                else:
+                    add 300 to {_offlineMoney}
+            else if {_block} is lapis block:
+                if player has permission "double":
+                    add 900 to {_offlineMoney}
+                else:
+                    add 450 to {_offlineMoney}
+            else if {_block} is diamond block:
+                if player has permission "double":
+                    add 1200 to {_offlineMoney}
+                else:
+                    add 600 to {_offlineMoney}
+            else if {_block} is emerald block:
+                if player has permission "double":
+                    add 1500 to {_offlineMoney}
+                else:
+                    add 750 to {_offlineMoney}
+            else if {_block} is magma block:
+                if player has permission "double":
+                    add 1800 to {_offlineMoney}
+                else:
+                    add 900 to {_offlineMoney}
+            else if {_block} is obsidian:
+                if player has permission "double":
+                    add 2400 to {_offlineMoney}
+                else:
+                    add 1200 to {_offlineMoney}
+            else if {_block} is netherite block:
+                if player has permission "double":
+                    add 3000 to {_offlineMoney}
+                else:
+                    add 1500 to {_offlineMoney}
+            else if {_block} is beacon:
+                if player has permission "double":
+                    add 4500 to {_offlineMoney}
+                else:
+                    add 2250 to {_offlineMoney}
+            else if {_block} is purple glazed terracotta:
+                if player has permission "double":
+                    add 6000 to {_offlineMoney}
+                else:
+                    add 3000 to {_offlineMoney}
+            else if {_block} is brown glazed terracotta:
+                if player has permission "double":
+                    add 7500 to {_offlineMoney}
+                else:
+                    add 3750 to {_offlineMoney}
+            else if {_block} is red glazed terracotta:
+                if player has permission "double":
+                    add 9000 to {_offlineMoney}
+                else:
+                    add 4500 to {_offlineMoney}
+            else if {_block} is crying obsidian:
+                if player has permission "double":
+                    add 10500 to {_offlineMoney}
+                else:
+                    add 5250 to {_offlineMoney}
+            else if {_block} is nether wart block:
+                if player has permission "double":
+                    add 12000 to {_offlineMoney}
+                else:
+                    add 6000 to {_offlineMoney}
+            else if {_block} is warped wart block:
+                if player has permission "double":
+                    add 13500 to {_offlineMoney}
+                else:
+                    add 6750 to {_offlineMoney}
+            else if {_block} is respawn anchor:
+                if player has permission "double":
+                    add 15000 to {_offlineMoney}
+                else:
+                    add 7500 to {_offlineMoney}
+            else if {_block} is bone block:
+                if player has permission "double":
+                    add 17000 to {_offlineMoney}
+                else:
+                    add 8500 to {_offlineMoney}
+            else if {_block} is clay block:
+                if player has permission "double":
+                    add 20000 to {_offlineMoney}
+                else:
+                    add 10000 to {_offlineMoney}
+            else if {_block} is beehive:
+                if player has permission "double":
+                    add 25000 to {_offlineMoney}
+                else:
+                    add 12500 to {_offlineMoney}
+            else if {_block} is white glazed terracotta:
+                if player has permission "double":
+                    add 2 to {_offlineTokens}
+                else:
+                    add 1 to {_offlineTokens}
+            else if {_block} is orange glazed terracotta:
+                if player has permission "double":
+                    add 4 to {_offlineTokens}
+                else:
+                    add 2 to {_offlineTokens}
+            else if {_block} is pink glazed terracotta:
+                if player has permission "double":
+                    add 6 to {_offlineTokens}
+                else:
+                    add 3 to {_offlineTokens}
+            else if {_block} is light blue glazed terracotta:
+                if player has permission "double":
+                    add 8.5 to {_offlineTokens}
+                else:
+                    add 4.25 to {_offlineTokens}
+        set {_offlineMoney} to {_offlineMoney} * {_dropIntervals}
+        set {_offlineTokens} to {_offlineTokens} * {_dropIntervals}
+        add {_offlineMoney} to balance of player
+        add {_offlineTokens} to {tokens::%player%}
+        send "{@prefix} &7You earned &a%{_offlineMoney}% money &7and &e%{_offlineTokens}% tokens &7while you were offline!" to player
+    set {lastGenLoopStarted::%uuid of player%} to 30 seconds ago if {lastGenLoopStarted::%uuid of player%} is not set
+    if difference between {lastGenLoopStarted::%uuid of player%} and now > 15 seconds:
+        while player is online:
+            wait 15 seconds
+            loop {generators::%player%::*}:
+                chance of 20%:
+                    wait 1 tick
+                set {_block} to block at loop-value
+                set {_location} to loop-value
+                add 0.9 to the y-coordinate of {_location}
+                chunk at loop-value is loaded
+                if {_block} is hay bale:
+                    if player has permission "double":
+                        drop 2 wheat at {_location} without velocity
+                    else:
+                        drop 1 wheat at {_location} without velocity
+                else if {_block} is melon block:
+                    if player has permission "double":
+                        drop 2 melon slice at {_location} without velocity
+                    else:
+                        drop 1 melon slice at {_location} without velocity
+                else if {_block} is pumpkin:
+                    if player has permission "double":
+                        drop 2 pumpkin pie at {_location} without velocity
+                    else:
+                        drop 1 pumpkin pie at {_location} without velocity
+                else if {_block} is coal block:
+                    if player has permission "double":
+                        drop 2 coal at {_location} without velocity
+                    else:
+                        drop 1 coal at {_location} without velocity
+                else if {_block} is iron block:
+                    if player has permission "double":
+                        drop 2 iron ingot at {_location} without velocity
+                    else:
+                        drop 1 iron ingot at {_location} without velocity
+                else if {_block} is gold block:
+                    if player has permission "double":
+                        drop 2 gold ingot at {_location} without velocity
+                    else:
+                        drop 1 gold ingot at {_location} without velocity
+                else if {_block} is redstone block:
+                    if player has permission "double":
+                        drop 2 redstone at {_location} without velocity
+                    else:
+                        drop 1 redstone at {_location} without velocity
+                else if {_block} is lapis block:
+                    if player has permission "double":
+                        drop 2 lapis lazuli at {_location} without velocity
+                    else:
+                        drop 1 lapis lazuli at {_location} without velocity
+                else if {_block} is diamond block:
+                    if player has permission "double":
+                        drop 2 diamond at {_location} without velocity
+                    else:
+                        drop 1 diamond at {_location} without velocity 
+                else if {_block} is emerald block:
+                    if player has permission "double":
+                        drop 2 emerald at {_location} without velocity
+                    else:
+                        drop 1 emerald at {_location} without velocity
+                else if {_block} is magma block:
+                    if player has permission "double":
+                        drop 2 magma cream at {_location} without velocity
+                    else:
+                        drop 1 magma cream at {_location} without velocity
+                else if {_block} is obsidian:
+                    if player has permission "double":
+                        drop 2 flint at {_location} without velocity
+                    else:
+                        drop 1 flint at {_location} without velocity
+                else if {_block} is netherite block:
+                    if player has permission "double":
+                        drop 2 netherite ingot at {_location} without velocity
+                    else:
+                        drop 1 netherite ingot at {_location} without velocity
+                else if {_block} is beacon:
+                    if player has permission "double":
+                        drop 2 nether star at {_location} without velocity
+                    else:
+                        drop 1 nether star at {_location} without velocity
+                else if {_block} is purple glazed terracotta:
+                    if player has permission "double":
+                        drop 2 dried kelp at {_location} without velocity
+                    else:
+                        drop 1 dried kelp at {_location} without velocity
+                else if {_block} is brown glazed terracotta:
+                    if player has permission "double":
+                        drop 2 brown mushroom at {_location} without velocity
+                    else:
+                        drop 1 brown mushroom at {_location} without velocity
+                else if {_block} is red glazed terracotta:
+                    if player has permission "double":
+                        drop 2 red mushroom at {_location} without velocity
+                    else:
+                        drop 1 red mushroom at {_location} without velocity
+                else if {_block} is crying obsidian:
+                    if player has permission "double":
+                        drop 2 crying obsidian at {_location} without velocity
+                    else:
+                        drop 1 crying obsidian at {_location} without velocity
+                else if {_block} is nether wart block:
+                    if player has permission "double":
+                        drop 2 crimson fungus at {_location} without velocity
+                    else:
+                        drop 1 crimson fungus at {_location} without velocity
+                else if {_block} is warped wart block:
+                    if player has permission "double":
+                        drop 2 warped fungus at {_location} without velocity
+                    else:
+                        drop 1 warped fungus at {_location} without velocity
+                else if {_block} is respawn anchor:
+                    if player has permission "double":
+                        drop 2 wither rose at {_location} without velocity
+                    else:
+                        drop 1 wither rose at {_location} without velocity
+                else if {_block} is bone block:
+                    if player has permission "double":
+                        drop 2 bone at {_location} without velocity
+                    else:
+                        drop 1 bone at {_location} without velocity
+                else if {_block} is clay block:
+                    if player has permission "double":
+                        drop 2 gunpowder at {_location} without velocity
+                    else:
+                        drop 1 gunpowder at {_location} without velocity
+                else if {_block} is beehive:
+                    if player has permission "double":
+                        drop 2 honeycomb at {_location} without velocity
+                    else:
+                        drop 1 honeycomb at {_location} without velocity
+                else if {_block} is white glazed terracotta:
+                    if player has permission "double":
+                        add 2 to {tokens::%player%}
+                    else:
+                        add 1 to {tokens::%player%}
+                else if {_block} is orange glazed terracotta:
+                    if player has permission "double":
+                        add 5 to {tokens::%player%}
+                    else:
+                        add 2.5 to {tokens::%player%}
+                else if {_block} is pink glazed terracotta:
+                    if player has permission "double":
+                        add 10 to {tokens::%player%}
+                    else:
+                        add 5 to {tokens::%player%}
+                else if {_block} is light blue glazed terracotta:
+                    if player has permission "double":
+                        add 15 to {tokens::%player%}
+                    else:
+                        add 7.5 to {tokens::%player%}
+                else if {_block} is slime block:
+                    if player has permission "double":
+                        drop 2 xp bottle at {_location} without velocity
+                    else:
+                        drop 1 xp bottle at {_location} without velocity
+                else:
+                    remove loop-value from {generators::%player%::*}
+
+on rightclick:
+    player is sneaking
+    if {generators::%player%::*} contains event-location:
+        set {_block} to block at event-location
+        if {_block} is hay bale:
+            if player's balance is more than or equal to {@wheat2melon}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to melon
+                remove {@wheat2melon} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} <##E0115F>You need &a$%{@wheat2melon}-player's balance% <##E0115F>more to upgrade!"
+        else if {_block} is melon:
+            if player's balance is more than or equal to {@melon2pumpkin}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to pumpkin
+                remove {@melon2pumpkin} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@melon2pumpkin}-player's balance% &7more to upgrade!"
+        else if {_block} is pumpkin:
+            if player's balance is more than or equal to {@pumpkin2coal}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to coal block
+                remove {@pumpkin2coal} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@pumpkin2coal}-player's balance% &7more to upgrade!"
+        else if {_block} is coal block:
+            if player's balance is more than or equal to {@coal2iron}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to iron block
+                remove {@coal2iron} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@coal2iron}-player's balance% &7more to upgrade!"
+        else if {_block} is iron block:
+            if player's balance is more than or equal to {@iron2gold}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to gold block
+                remove {@iron2gold} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@iron2gold}-player's balance% &7more to upgrade!"
+        else if {_block} is gold block:
+            if player's balance is more than or equal to {@gold2redstone}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to redstone block
+                remove {@gold2redstone} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@gold2redstone}-player's balance% &7more to upgrade!"
+        else if {_block} is redstone block:
+            if player's balance is more than or equal to {@redstone2lapis}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to lapis block
+                remove {@redstone2lapis} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@redstone2lapis}-player's balance% &7more to upgrade!"
+        else if {_block} is lapis block:
+            if player's balance is more than or equal to {@lapis2diamond}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to diamond block
+                remove {@lapis2diamond} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@lapis2diamond}-player's balance% &7more to upgrade!"
+        else if {_block} is diamond block:
+            if player's balance is more than or equal to {@diamond2emerald}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to emerald block
+                remove {@diamond2emerald} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@diamond2emerald}-player's balance% &7more to upgrade!"
+        else if {_block} is emerald block:
+            if player's balance is more than or equal to {@emerald2magma}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to magma block
+                remove {@emerald2magma} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@emerald2magma}-player's balance% &7more to upgrade!"
+        else if {_block} is magma block:
+            if player's balance is more than or equal to {@magma2obsidian}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to obsidian
+                remove {@magma2obsidian} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@magma2obsidian}-player's balance% &7more to upgrade!"
+        else if {_block} is obsidian:
+            if player's balance is more than or equal to {@obsidian2netherite}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to netherite block
+                remove {@obsidian2netherite} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@obsidian2netherite}-player's balance% &7more to upgrade!"
+        else if {_block} is netherite block:
+            if player's balance is more than or equal to {@netherite2star}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to beacon
+                remove {@netherite2star} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@netherite2star}-player's balance% &7more to upgrade!"
+        else if {_block} is beacon:
+            if player's balance is more than or equal to {@star2abyss}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to purple glazed terracotta
+                remove {@star2abyss} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@star2abyss}-player's balance% &7more to upgrade!"
+        else if {_block} is purple glazed terracotta:
+            if player's balance is more than or equal to {@abyss2mushroom}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to brown glazed terracotta
+                remove {@abyss2mushroom} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@abyss2mushroom}-player's balance% &7more to upgrade!"
+        else if {_block} is brown glazed terracotta:
+            if player's balance is more than or equal to {@mushroom2redmushroom}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to red glazed terracotta
+                remove {@mushroom2redmushroom} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@mushroom2redmushroom}-player's balance% &7more to upgrade!"
+        else if {_block} is red glazed terracotta:
+            if player's balance is more than or equal to {@redmushroom2crying}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to crying obsidian
+                remove {@redmushroom2crying} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@redmushroom2crying}-player's balance% &7more to upgrade!"
+        else if {_block} is crying obsidian:
+            if player's balance is more than or equal to {@crying2wart}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to nether wart block
+                remove {@crying2wart} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@crying2wart}-player's balance% &7more to upgrade!"
+        else if {_block} is nether wart block:
+            if player's balance is more than or equal to {@wart2warped}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to warped wart block
+                remove {@wart2warped} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@wart2warped}-player's balance% &7more to upgrade!"
+        else if {_block} is warped wart block:
+            if player's balance is more than or equal to {@warped2anchor}:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to respawn anchor
+                remove {@warped2anchor} from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%{@warped2anchor}-player's balance% &7more to upgrade!"
+        else if {_block} is respawn anchor:
+            if player's balance is more than or equal to 1500000000:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to bone block
+                remove 1500000000 from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%1500000000-player's balance% &7more to upgrade!"
+        else if {_block} is bone block:
+            if player's balance is more than or equal to 2000000000:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to clay block
+                remove 2000000000 from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%2000000000-player's balance% &7more to upgrade!"
+        else if {_block} is clay block:
+            if player's balance is more than or equal to 2750000000:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to beehive
+                remove 2750000000 from player's balance
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &a$%2750000000-player's balance% &7more to upgrade!"
+        else if {_block} is beehive:
+            play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+            send "{@prefix} This generator is maxed!"
+        else if {_block} is white glazed terracotta:
+            if {tokens::%player%} is higher or equal to 1000:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to orange glazed terracotta
+                remove 1000 from {tokens::%player%}
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &e✫%1000-{tokens::%player%}% &7more to upgrade!"
+        else if {_block} is orange glazed terracotta:
+            if {tokens::%player%} is higher or equal to 2500:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to pink glazed terracotta
+                remove 2500 from {tokens::%player%}
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &e✫%2500-{tokens::%player%}% &7more to upgrade!"
+        else if {_block} is pink glazed terracotta:
+            if {tokens::%player%} is higher or equal to 5000:
+                send "{@prefix} You have upgraded your generator!"
+                set block at event-location to light blue glazed terracotta
+                remove 5000 from {tokens::%player%}
+                play sound "entity.experience_orb.pickup" with volume 10 and pitch 1 at player's location for player
+            else:
+                play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+                send "{@prefix} You need &e✫%5000-{tokens::%player%}% &7more to upgrade!"
+        else if {_block} is slime block:
+            play sound "block.note_block.bass" with volume 10 and pitch 1 at player's location for player
+            send "{@prefix} This generator is maxed!"
+
+
+
+
+
+
+on block break of hay block, pumpkin, melon, coal block, iron block, gold block, lapis block, redstone block, diamond block, emerald block, magma block, obsidian, beacon, purple glazed terracotta or netherite block or red glazed terracotta or brown glazed terracotta or crying obsidian or nether wart block or warped wart block or respawn anchor or white glazed terracotta or orange glazed terracotta or pink glazed terracotta or light blue glazed terracotta or slime block or bone block or clay block or beehive:
+    if player has permission "default":
+        clear drops
+        set {_block} to block at event-location
+        if {_block} is hay bale:
+            give player 1 of {@wheatItem}
+        else if {_block} is melon block:
+            give player 1 of {@melonItem}
+        else if {_block} is pumpkin:
+            give player 1 of {@pumpkinItem}
+        else if {_block} is coal block:
+            give player 1 of {@coalItem}
+        else if {_block} is iron block:
+            give player 1 of {@ironItem}
+        else if {_block} is gold block:
+            give player 1 of {@goldItem}
+        else if {_block} is lapis block:
+            give player 1 of {@lapisItem}
+        else if {_block} is redstone block:
+            give player 1 of {@redstoneItem}
+        else if {_block} is diamond block:
+            give player 1 of {@diamondItem}
+        else if {_block} is magma block:
+            give player 1 of {@magmaItem}
+        else if {_block} is obsidian:
+            give player 1 of {@obsidianItem}
+        else if {_block} is netherite block:
+            give player 1 of {@netheriteItem}
+        else if {_block} is beacon:
+            give player 1 of {@starItem}
+        else if {_block} is purple glazed terracotta:
+            give player 1 of {@abyssItem}
+        else if {_block} is brown glazed terracotta:
+            give player 1 of {@mushroomItem}
+            send "%player% » Mushroom Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is red glazed terracotta:
+            give player 1 of {@redmushroomItem}
+            send "%player% » Red Mushroom Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is crying obsidian:
+            give player 1 of {@cryingItem}
+            send "%player% » Crying Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is nether wart block:
+            give player 1 of {@wartItem}
+            send "%player% » Blood Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is warped wart block:
+            give player 1 of {@warpedItem}
+            send "%player% » Life Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is respawn anchor:
+            give player 1 of {@anchorItem}
+            send "%player% » Death Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is bone block:
+            give player 1 of {@boneItem}
+            send "%player% » Bone Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is clay block:
+            give player 1 of {@clay blockItem}
+            send "%player% » Explosive Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is beehive:
+            give player 1 of {@acidItem}
+            send "%player% » Acid Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is white glazed terracotta:
+            give player 1 of {@token}
+            send "%player% » Token (1) %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is orange glazed terracotta:
+            give player 1 of {@token2}
+            send "%player% » Token (2) %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is pink glazed terracotta:
+            give player 1 of {@token3}
+            send "%player% » Token (3) %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is light blue glazed terracotta:
+            give player 1 of {@token4}
+            send "%player% » Token (4) %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+        else if {_block} is slime block:
+            send "%player% » XP Generator %location of event-block%" to channel with id "917050776642265118" with "AcidGens"
+            give player 1 of {@xpgen}
+    else:
+        cancel event

@@ -1,0 +1,531 @@
+options:
+    prefix: &3&lAcid&b&lGens <##FFBF00>&l
+    wheatItem: hay bale named "<##89CFF0>Wheat Generator"
+    melonItem: melon block named "<##89CFF0>Melon Generator"
+    pumpkinItem: pumpkin named "<##89CFF0>Pumpkin Generator"
+    coalItem: coal block named "<##89CFF0>Coal Generator"
+    ironItem: iron block named "<##89CFF0>Iron Generator"
+    goldItem: gold block named "<##89CFF0>Gold Generator"
+    redstoneItem: redstone block named "<##89CFF0>Redstone Generator"
+    lapisItem: lapis block named "<##89CFF0>Lapis Generator"
+    diamondItem: diamond block named "<##89CFF0>Diamond Generator"
+    emeraldItem: emerald block named "<##89CFF0>Emerald Generator"
+    magmaItem: magma block named "<##89CFF0>Magma Generator"
+    obsidianItem: obsidian named "<##89CFF0>Obsidian Generator"
+    netheriteItem: netherite block named "<##89CFF0>Netherite Generator"
+    starItem: beacon named "<##89CFF0>Star Generator"
+    abyssItem: brown glazed terracotta named "<##89CFF0>Mushroom Generator"
+    CommonKey: tripwire hook named "&7Common Key" with lore "&7Use at /crates"
+    UniqueKey: tripwire hook named "&aUnique Key" with lore "&7Use at /crates"
+    EpicKey: tripwire hook named "&5Epic Key" with lore "&7Use at /crates"
+    LegendaryKey: tripwire hook named "&6Legendary Key" with lore "&7Use at /crates"
+    SpecialKey: tripwire hook named "&eSpecial Key" with lore "&7Use at /crates"
+    rankKey: tripwire hook named "&cRank Key" with lore "&7Use at /crates"
+    boosterKey: tripwire hook named "&bBooster Key" with lore "&7Use at /crates"
+    petKey: tripwire hook named "&dPet Key" with lore "&7Use at /crates"
+
+command /givekey [<player>] [<text>] [<integer>]:
+    permission: admin
+    trigger:
+        if arg-1 and arg-2 and arg-3 are set:
+            if arg-2 is "common":
+                set {_key} to {@CommonKey}
+            else if arg-2 is "Unique":
+                set {_key} to {@UniqueKey}
+            else if arg-2 is "Epic":
+                set {_key} to {@EpicKey}
+            else if arg-2 is "Legendary":
+                set {_key} to {@LegendaryKey}
+            else if arg-2 is "Special":
+                set {_key} to {@SpecialKey}
+            else if arg-2 is "rank":
+                set {_key} to {@rankKey}
+            else if arg-2 is "booster":
+                set {_key} to {@boosterKey}
+            else if arg-2 is "pet":
+                set {_key} to {@petKey}
+            else:
+                send "&cCorrect usage: /givekey (player) (key) (amount)"
+                stop
+            give arg-1 arg-3 of {_key}
+        else:
+            send "&cCorrect usage: /givekey (player) (key) (amount)"
+
+
+command /setcrate <text>:
+    permission: admin
+    trigger:
+        set {_location} to location of target block of player
+        if arg-1 is "common":
+            set {common} to {_location}
+            send "{@prefix} &7Updated the location for the Common Crate"
+        else if arg-1 is "Unique":
+            set {Unique} to {_location}
+            send "{@prefix} &7Updated the location for the Unique Crate"
+        else if arg-1 is "Epic":
+            set {Epic} to {_location}
+            send "{@prefix} &7Updated the location for the Epic Crate"
+        else if arg-1 is "Legendary":
+            set {Legendary} to {_location}
+            send "{@prefix} &7Updated the location for the Legendary Crate"
+        else if arg-1 is "Special":
+            set {Special} to {_location}
+            send "{@prefix} &7Updated the location for the Special Crate"
+        else if arg-1 is "rank":
+            set {rank} to {_location}
+            send "{@prefix} &7Updated the location for the Rank Crate"
+        else if arg-1 is "boosters":
+            set {boosters} to {_location}
+            send "{@prefix} &7Updated the location for the Booster Crate"
+        else if arg-1 is "pet":
+            set {pet} to {_location}
+            send "{@prefix} &7Updated the location for the Pet Crate"
+
+
+
+on rightclick:
+    if event-location is {common}:
+        if player's tool is equal to {@CommonKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random number between 1 and 100
+            if {_random} is less than or equal to 35:
+                send "{@prefix} You won &a$15,000!"
+                add 15000 to player's balance
+            else if {_random} is less than or equal to 65:
+                send "{@prefix} You won &a$30,000!"
+                add 30000 to player's balance
+            else if {_random} is less than or equal to 90:
+                send "{@prefix} You won a &eCoal Generator!"
+                add 1 of {@coalItem} to player's inventory
+            else if {_random} is less than or equal to 95:
+                send "{@prefix} You won &e500 Tokens!"
+                add 500 to {tokens::%player%}
+            else:
+                send "{@prefix} You won an &2Unique Key!"
+                add 1 of {@UniqueKey} to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {Unique}:
+        if player's tool is equal to {@UniqueKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random number between 1 and 100
+            if {_random} is less than or equal to 35:
+                send "{@prefix} You won &a$30,000!"
+                add 30000 to player's balance
+            else if {_random} is less than or equal to 60:
+                send "{@prefix} You won an &e1,000 Tokens!"
+                add 1000 to {tokens::%player%}
+            else if {_random} is less than or equal to 65:
+                send "{@prefix} You won &a$50,000!"
+                add 50000 to player's balance
+            else if {_random} is less than or equal to 90:
+                send "{@prefix} You won a &eIron Generator!"
+                add 1 of {@ironItem} to player's inventory
+            else:
+                send "{@prefix} You won a &dEpic Key!"
+                add 1 of {@EpicKey} to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {Epic}:
+        if player's tool is equal to {@EpicKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random number between 1 and 100
+            if {_random} is less than or equal to 40:
+                send "{@prefix} You won &a$100,000!"
+                add 100000 to player's balance
+            else if {_random} is less than or equal to 70:
+                send "{@prefix} You won an &eIron Generator!"
+                add 1 of {@ironItem} to player's inventory
+            else if {_random} is less than or equal to 80:
+                send "{@prefix} You won &e2,000 Tokens"
+                add 2000 to {tokens::%player%}
+            else if {_random} is less than or equal to 85:
+                send "{@prefix} You won a &eRedstone Generator!"
+                add 1 of {@redstoneItem} to player's inventory
+            else if {_random} is less than or equal to 90:
+                send "{@prefix} You won a &ex1 Small lootbox"
+                execute console command "/givelootbox %player% small"
+            else:
+                send "{@prefix} You won an &fLegendary Key!"
+                add 1 of {@LegendaryKey} to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {Legendary}:
+        if player's tool is equal to {@LegendaryKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random number between 1 and 100
+            if {_random} is less than or equal to 40:
+                send "{@prefix} You won &a$500,000!"
+                add 500000 to player's balance
+            else if {_random} is less than or equal to 70:
+                send "{@prefix} You won &e2x Redstone Generator!"
+                add 2 of {@redstoneItem} to player's inventory
+            else if {_random} is less than or equal to 85:
+                send "{@prefix} You won &e2,000 Tokens!"
+                add 2000 to {tokens::%player%}
+            else if {_random} is less than or equal to 90:
+                send "{@prefix} You won an &eDiamond Generator!"
+                add 1 of {@diamondItem} to player's inventory
+            else if {_random} is less than or equal to 95:
+                send "{@prefix} You won an &eMedium Lootbox!"
+                execute console command "/givelootbox %player% medium"
+            else:
+                send "{@prefix} You won an &eSpecial Key!"
+                add 1 of {@SpecialKey} to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {Special}:
+        if player's tool is equal to {@SpecialKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random integer between 1 and 100
+            if {_random} is between 1 and 50:
+                send "{@prefix} You won &e1x Brown Mushroom Generator!"
+                add 1 of {@abyssItem} to player's inventory
+            else if {_random} is between 51 and 67:
+                send "{@prefix} You won a &eGenerator Slot"
+                execute console command "addgens %player% 1"
+            else if {_random} is between 68 and 75:
+                send "{@prefix} You won a &e2,500 Tokens"
+                add 2500 to {tokens::%player%}
+            else if {_random} is between 76 and 89:
+                send "{@prefix} You won a &eLarge Lootbox"
+                execute console command "givelootbox %player% large"
+            else if {_random} is between 90 and 95:
+                send "{@prefix} You won a &eToken Generator"
+                give player 1 white glazed terracotta named "<##89CFF0>Token Generator"
+            else:
+                send "{@prefix} You won a &e2x Special Key!"
+                add 2 of {@SpecialKey} to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {rank}:
+        if player's tool is equal to {@rankKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random integer between 1 and 100
+            if {_random} is less than or equal to 40:
+                send "{@prefix} You won &6Toxic Rank&7!"
+                broadcast "{@prefix} &7%player% just won &6Toxic Rank &7from a &cRank Crate&7! Get yours now at &e/buy&7!"
+                add 1 of paper named "&e&lToxic Rank" with lore "&7Right-Click to redeem &6Toxic Rank&7!" to player's inventory
+                send "%player% » Has opened a rank key and got Toxic Rank" to channel with id "875390522984923146" with "AcidGens"
+            else if {_random} is less than or equal to 70:
+                send "{@prefix} You won &e&lDeadly Rank&7!"
+                send "%player% » Has opened a rank key and got Deadly Rank" to channel with id "875390522984923146" with "AcidGens"
+                broadcast "{@prefix} &7%player% just won &dDeadly Rank &7from a &cRank Crate&7! Get yours now at &e/buy&7!"
+                add 1 of paper named "&e&lDeadly Rank" with lore "&7Right-Click to redeem &dDeadly Rank&7!" to player's inventory
+            else if {_random} is less than or equal to 90:
+                send "{@prefix} You won &aVenom Rank&7!"
+                send "%player% » Has opened a rank key and got Venom Rank" to channel with id "875390522984923146" with "AcidGens"
+                broadcast "{@prefix} &7%player% just won &aVenom Rank &7from a &cRank Crate&7! Get yours now at &e/buy&7!"
+                add 1 of paper named "&e&lVenom Rank" with lore "&7Right-Click to redeem &e&lVenom Rank&7!" to player's inventory
+            else if {_random} is less than or equal to 100:
+                send "{@prefix} You won &e&lACID Rank&7!"
+                send "%player% » Has opened a rank key and got Acid Rank" to channel with id "875390522984923146" with "AcidGens"
+                broadcast "{@prefix} &7%player% just won &cAcid Rank &7from a &cRank Crate&7! Get yours now at &e/buy&7!"
+                add 1 of paper named "&e&lAcid Rank" with lore "&7Right-Click to redeem &cAcid Rank&7!" to player's inventory
+            else:
+                send "{@prefix} You won &e&lDeadly Rank&7!"
+                send "%player% » Has opened a rank key and got Deadly Rank" to channel with id "875390522984923146" with "AcidGens"
+                broadcast "{@prefix} &7%player% just won &dDeadly Rank &7from a &cRank Crate&7! Get yours now at &e/buy&7!"
+                add 1 of paper named "&e&lDeadly Rank" with lore "&7Right-Click to redeem &dDeadly Rank&7!" to player's inventory
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {boosters}:
+        if player's tool is equal to {@boosterKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random integer between 1 and 100
+            if {_random} is between 1 and 40:
+                send "{@prefix} You won &e15 minutes booster!"
+                give player 1 paper named "&bGen Booster &7(15 Minutes)" with lore "&7Right-click this booster to receive double gen drops"
+            else if {_random} is between 41 and 70:
+                send "{@prefix} You won a &e30 minutes booster"
+                give player 1 paper named "&bGen Booster &7(30 Minutes)" with lore "&7Right-click this booster to receive double gen drops"
+            else if {_random} is between 71 and 85:
+                send "{@prefix} You won a &e45 minutes booster"
+                give player 1 paper named "&bGen Booster &7(45 Minutes)" with lore "&7Right-click this booster to receive double gen drops"
+            else if {_random} is between 86 and 95:
+                send "{@prefix} You won a &e60 minutes booster"
+                give player 1 paper named "&bGen Booster &7(60 Minutes)" with lore "&7Right-click this booster to receive double gen drops"
+            else if {_random} is between 96 and 100:
+                send "{@prefix} You won a &e90 minutes booster"
+                give player 1 paper named "&bGen Booster &7(90 Minutes)" with lore "&7Right-click this booster to receive double gen drops"
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+    else if event-location is {pet}:
+        if player's tool is equal to {@petKey}:
+            cancel event
+            remove 1 of player's tool from player's tool
+            play sound "entity.firework_rocket.twinkle" with volume 10 and pitch 1 at player's location for player
+            set {_random} to a random integer between 1 and 100
+            if {_random} is between 1 and 10:
+                send "{@prefix} You won &eCupid Pet!"
+                execute console command "givepet %player% cupid"
+            else if {_random} is between 11 and 20:
+                send "{@prefix} You won a &eHaste Pet!"
+                execute console command "givepet %player% haste"
+            else if {_random} is between 21 and 30:
+                send "{@prefix} You won a &eSonic Pet"
+                execute console command "givepet %player% sonic"
+            else if {_random} is between 31 and 40:
+                send "{@prefix} You won a &ePlague Doctor Pet"
+                execute console command "givepet %player% plague"
+            else if {_random} is between 41 and 50:
+                send "{@prefix} You won a &eLifesteal Pet"
+                execute console command "givepet %player% lifesteal"
+            else if {_random} is between 51 and 60:
+                send "{@prefix} You won a &eKey Pet"
+                execute console command "givepet %player% key"
+            else if {_random} is between 61 and 70:
+                send "{@prefix} You won a &eFishing Pet"
+                execute console command "givepet %player% fishing"
+            else if {_random} is between 71 and 85:
+                send "{@prefix} You won a &eParrot Pet"
+                execute console command "givepet %player% parrot"
+            else if {_random} is between 86 and 100:
+                send "{@prefix} You won a &eStrength Pet"
+                execute console command "givepet %player% strength"
+        else:
+            send "{@prefix} Hold a key to open this crate!"
+            cancel event
+
+on leftclick:
+    if event-location is {common}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Common Crate":
+            make next gui slot with 1 of paper named "&e$15,000" with lore "&fChance: &e35%%"
+            make next gui slot with 1 of paper named "&e$30,000" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of coal block named "&eCoal Generator" with lore "&fChance: &e25%%"
+            make next gui slot with 1 of sunflower named "&e500 Tokens" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of tripwire hook named "&eUnique Key" with lore "&fChance: &e10%%"
+        open last gui to player
+    else if event-location is {Unique}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Unique Crate":
+            make next gui slot with 1 of paper named "&e$30,000" with lore "&fChance: &e35%%"
+            make next gui slot with 1 of paper named "&e$50,000" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of iron block named "&eIron Generator" with lore "&fChance: &e20%%"
+            make next gui slot with 1 of sunflower named "&e1,000 Tokens" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of tripwire hook named "&eEpic Key" with lore "&fChance: &e10%%"
+        open last gui to player
+    else if event-location is {Epic}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Epic Crate":
+            make next gui slot with 1 of paper named "&e$100,000" with lore "&fChance: &e40%%"
+            make next gui slot with 1 of iron block named "&eIron Generator" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of redstone block named "&eRedstone Generator" with lore "&fChance: &e20%%"
+            make next gui slot with 1 of sunflower named "&e1,500 Tokens" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of sea lantern named "&ex1 Small lootbox" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of tripwire hook named "&eLegendary Key" with lore "&fChance: &e5%%"
+        open last gui to player
+    else if event-location is {Legendary}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Legendary Crate":
+            make next gui slot with 1 of paper named "&e$500,000" with lore "&fChance: &e40%%"
+            make next gui slot with 1 of redstone block named "&e2x Redstone Generator" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of diamond block named "&eDiamond Generator" with lore "&fChance: &e25%%"
+            make next gui slot with 1 of sea lantern named "&eMedium Lootbox" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of sunflower named "&e2,000 Tokens" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of tripwire hook named "&eSpecial Key" with lore "&fChance: &e5%%"
+        open last gui to player
+    else if event-location is {Special}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Special Crate":
+            make next gui slot with 1 of brown glazed terracotta named "&e1x Brown Mushroom Generator" with lore "&fChance: &e50%%"
+            make next gui slot with 1 of magenta glazed terracotta named "&eGenerator Slot" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of sea lantern named "&eLarge Lootbox" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of sunflower named "&e2,500 Tokens" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of sunflower named "&eToken Generator" with lore "&fChance: &e5%%"
+            make next gui slot with 1 of tripwire hook named "&e2x Special Key" with lore "&fChance: &e10%%"
+        open last gui to player
+    else if event-location is {rank}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Rank Crate":
+            make next gui slot with 1 of orange dye named "&e&lTOXIC RANK" with lore "&fChance: &e40%%"
+            make next gui slot with 1 of pink dye named "&e&lDEADLY RANK" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of lime dye named "&e&lVENOM RANK" with lore "&fChance: &e20%%"
+            make next gui slot with 1 of red dye named "&e&lACID RANK" with lore "&fChance: &e10%%"
+        open last gui to player
+    else if event-location is {boosters}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Booster Crate":
+            make next gui slot with 1 of paper named "&e&l15 Minutes gen booster" with lore "&fChance: &e40%%"
+            make next gui slot with 1 of paper named "&e&l30 Minutes gen booster" with lore "&fChance: &e30%%"
+            make next gui slot with 1 of paper named "&e&l45 Minutes gen booster" with lore "&fChance: &e15%%"
+            make next gui slot with 1 of paper named "&e&l60 Minutes gen booster" with lore "&fChance: &e10%%"
+            make next gui slot with 1 of paper named "&e&l90 Minutes gen booster" with lore "&fChance: &e5%%"
+        open last gui to player
+    else if event-location is {pet}:
+        cancel event
+        create a gui with virtual chest inventory with 1 rows named "Pet Crate":
+            make next gui slot with 1 of player's skull named "&e&lHaste Pet &7[%player%]" with lore "&7Re-usable Mining Speed Booster!" and "" and "&f&lStats" and "&7 50%% Mining Speed Booster" and "&7 1m duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&9&lSonic Pet &7[%player%]" with lore "&7Speed boost on-demand!" and "" and "&f&lStats" and "&7 Speed IV speed boost" and "&7 15s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&d&lCupid Pet &7[%player%]" with lore "&7On use you will become" and "&7unkillable temporarily" and "" and "&f&lStats" and "&7 5s duration" and "" and "&f&lCooldown" and "&7 5m" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&a&lPlague Doctor Pet &7[%player%]" with lore "&7Better chance to find" and "&7Zombie treasure at mine" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 +25%% Treasure spawn" and "" and "&f&lCooldown" and "&7 None" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&c&lLifesteal Pet &7[%player%]" with lore "&7Has a chance to steal" and "&7hearts from players" and "&a&lPASSIVE!" and "" and "&f&lStats" and "&7 10%% Chance" and "" and "&f&lCooldown" and "&7 None" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&6&lKey Pet &7[%player%]" with lore "&7On use you will receive" and "&7a random key you" and "&7will be able to receive" and "&7Common,Unique,Epic,Legendary,Special" and "" and "&f&lStats" and "&7 Random Key" and "" and "&f&lCooldown" and "&7 1h" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&5&lParrot Pet &7[%player%]" with lore "&7Gives you the ability to" and "&7Fly at /mine!" and "" and "&f&lStats" and "&7 10m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&1&lFishing Pet &7[%player%]" with lore "&7Chance to obtain" and "&7Store Credit from fishing!" and "" and "&f&lStats" and "&7 0.5%% Chance" and "&7 0.01$-1$" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 15m" and "" and "&7(Right-click to activate)" and "&fChance: &e12.5%%"
+            make next gui slot with 1 of player's skull named "&c&lStrength Pet &7[%player%]" with lore "&7Gives you strength I" and "" and "&f&lStats" and "&7 5m duration" and "" and "&f&lCooldown" and "&7 20m" and "" and "&7(Right-click to activate)" and "&fChance: &e10.0%%"
+        open last gui to player
+
+
+
+on place of tripwire hook:
+    cancel event
+
+on rightclick:
+    if player's tool is paper:
+        if name of player's tool is "&e&lToxic Rank":
+            if player has permission "t1":
+                send "&cYou cannot use this rank voucher."
+                send "&fYou already have Toxic rank or above!"
+                stop
+            execute console command "lp user %player% parent add toxic"
+            remove 1 of player's tool from player's tool
+            send "{@prefix} You redeemed an &6[Toxic] &7rank voucher!"
+
+        else if name of player's tool is "&e&lDeadly Rank":
+            if player has permission "t2":
+                send "&cYou cannot use this rank voucher."
+                send "&fYou already have Deadly rank or above!"
+                stop
+            execute console command "lp user %player% parent add deadly"
+            remove 1 of player's tool from player's tool
+            send "{@prefix} You redeemed an &d[Deadly] &7rank voucher!"
+
+        else if name of player's tool is "&e&lVenom Rank":
+            if player has permission "t3":
+                send "&cYou cannot use this rank voucher."
+                send "&fYou already have Venom rank or above!"
+                stop
+            execute console command "lp user %player% parent add venom"
+            remove 1 of player's tool from player's tool
+            send "{@prefix} You redeemed an &a[Venom] &7rank voucher!"
+
+        else if name of player's tool is "&e&lAcid Rank":
+            if player has permission "t4":
+                send "&cYou cannot use this rank voucher."
+                send "&fYou already have Acid rank or above!"
+                stop
+            execute console command "lp user %player% parent add acid"
+            remove 1 of player's tool from player's tool
+            send "{@prefix} You redeemed an &c[Acid] &7rank voucher!"
+
+
+on rightclick with paper:
+    if name of tool of player is "&fFlight perk &e(Right-click)":
+        set {_p} to player
+        send "&fYou have redeemed your flight perk! (/fly)" to player
+        play sound "entity.experience_orb.pickup" with volume 2 to player
+        execute console command "/lp user %{_p}% permission set essentials.fly true"
+        remove 1 of player's tool from player's tool
+		
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(15 Minutes)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(15 Minutes)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 15m"
+			remove 1 of player's tool from player's tool
+			
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(30 Minutes)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(30 Minutes)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 30m"
+			remove 1 of player's tool from player's tool
+			
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(45 Minutes)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(45 Minutes)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 45m"
+			remove 1 of player's tool from player's tool
+			
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(60 Minutes)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(60 Minutes)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 60m"
+			remove 1 of player's tool from player's tool
+
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(90 Minutes)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(90 Minutes)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 90m"
+			remove 1 of player's tool from player's tool
+
+on rightclick with paper:
+	if name of tool of player is "&bGen Booster &7(1 Day)":
+		if player has permission "double":
+			send "&aYou already have a booster activated!"
+			play sound "ENTITY_VILLAGER_NO" to player
+			stop
+		else:
+			set {_p} to player
+			send ""
+			send "&6You have redeemed your booster! &n(1 Day)&r" to player
+			send ""
+			play sound "item.trident.return" with volume 2 to player
+			execute console command "/lp user %{_p}% permission settemp double true 1d"
+			remove 1 of player's tool from player's tool
